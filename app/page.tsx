@@ -5,7 +5,7 @@ import { Car, ArrowRight } from "lucide-react"
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen relative bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/car.jpg)' }}>
+    <div className="min-h-screen relative bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/login.png)' }}>
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-black/50"></div>
       
