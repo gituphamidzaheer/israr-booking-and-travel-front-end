@@ -223,7 +223,6 @@ const BookingsPage = () => {
       <div className="p-2 sm:p-4 lg:p-6">
         <VendorHeader
           title="Create New Booking"
-          description="Fill in the booking details to request a new car service"
         />
 
         <div className="max-w-5xl mx-auto">
@@ -620,7 +619,7 @@ const BookingsPage = () => {
                         htmlFor="vehicle-sclass"
                         className="text-blue-700 font-medium text-sm sm:text-base"
                       >
-                        S-Class
+                        MERCEDES S-Class (SEDAN)
                       </Label>
                     </div>
                     {showSClass && (
@@ -651,7 +650,7 @@ const BookingsPage = () => {
                         htmlFor="vehicle-vclass"
                         className="text-blue-700 font-medium text-sm sm:text-base"
                       >
-                        V-Class
+                       MERCEDES V-Class (7 SEATER)
                       </Label>
                     </div>
                     {showVClass && (

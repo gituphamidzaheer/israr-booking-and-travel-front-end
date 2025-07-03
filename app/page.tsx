@@ -13,10 +13,20 @@ export default function HomePage() {
       <div className="relative z-10 min-h-screen flex flex-col justify-between">
         <div className="container mx-auto px-6">
           <div className="max-w-2xl">
-          <img src="/images/logo.png" alt="Logo" className="w-34 h-34 mt-6 mb-7 object-contain rounded-lg" />
+            <div className="mt-6 mb-7">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-500 to-blue-600 text-transparent bg-clip-text mb-2 flex items-baseline">
+                ASRAR
+                <span className="text-2xl md:text-3xl font-medium ml-3 bg-gradient-to-r from-blue-500 to-blue-600 text-transparent bg-clip-text mb-2 flex items-baseline">
+                  Travel and Tourism
+                </span>
+              </h1>
+              <p className="text-sm md:text-base font-semibold text-gray-300 ">
+                Member of International Air Transport Association
+              </p>
+            </div>
 
             <div className="flex items-center space-x-3 mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                 <Car className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-3xl md:text-4xl font-bold text-white">
@@ -31,7 +41,7 @@ export default function HomePage() {
             <Link href="/login">
               <Button 
                 size="lg"
-                className="bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-8 py-4 text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
               >
                 Book now 
                 <ArrowRight className="w-5 h-5 ml-2" />

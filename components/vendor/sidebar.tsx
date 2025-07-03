@@ -51,8 +51,8 @@ export function VendorSidebar() {
             <Hotel className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">Grand Hotel</h2>
-            <p className="text-sm text-gray-400">Vendor Dashboard</p>
+            <h2 className="text-lg font-semibold text-white">Hotels</h2>
+            <p className="text-sm text-gray-400">Dashboard</p>
           </div>
         </div>
       </SidebarHeader>

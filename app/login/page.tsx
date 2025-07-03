@@ -52,10 +52,20 @@ export default function VendorLogin() {
     <div className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat relative" style={{ backgroundImage: 'url(/images/login.png)' }}>
       <div className="absolute inset-0 bg-black/20"></div>
       <Card className="w-full max-w-md gradient-card border-gray-700 relative z-10">
-        <CardHeader className="text-center">
-          <div className="flex justify-center items-center mb-4"></div>
-          <CardTitle className="text-2xl text-white">Login</CardTitle>
-          <CardDescription className="text-gray-400">Sign in to your account</CardDescription>
+        <CardHeader className="text-center space-y-4">
+          <div>
+            <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-500 to-blue-600 text-transparent bg-clip-text mb-2 flex items-baseline justify-center">
+              ASRAR
+              <span className="text-3xl md:text-2xl font-medium ml-3 text-white">
+                Travel and Tourism
+              </span>
+            </h1>
+            
+          </div>
+          <div>
+            <CardTitle className="text-2xl text-white">Login</CardTitle>
+            <CardDescription className="text-gray-400">Sign in to your account</CardDescription>
+          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
@@ -74,7 +84,7 @@ export default function VendorLogin() {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500"
+                className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
                 required
                 disabled={isLoading}
               />
@@ -90,7 +100,7 @@ export default function VendorLogin() {
                   placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 pr-10"
+                  className="bg-gray-800 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500 pr-10"
                   required
                   disabled={isLoading}
                 />
@@ -105,7 +115,7 @@ export default function VendorLogin() {
             </div>
             <Button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 hover:scale-105 transition-transform"
+              className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 hover:scale-105 transition-transform"
               disabled={isLoading}
             >
               {isLoading ? "Signing In..." : "Sign In"}
@@ -117,7 +127,7 @@ export default function VendorLogin() {
       {isLoading && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="flex flex-col items-center">
-            <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
             <span className="text-white font-medium text-lg">Signing In...</span>
           </div>
         </div>
