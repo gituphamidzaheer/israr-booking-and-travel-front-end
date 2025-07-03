@@ -5,10 +5,11 @@ import { useState, useCallback, useMemo } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Car, Users } from 'lucide-react'
-import { BookingAPI, VehicleType, type VehicleInfo } from '@/public/api/booking'
+import { Car } from 'lucide-react'
+import { BookingAPI } from '@/public/api/booking'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const BookingsPage = () => {
   const [isFormLoading, setIsFormLoading] = useState(false)
@@ -23,22 +24,19 @@ const BookingsPage = () => {
     destination: '',
     time: '',
     flightNumber: '',
-    bookingType: 'PICK&DROP',
-    vehicleInfo: {
-      type: VehicleType.SCLASS,
-      quantity: 1
-    } as VehicleInfo,
+    bookingType: {
+      pickAndDrop: false,
+      hourly: false
+    },
+    sClass: 0,
+    vClass: 0,
+    others: 0,
     bookBy: '',
     fare: '',
     note: ''
   })
 
   const bookingTypes = useMemo(() => ['PICK&DROP', 'HOURLY'], [])
-  const vehicleTypes = useMemo(() => [
-    { value: VehicleType.SCLASS, label: 'sCLASS' },
-    { value: VehicleType.VCLASS, label: 'vClass' },
-    { value: VehicleType.OTHER, label: 'Other' }
-  ], [])
 
   // Memoized time options to prevent regeneration
   const timeOptions = useMemo(() => {
@@ -53,44 +51,21 @@ const BookingsPage = () => {
   }, [])
 
   // Debounced input handlers for better performance
-  const handleInputChange = useCallback((field: string) => {
-    let timeoutId: NodeJS.Timeout
-    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-      const value = e.target.value
-      clearTimeout(timeoutId)
-      timeoutId = setTimeout(() => {
-        setFormData(prev => ({
-          ...prev,
-          [field]: value
-        }))
-      }, 50) // Small delay to improve typing performance
-    }
-  }, [])
+const handleInputChange = useCallback((field: string) => {
+  return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    setFormData(prev => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+}, []);
+
 
   const handleSelectChange = useCallback((field: string) => (value: string) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
-    }))
-  }, [])
-
-  const handleVehicleTypeChange = useCallback((value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      vehicleInfo: {
-        ...prev.vehicleInfo,
-        type: value as VehicleType
-      }
-    }))
-  }, [])
-
-  const handleQuantityChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      vehicleInfo: {
-        ...prev.vehicleInfo,
-        quantity: parseInt(e.target.value) || 1
-      }
     }))
   }, [])
 
@@ -101,12 +76,25 @@ const BookingsPage = () => {
     setSuccessMessage("")
 
     try {
-      const response = await BookingAPI.createBooking(formData)
+      const { sClass, vClass, others, bookingType, ...rest } = formData
+      const types = []
+      if (bookingType.pickAndDrop) types.push('PICK&DROP')
+      if (bookingType.hourly) types.push('HOURLY')
+      
+      const bookingData = {
+        ...rest,
+        bookingType: types.join(','),
+        sClass: Number(sClass) || 0,    // Convert to number or default to 0
+        vClass: Number(vClass) || 0,    // Convert to number or default to 0
+        others: Number(others) || 0     // Convert to number or default to 0
+      }
+      
+      const response = await BookingAPI.createBooking(bookingData)
       
       // Handle 204 (No Content) as success
       if (response.success || response.data === null) {
+        toast.success("Booking created successfully!")
         setSuccessMessage("Booking created successfully!")
-        // Reset form after successful submission
         setFormData({
           date: '',
           roomNo: '',
@@ -116,11 +104,13 @@ const BookingsPage = () => {
           destination: '',
           time: '',
           flightNumber: '',
-          bookingType: 'PICK&DROP',
-          vehicleInfo: {
-            type: VehicleType.SCLASS,
-            quantity: 1
+          bookingType: {
+            pickAndDrop: false,
+            hourly: false
           },
+          sClass: 0,
+          vClass: 0,
+          others: 0,
           bookBy: '',
           fare: '',
           note: ''
@@ -130,10 +120,12 @@ const BookingsPage = () => {
         const form = e.target as HTMLFormElement
         form.reset()
       } else {
+        toast.error(response.message || "Failed to create booking")
         setError(response.message || "Failed to create booking")
       }
     } catch (error) {
       console.error('Error saving booking:', error)
+      toast.error("An error occurred while saving the booking")
       setError("An error occurred while saving the booking")
     } finally {
       setIsFormLoading(false)
@@ -303,16 +295,15 @@ const BookingsPage = () => {
                 <div className="bg-yellow-50 p-3 sm:p-4 rounded-lg border border-yellow-200">
                   <div className="space-y-2">
                     <Label htmlFor="time" className="text-yellow-700 font-medium text-sm sm:text-base">Time *</Label>
-                    <Select value={formData.time} onValueChange={handleSelectChange('time')} disabled={isFormLoading}>
-                      <SelectTrigger className="border-yellow-300 focus:border-yellow-500 bg-white text-gray-900 text-sm sm:text-base">
-                        <SelectValue placeholder="Select time" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white max-h-60 overflow-y-auto">
-                        {timeOptions.map((time) => (
-                          <SelectItem key={time} value={time} className="text-gray-900 text-sm sm:text-base">{time}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      id="time"
+                      type="time"
+                      value={formData.time}
+                      onChange={handleInputChange('time')}
+                      className="border-yellow-300 focus:border-yellow-500 bg-white text-gray-900 text-sm sm:text-base"
+                      required
+                      disabled={isFormLoading}
+                    />
                   </div>
                 </div>
 
@@ -337,17 +328,43 @@ const BookingsPage = () => {
                 {/* Booking Type */}
                 <div className="bg-cyan-50 p-3 sm:p-4 rounded-lg border border-cyan-200">
                   <div className="space-y-2">
-                    <Label htmlFor="bookingType" className="text-cyan-700 font-medium text-sm sm:text-base">Booking Type *</Label>
-                    <Select value={formData.bookingType} onValueChange={handleSelectChange('bookingType')} disabled={isFormLoading}>
-                      <SelectTrigger className="border-cyan-300 focus:border-cyan-500 bg-white text-gray-900 text-sm sm:text-base">
-                        <SelectValue placeholder="Select booking type" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        {bookingTypes.map((type) => (
-                          <SelectItem key={type} value={type} className="text-gray-900 text-sm sm:text-base">{type}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label className="text-cyan-700 font-medium text-sm sm:text-base">Booking Type *</Label>
+                    <div className="space-y-2">
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="pickAndDrop"
+                          checked={formData.bookingType.pickAndDrop}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            bookingType: {
+                              ...prev.bookingType,
+                              pickAndDrop: e.target.checked
+                            }
+                          }))}
+                          className="w-4 h-4 text-purple-600 border-cyan-300"
+                          disabled={isFormLoading}
+                        />
+                        <Label htmlFor="pickAndDrop" className="text-gray-700">Pick & Drop</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="hourly"
+                          checked={formData.bookingType.hourly}
+                          onChange={(e) => setFormData(prev => ({
+                            ...prev,
+                            bookingType: {
+                              ...prev.bookingType,
+                              hourly: e.target.checked
+                            }
+                          }))}
+                          className="w-4 h-4 text-purple-600 border-cyan-300"
+                          disabled={isFormLoading}
+                        />
+                        <Label htmlFor="hourly" className="text-gray-700">Hourly</Label>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
@@ -374,34 +391,40 @@ const BookingsPage = () => {
                   <Car className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                   Vehicle Information
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="vehicleType" className="text-red-700 font-medium text-sm sm:text-base">Vehicle Type *</Label>
-                    <Select 
-                      value={formData.vehicleInfo.type} 
-                      onValueChange={handleVehicleTypeChange}
+                    <Label htmlFor="sClass" className="text-red-700 font-medium text-sm sm:text-base">S-Class</Label>
+                    <Input
+                      id="sClass"
+                      type="number"
+                      min="0"
+                      value={formData.sClass}
+                      onChange={handleInputChange('sClass')}
+                      className="border-red-300 focus:border-red-500 bg-white text-gray-900 text-sm sm:text-base"
                       disabled={isFormLoading}
-                    >
-                      <SelectTrigger className="border-red-300 focus:border-red-500 bg-white text-gray-900 text-sm sm:text-base">
-                        <SelectValue placeholder="Select vehicle type" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white">
-                        {vehicleTypes.map((vehicle) => (
-                          <SelectItem key={vehicle.value} value={vehicle.value} className="text-gray-900 text-sm sm:text-base">{vehicle.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="quantity" className="text-red-700 font-medium text-sm sm:text-base">Quantity *</Label>
+                    <Label htmlFor="vClass" className="text-red-700 font-medium text-sm sm:text-base">V-Class</Label>
                     <Input
-                      id="quantity"
+                      id="vClass"
                       type="number"
-                      min="1"
-                      value={formData.vehicleInfo.quantity}
-                      onChange={handleQuantityChange}
+                      min="0"
+                      value={formData.vClass}
+                      onChange={handleInputChange('vClass')}
                       className="border-red-300 focus:border-red-500 bg-white text-gray-900 text-sm sm:text-base"
-                      required
+                      disabled={isFormLoading}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="others" className="text-red-700 font-medium text-sm sm:text-base">Others</Label>
+                    <Input
+                      id="others"
+                      type="number"
+                      min="0"
+                      value={formData.others}
+                      onChange={handleInputChange('others')}
+                      className="border-red-300 focus:border-red-500 bg-white text-gray-900 text-sm sm:text-base"
                       disabled={isFormLoading}
                     />
                   </div>
@@ -481,3 +504,5 @@ const BookingsPage = () => {
 }
 
 export default BookingsPage;
+
+

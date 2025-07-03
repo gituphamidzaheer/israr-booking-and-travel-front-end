@@ -10,21 +10,22 @@ export default function HomePage() {
       <div className="absolute inset-0 bg-black/50"></div>
       
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex items-center">
+      <div className="relative z-10 min-h-screen flex flex-col justify-between">
         <div className="container mx-auto px-6">
           <div className="max-w-2xl">
+          <img src="/images/logo.png" alt="Logo" className="w-34 h-34 mt-6 mb-7 object-contain rounded-lg" />
+
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
                 <Car className="w-6 h-6 text-white" />
               </div>
               <h1 className="text-3xl md:text-4xl font-bold text-white">
-                Hotel Car Booking System
+                Booking Portal
               </h1>
             </div>
             
             <p className="text-lg md:text-xl text-gray-200 mb-8 leading-relaxed">
-              Professional car booking management for hotels and vendors. 
-              Streamline your transportation services with our comprehensive platform.
+              Asrar Travel and Tourism  Air Transport Association
             </p>
             
             <Link href="/login">
@@ -37,6 +38,12 @@ export default function HomePage() {
               </Button>
             </Link>
           </div>
+        </div>
+        
+        {/* Copyright Footer */}
+        <div className="w-full py-4 text-center text-white/80 text-lg">
+          <p>© 2025 Copyrights by Asrar Travel UAE. All Rights Reserved</p>
+          <p className="mt-1">Developed By: Hamid Zaheer | Phone: +92317579457</p>
         </div>
       </div>
     </div>

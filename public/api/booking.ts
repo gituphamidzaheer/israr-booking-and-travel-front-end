@@ -1,16 +1,5 @@
 import { config } from '@/lib/config'
 
-export enum VehicleType {
-  SCLASS = 'sCLASS',
-  VCLASS = 'vClass', 
-  OTHER = 'others',
-}
-
-export interface VehicleInfo {
-  type: VehicleType;
-  quantity: number;
-}
-
 export interface Booking {
   id?: number
   isActive?: boolean
@@ -24,7 +13,13 @@ export interface Booking {
   destination: string
   time: string
   flightNumber?: string
-  vehicleInfo: VehicleInfo
+  vehicleInfo?: {
+    sClass: number
+    vClass: number
+    others: number
+    type?: string;
+    quantity?: number;
+  }
   bookingType: string
   status?: string
   note?: string

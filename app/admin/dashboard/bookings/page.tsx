@@ -13,7 +13,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Calendar, MapPin, User, Car, Clock, Phone, CreditCard, Users, Plane, Edit, Trash2, Download, Search, Plus } from 'lucide-react'
-import { BookingAPI, type Booking, VehicleType } from '@/public/api/booking'
+import { BookingAPI, type Booking } from '@/public/api/booking'
 
 const AdminBookingsPage = () => {
   const [bookings, setBookings] = useState<Booking[]>([])
@@ -91,40 +91,47 @@ const AdminBookingsPage = () => {
     })
   }
 
+  // Update handleEdit to handle booking types
   const handleEdit = (booking: Booking) => {
+    const types = booking.bookingType?.split(',') || []
     setEditingBooking(booking)
     setEditFormData({
-      passengerName: booking.passengerName,
-      guest_phoneno: booking.guest_phoneno,
-      roomNo: booking.roomNo,
-      pickupAdress: booking.pickupAdress,
-      destination: booking.destination,
-      date: booking.date?.split('T')[0], // Format for input[type="date"]
-      time: booking.time,
-      flightNumber: booking.flightNumber,
-      bookingType: booking.bookingType,
-      vehicleInfo: booking.vehicleInfo || { type: VehicleType.SCLASS, quantity: 1 },
-      bookBy: booking.bookBy,
-      fare: booking.fare,
-      extraCharge: booking.extraCharge || 0,
-      totalFare: booking.totalFare || ((Number(booking.fare) || 0) + (Number(booking.extraCharge) || 0)),
-      note: booking.note,
-      status: booking.status,
-      driverName: booking.driverName,
-      driverNumber: booking.driverNumber,
-      noOfVehicle: booking.noOfVehicle || 1
+      ...booking,
+  bookingType: JSON.stringify({
+  pickAndDrop: types.includes('PICK&DROP'),
+  hourly: types.includes('HOURLY'),
+}),
     })
     setIsEditModalOpen(true)
   }
 
+  // Update handleEditSubmit to handle booking types
   const handleEditSubmit = async () => {
     if (!editingBooking?.id) return
 
     setIsEditLoading(true)
     try {
-      const response = await BookingAPI.updateBooking(editingBooking.id, editFormData)
+      const { bookingType, vehicleInfo, ...rest } = editFormData
+      const types = []
+      if (bookingType?.pickAndDrop) types.push('PICK&DROP')
+      if (bookingType?.hourly) types.push('HOURLY')
+
+      // Extract vehicle info values
+      const { sClass = 0, vClass = 0, others = 0 } = vehicleInfo || {}
+
+      const bookingData = {
+        ...rest,
+        bookingType: types.join(','),
+        sClass,
+        vClass,
+        others
+      }
+
+      const response = await BookingAPI.updateBooking(editingBooking.id, bookingData)
       if (response.success) {
-        await fetchBookings() // Refresh the list
+        // Immediately fetch all bookings after successful update
+        await fetchBookings()
+        
         setIsEditModalOpen(false)
         setEditingBooking(null)
         setEditFormData({})
@@ -896,73 +903,93 @@ const AdminBookingsPage = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-booking-type" className="text-gray-800 font-bold">Booking Type *</Label>
-                <Select
-                  value={editFormData.bookingType || ''}
-                  onValueChange={(value) => setEditFormData({...editFormData, bookingType: value})}
-                >
-                  <SelectTrigger className="bg-white text-black">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="PICK&DROP">PICK&DROP</SelectItem>
-                    <SelectItem value="HOURLY">HOURLY</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label className="text-gray-800 font-bold">Booking Type *</Label>
+                <div className="space-y-2 bg-white p-3 rounded-md border border-gray-200">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="edit-pickAndDrop"
+                      checked={editFormData.bookingType?.pickAndDrop || false}
+                      onChange={(e) => setEditFormData(prev => ({
+                        ...prev,
+                        bookingType: {
+                          ...prev.bookingType,
+                          pickAndDrop: e.target.checked
+                        }
+                      }))}
+                      className="w-4 h-4 text-purple-600 border-gray-300 rounded"
+                    />
+                    <Label htmlFor="edit-pickAndDrop" className="text-gray-700">Pick & Drop</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="edit-hourly"
+                      checked={editFormData.bookingType?.hourly || false}
+                      onChange={(e) => setEditFormData(prev => ({
+                        ...prev,
+                        bookingType: {
+                          ...prev.bookingType,
+                          hourly: e.target.checked
+                        }
+                      }))}
+                      className="w-4 h-4 text-purple-600 border-gray-300 rounded"
+                    />
+                    <Label htmlFor="edit-hourly" className="text-gray-700">Hourly</Label>
+                  </div>
+                </div>
               </div>
 
               {/* Vehicle Information */}
               <div className="col-span-2 space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="edit-vehicle-type" className="text-gray-800 font-bold">Vehicle Type *</Label>
-                    <Select
-                      value={editFormData.vehicleInfo?.type || ''}
-                      onValueChange={(value) => setEditFormData({
-                        ...editFormData, 
-                        vehicleInfo: { 
-                          type: value as VehicleType,
-                          quantity: editFormData.vehicleInfo?.quantity || 1
-                        }
-                      })}
-                    >
-                      <SelectTrigger className="bg-white text-black">
-                        <SelectValue placeholder="Select vehicle type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="SCLASS">S-Class</SelectItem>
-                        <SelectItem value="VCLASS">V-Class</SelectItem>
-                        <SelectItem value="OTHER">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-vehicle-quantity" className="text-gray-800 font-bold">Vehicle Quantity *</Label>
+                    <Label htmlFor="edit-sclass" className="text-gray-800 font-bold">S-Class</Label>
                     <Input
-                      id="edit-vehicle-quantity"
+                      id="edit-sclass"
                       type="number"
-                      min="1"
-                      value={editFormData.vehicleInfo?.quantity || ''}
+                      min="0"
+                      value={editFormData.vehicleInfo?.sClass || 0}
                       onChange={(e) => setEditFormData({
-                        ...editFormData, 
-                        vehicleInfo: { 
-                          type: editFormData.vehicleInfo?.type || VehicleType.SCLASS,
-                          quantity: parseInt(e.target.value) || 1 
+                        ...editFormData,
+                        vehicleInfo: {
+                          ...editFormData.vehicleInfo,
+                          sClass: parseInt(e.target.value) || 0
                         }
                       })}
                       className="bg-white text-black"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="edit-no-of-vehicle" className="text-gray-800 font-bold">Vehicle No *</Label>
+                    <Label htmlFor="edit-vclass" className="text-gray-800 font-bold">V-Class</Label>
                     <Input
-                      id="edit-no-of-vehicle"
+                      id="edit-vclass"
                       type="number"
-                      min="1"
-                      value={editFormData.noOfVehicle || ''}
+                      min="0"
+                      value={editFormData.vehicleInfo?.vClass || 0}
                       onChange={(e) => setEditFormData({
-                        ...editFormData, 
-                        noOfVehicle: parseInt(e.target.value) || 1
+                        ...editFormData,
+                        vehicleInfo: {
+                          ...editFormData.vehicleInfo,
+                          vClass: parseInt(e.target.value) || 0
+                        }
+                      })}
+                      className="bg-white text-black"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-others" className="text-gray-800 font-bold">Others</Label>
+                    <Input
+                      id="edit-others"
+                      type="number"
+                      min="0"
+                      value={editFormData.vehicleInfo?.others || 0}
+                      onChange={(e) => setEditFormData({
+                        ...editFormData,
+                        vehicleInfo: {
+                          ...editFormData.vehicleInfo,
+                          others: parseInt(e.target.value) || 0
+                        }
                       })}
                       className="bg-white text-black"
                     />
@@ -1038,4 +1065,5 @@ const AdminBookingsPage = () => {
   )
 }
 
-export default AdminBookingsPage
+export default AdminBookingsPage;
+

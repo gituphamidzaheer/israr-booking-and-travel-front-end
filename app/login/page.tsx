@@ -55,6 +55,9 @@ export default function VendorLogin() {
       <div className="absolute inset-0 bg-black/20"></div>
       <Card className="w-full max-w-md gradient-card border-gray-700 relative z-10">
         <CardHeader className="text-center">
+          <div className="flex justify-center items-center mb-4">
+            {/* <img src="/images/logo.png" alt="Logo" className="w-34 h-28 object-contain mx-auto" /> */}
+          </div>
           <CardTitle className="text-2xl text-white">Login</CardTitle>
           <CardDescription className="text-gray-400">Sign in to your account</CardDescription>
         </CardHeader>

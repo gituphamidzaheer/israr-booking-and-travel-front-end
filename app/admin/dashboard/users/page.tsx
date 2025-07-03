@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Plus, Edit, Trash2, User as UserIcon, Mail, Phone, Shield, UserCheck, Users, AlertCircle } from 'lucide-react'
 import { UserAPI, type User as UserType } from '@/public/api/users'
+import { toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 const UsersPage = () => {
   const [users, setUsers] = useState<UserType[]>([])
@@ -55,15 +57,18 @@ const UsersPage = () => {
       }
 
       if (response.success) {
+        toast.success(editingUser ? "Hotel updated successfully!" : "Hotel created successfully!")
         await fetchUsers()
         setIsDialogOpen(false)
         resetForm()
       } else {
         setError(response.message || "Operation failed")
+        toast.error(response.message || "Operation failed")
       }
     } catch (error) {
       console.error('Error saving user:', error)
       setError("An error occurred while saving the user")
+      toast.error("An error occurred while saving the user")
     } finally {
       setIsFormLoading(false)
     }
@@ -148,43 +153,17 @@ const UsersPage = () => {
 
         {/* Stats Cards - Only show when not loading */}
         {!isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 gap-4 mb-6">
             <Card className="bg-gradient-to-br from-purple-25 to-purple-50 border-purple-100 shadow-sm">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-purple-600 font-medium">Total Users</p>
-                    <p className="text-2xl font-bold text-purple-800">{users.length}</p>
-                  </div>
-                  <Users className="w-8 h-8 text-purple-500" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-gradient-to-br from-blue-25 to-blue-50 border-blue-100 shadow-sm">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-blue-600 font-medium">Admins</p>
-                    <p className="text-2xl font-bold text-blue-800">
-                      {users.filter(u => u.role === 'admin').length}
-                    </p>
-                  </div>
-                  <Shield className="w-8 h-8 text-blue-500" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-green-25 to-green-50 border-green-100 shadow-sm">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-sm text-green-600 font-medium">Hotels</p>
-                    <p className="text-2xl font-bold text-green-800">
+                    <p className="text-sm text-purple-600 font-medium">Total Hotels</p>
+                    <p className="text-2xl font-bold text-purple-800">
                       {users.filter(u => u.role === 'hotel').length}
                     </p>
                   </div>
-                  <UserCheck className="w-8 h-8 text-green-500" />
+                  <Users className="w-8 h-8 text-purple-500" />
                 </div>
               </CardContent>
             </Card>
@@ -200,7 +179,7 @@ const UsersPage = () => {
                 className="mb-6 bg-gradient-to-r from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 shadow-sm"
               >
                 <Plus className="w-4 h-4 mr-2" />
-                Create New User
+                Create New Hotel
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-md bg-white">
@@ -288,7 +267,6 @@ const UsersPage = () => {
                       <SelectValue placeholder="Select role" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="admin">Admin</SelectItem>
                       <SelectItem value="hotel">Hotel</SelectItem>
                     </SelectContent>
                   </Select>
