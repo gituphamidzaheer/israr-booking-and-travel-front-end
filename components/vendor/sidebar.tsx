@@ -41,7 +41,7 @@ export function VendorSidebar() {
   }
 
   return (
-    <Sidebar className="border-r border-gray-800 bg-gray-900">
+    <Sidebar className="border-r border-gray-800 bg-gray-900 pb-14 md:pb-0">
       <SidebarHeader className="border-b border-gray-800 p-4 bg-gray-900">
         <div className="flex items-center space-x-3">
           <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg">
@@ -84,7 +84,7 @@ export function VendorSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-gray-800 p-4 bg-gray-900 fixed bottom-0 left-0 right-0 md:relative w-full">
+      <SidebarFooter className="border-t border-gray-800 p-4 bg-gray-900 fixed bottom-0 left-0 right-0 md:relative w-full z-40">       
         <Button
           onClick={handleLogout}
           variant="outline"
