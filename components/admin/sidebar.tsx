@@ -84,12 +84,12 @@ export function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-gray-800 p-4 bg-gray-900 fixed bottom-0 left-0 right-0 md:relative w-full z-40">       
+      <SidebarFooter className="border-t border-gray-800 p-4 bg-gray-900 sticky bottom-0 left-0 w-full">       
         <Button
           onClick={handleLogout}
           variant="outline"
           size="sm"
-          className="w-full border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent hover:border-gray-600"
+          className="w-full border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent hover:border-gray-600 transition-colors"
         >
           <LogOut className="w-4 h-4 mr-2" />
           Logout

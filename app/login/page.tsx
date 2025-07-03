@@ -53,19 +53,8 @@ export default function VendorLogin() {
       <div className="absolute inset-0 bg-black/20"></div>
       <Card className="w-full max-w-md gradient-card border-gray-700 relative z-10">
         <CardHeader className="text-center space-y-4">
-          <div>
-            <h1 className="text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-500 to-blue-600 text-transparent bg-clip-text mb-2 flex items-baseline justify-center">
-              ASRAR
-              <span className="text-3xl md:text-2xl font-medium ml-3 text-white">
-                Travel and Tourism
-              </span>
-            </h1>
-            
-          </div>
-          <div>
             <CardTitle className="text-2xl text-white">Login</CardTitle>
             <CardDescription className="text-gray-400">Sign in to your account</CardDescription>
-          </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">

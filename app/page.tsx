@@ -14,9 +14,9 @@ export default function HomePage() {
         <div className="container mx-auto px-6">
           <div className="max-w-2xl">
             <div className="mt-6 mb-7">
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-500 to-blue-600 text-transparent bg-clip-text mb-2 flex items-baseline">
+              <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold bg-gradient-to-r from-blue-500 to-blue-600 text-transparent bg-clip-text mb-2 flex items-baseline flex-wrap sm:flex-nowrap">
                 ASRAR
-                <span className="text-2xl md:text-3xl font-medium ml-3 bg-gradient-to-r from-blue-500 to-blue-600 text-transparent bg-clip-text mb-2 flex items-baseline">
+                <span className="text-xl sm:text-2xl md:text-3xl font-medium ml-2 sm:ml-3 bg-gradient-to-r from-blue-500 to-blue-600 text-transparent bg-clip-text whitespace-nowrap">
                   Travel and Tourism
                 </span>
               </h1>

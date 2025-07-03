@@ -69,6 +69,7 @@ const AdminBookingsPage = () => {
   const [error, setError] = useState("");
   const [searchId, setSearchId] = useState("");
   const [searchName, setSearchName] = useState("");
+  const [searchDate, setSearchDate] = useState("");
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [editFormData, setEditFormData] = useState<Partial<Booking>>({
     others: {
@@ -88,7 +89,7 @@ const AdminBookingsPage = () => {
 
   useEffect(() => {
     filterBookings();
-  }, [bookings, searchId, searchName]);
+  }, [bookings, searchId, searchName, searchDate]);
 
   const fetchBookings = async () => {
     setIsLoading(true);
@@ -119,6 +120,12 @@ const AdminBookingsPage = () => {
     if (searchName) {
       filtered = filtered.filter((booking) =>
         booking.passengerName.toLowerCase().includes(searchName.toLowerCase())
+      );
+    }
+
+    if (searchDate) {
+      filtered = filtered.filter((booking) =>
+        booking.date?.includes(searchDate)
       );
     }
 
@@ -468,7 +475,7 @@ const AdminBookingsPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-white border-gray-200 shadow-sm">
+          {/* <Card className="bg-white border-gray-200 shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -486,9 +493,9 @@ const AdminBookingsPage = () => {
                 <Clock className="w-8 h-8 text-blue-500" />
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
-          <Card className="bg-white border-gray-200 shadow-sm">
+          {/* <Card className="bg-white border-gray-200 shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -504,9 +511,9 @@ const AdminBookingsPage = () => {
                 <Users className="w-8 h-8 text-green-500" />
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
-          <Card className="bg-white border-gray-200 shadow-sm">
+          {/* <Card className="bg-white border-gray-200 shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -525,7 +532,7 @@ const AdminBookingsPage = () => {
                 <CreditCard className="w-8 h-8 text-purple-500" />
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
 
         {/* Search Filters */}
@@ -534,9 +541,7 @@ const AdminBookingsPage = () => {
             <div className="flex flex-col sm:flex-row gap-4 items-center">
               <div className="flex items-center space-x-2 w-full sm:w-auto">
                 <Search className="w-4 h-4 text-gray-500" />
-                <span className="text-sm font-medium text-gray-700">
-                  Filters:
-                </span>
+                <span className="text-sm font-medium text-gray-700">Filters:</span>
               </div>
               <div className="flex flex-col sm:flex-row gap-4 w-full">
                 <div className="w-full sm:w-48">
@@ -555,11 +560,20 @@ const AdminBookingsPage = () => {
                     className="bg-white text-black border-gray-300 text-sm"
                   />
                 </div>
+                <div className="w-full sm:w-48">
+                  <Input
+                    type="date"
+                    value={searchDate}
+                    onChange={(e) => setSearchDate(e.target.value)}
+                    className="bg-white text-black border-gray-300 text-sm"
+                  />
+                </div>
                 <Button
                   variant="outline"
                   onClick={() => {
                     setSearchId("");
                     setSearchName("");
+                    setSearchDate("");
                   }}
                   className="w-[160px] h-[48px] font-medium"
                 >
@@ -584,43 +598,46 @@ const AdminBookingsPage = () => {
               <Table className="min-w-[900px] md:min-w-full">
                 <TableHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 top-0 z-20">
                   <TableRow className="border-b border-gray-200">
-                    <TableHead className="font-semibold text-gray-700 text-center py-4">
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
                       ID
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4">
-                      Passenger Name
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
+                      Date & Time
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4">
-                      Pickup Address
-                    </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4">
-                      Destination
-                    </TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4">
-                      Flight No
-                    </TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4">
-                      Date
-                    </TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4">
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
                       Room No
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4">
-                      Fare
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
+                      Guest Info
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4">
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
+                      Pickup
+                    </TableHead>
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
+                      Destination
+                    </TableHead>
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
                       Driver
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4">
-                      Notes
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[12%]">
+                      Note
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4">
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
+                      Booked By
+                    </TableHead>
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
+                      Base Fare
+                    </TableHead>
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
+                      Extra
+                    </TableHead>
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
+                      Total
+                    </TableHead>
+                    <TableHead className="font-semibold text-gray-700 py-4">
                       Status
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4">
-                      Vehicle Info
-                    </TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4">
+                    <TableHead className="font-semibold text-gray-700 py-4">
                       Actions
                     </TableHead>
                   </TableRow>
@@ -635,7 +652,7 @@ const AdminBookingsPage = () => {
                         }`}
                       >
                         {/* ID */}
-                        <TableCell className="text-center py-4">
+                        <TableCell className="py-4 text-center text-black">
                           <div className="flex flex-col items-center space-y-1">
                             <div className="w-8 h-8 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full flex items-center justify-center">
                               <Car className="w-4 h-4 text-white" />
@@ -646,205 +663,108 @@ const AdminBookingsPage = () => {
                           </div>
                         </TableCell>
 
-                        {/* Passenger Name */}
-                        <TableCell className="py-4">
-                          <div className="flex items-center space-x-2">
-                            <User className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                            <span className="font-medium text-gray-900 text-sm">
-                              {booking.passengerName}
-                            </span>
-                          </div>
-                          {booking.guest_phoneno && (
-                            <div className="flex items-center space-x-2 mt-1">
-                              <Phone className="w-3 h-3 text-gray-400 flex-shrink-0" />
-                              <span className="text-xs text-gray-600">
-                                {booking.guest_phoneno}
-                              </span>
-                            </div>
-                          )}
-                        </TableCell>
-
-                        {/* Pickup Address */}
-                        <TableCell className="py-4">
-                          <div className="flex items-center space-x-2">
-                            <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                            <span
-                              className="text-sm font-medium text-gray-800 truncate"
-                              title={booking.pickupAdress}
-                            >
-                              {booking.pickupAdress}
-                            </span>
-                          </div>
-                        </TableCell>
-
-                        {/* Destination */}
-                        <TableCell className="py-4">
-                          <div className="flex items-center space-x-2">
-                            <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
-                            <span
-                              className="text-sm font-medium text-gray-800 truncate"
-                              title={booking.destination}
-                            >
-                              {booking.destination}
-                            </span>
-                          </div>
-                        </TableCell>
-
-                        {/* Flight No */}
-                        <TableCell className="text-center py-4">
-                          {booking.flightNumber ? (
-                            <div className="flex items-center justify-center space-x-2">
-                              <Plane className="w-3 h-3 text-blue-500" />
-                              <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded">
-                                {booking.flightNumber}
-                              </span>
-                            </div>
-                          ) : (
-                            <span className="text-xs text-gray-400">N/A</span>
-                          )}
-                        </TableCell>
-
-                        {/* Date */}
-                        <TableCell className="text-center py-4">
+                        {/* Date & Time */}
+                        <TableCell className="py-4 text-black">
                           <div className="space-y-1">
-                            <div className="flex items-center justify-center space-x-1">
-                              <Calendar className="w-3 h-3 text-gray-500" />
-                              <span className="text-xs font-medium text-gray-800">
-                                {formatDate(booking.date)}
-                              </span>
+                            <div className="text-sm font-medium">
+                              {formatDate(booking.date)}
                             </div>
-                            <div className="text-xs text-gray-600">
+                            <div className="text-xs text-gray-500">
                               {booking.time}
                             </div>
                           </div>
                         </TableCell>
 
                         {/* Room No */}
-                        <TableCell className="text-center py-4">
-                          {booking.roomNo ? (
-                            <span className="inline-block bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded">
-                              Room {booking.roomNo}
-                            </span>
-                          ) : (
-                            <span className="text-xs text-gray-400">N/A</span>
-                          )}
+                        <TableCell className="py-4 text-center text-black">
+                          {booking.roomNo || 'N/A'}
                         </TableCell>
 
-                        {/* Fare */}
-                        <TableCell className="text-center py-4">
+                        {/* Guest Info */}
+                        <TableCell className="py-4 text-black">
                           <div className="space-y-1">
-                            <div className="text-sm font-bold text-green-600">
-                              $$
-                              {(Number(booking.fare) || 0) +
-                                (Number(booking.extraCharge) || 0)}
+                            <div className="text-sm font-medium">
+                              {booking.passengerName || 'N/A'}
                             </div>
-                            <div className="text-xs text-gray-500">
-                              Base: ${booking.fare}
-                            </div>
-                            {booking.extraCharge &&
-                              Number(booking.extraCharge) > 0 && (
-                                <div className="text-xs text-orange-600">
-                                  Extra: +${booking.extraCharge}
-                                </div>
-                              )}
-                          </div>
-                        </TableCell>
-
-                        {/* Driver */}
-                        <TableCell className="text-center py-4">
-                          {booking.driverName || booking.driverNumber ? (
-                            <div className="space-y-1">
-                              {booking.driverName && (
-                                <div className="text-sm font-medium text-gray-800">
-                                  {booking.driverName}
-                                </div>
-                              )}
-                              {booking.driverNumber && (
-                                <div className="text-xs text-gray-600">
-                                  {booking.driverNumber}
-                                </div>
-                              )}
-                            </div>
-                          ) : (
-                            <span className="text-xs text-gray-400">
-                              Not Assigned
-                            </span>
-                          )}
-                        </TableCell>
-
-                        {/* Notes */}
-                        <TableCell className="py-4 max-w-[200px]">
-                          {booking.note ? (
-                            <div
-                              className="text-xs text-gray-600 truncate"
-                              title={booking.note}
-                            >
-                              {booking.note}
-                            </div>
-                          ) : (
-                            <span className="text-xs text-gray-400">
-                              No notes
-                            </span>
-                          )}
-                        </TableCell>
-
-                        {/* Status */}
-                        <TableCell className="text-center py-4">
-                          <div className="space-y-1">
-                            <Badge
-                              className={`${getStatusColor(
-                                booking.status
-                              )} font-medium text-xs px-2 py-1`}
-                            >
-                              {booking.status || "In Progress"}
-                            </Badge>
-                            <div className="flex items-center justify-center space-x-1">
-                              <div
-                                className={`w-2 h-2 rounded-full ${
-                                  booking.isActive
-                                    ? "bg-green-500"
-                                    : "bg-red-500"
-                                }`}
-                              ></div>
-                              <span
-                                className={`text-xs ${
-                                  booking.isActive
-                                    ? "text-green-600"
-                                    : "text-red-600"
-                                }`}
-                              >
-                                {booking.isActive ? "Active" : "Inactive"}
-                              </span>
-                            </div>
-                          </div>
-                        </TableCell>
-
-                        {/* Vehicle Info */}
-                        <TableCell className="text-center py-4">
-                          <div className="space-y-1">
-                            <div className="text-xs text-gray-600">
-                              S-Class: {booking.sClass || 0}
-                            </div>
-                            <div className="text-xs text-gray-600">
-                              V-Class: {booking.vClass || 0}
-                            </div>
-                            {booking.others && (
-                              <>
-                                <div className="text-xs text-gray-600">
-                                  {booking.others.vehicleType}: {booking.others.quantity}
-                                </div>
-                              </>
-                            )}
-                            {booking.noOfVehicle && (
-                              <div className="text-xs text-gray-500">
-                                Total: {booking.noOfVehicle}
+                            {booking.guest_phoneno && (
+                              <div className="text-xs text-gray-500 flex items-center">
+                                <Phone className="w-3 h-3 mr-1" />
+                                {booking.guest_phoneno}
                               </div>
                             )}
                           </div>
                         </TableCell>
 
+                        {/* Pickup Address */}
+                        <TableCell className="py-4 text-black">
+                          <div className="text-sm break-words">
+                            {booking.pickupAdress}
+                          </div>
+                        </TableCell>
+
+                        {/* Destination */}
+                        <TableCell className="py-4 text-black">
+                          <div className="text-sm break-words">
+                            {booking.destination}
+                          </div>
+                        </TableCell>
+
+                        {/* Driver */}
+                        <TableCell className="py-4 text-black">
+                          <div className="space-y-1">
+                            <div className="text-sm font-medium">
+                              {booking.driverName || 'Not Assigned'}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {booking.driverNumber || 'No Contact'}
+                            </div>
+                          </div>
+                        </TableCell>
+
+                        {/* Note */}
+                        <TableCell className="py-4 text-black">
+                          <div className="text-sm break-words max-h-20 min-w-28">
+                            {booking.note || 'No notes'}
+                          </div>
+                        </TableCell>
+
+                        {/* Booked By */}
+                        <TableCell className="py-4 text-black">
+                          <div className="text-sm">
+                            {booking.bookBy || 'N/A'}
+                          </div>
+                        </TableCell>
+
+                        {/* Fare */}
+                        <TableCell className="py-4 text-black">
+                          <div className="text-sm font-semibold">
+                            ${booking.fare || '0'}
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-4 text-black">
+                          <div className="text-sm font-semibold text-orange-600">
+                            ${Number(booking.extraCharge) || '0'}
+                          </div>
+                        </TableCell>
+                        <TableCell className="py-4 text-black">
+                          <div className="text-sm font-semibold text-green-600">
+                            ${(Number(booking.fare) || 0) + (Number(booking.extraCharge) || 0)}
+                          </div>
+                        </TableCell>
+
+                        {/* Status */}
+                        <TableCell className="py-4 text-center">
+                          <Badge
+                            className={`${getStatusColor(
+                              booking.status
+                            )} font-medium text-xs px-2 py-1`}
+                          >
+                            {booking.status || "Pending"}
+                          </Badge>
+                        </TableCell>
+
                         {/* Actions */}
-                        <TableCell className="text-center py-4">
+                        <TableCell className="py-4">
                           <div className="flex flex-col space-y-2">
                             <Button
                               variant="outline"
@@ -964,7 +884,7 @@ const AdminBookingsPage = () => {
                       passengerName: e.target.value,
                     })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                 />
               </div>
 
@@ -981,7 +901,7 @@ const AdminBookingsPage = () => {
                       guest_phoneno: e.target.value,
                     })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                 />
               </div>
 
@@ -1001,7 +921,7 @@ const AdminBookingsPage = () => {
                       pickupAdress: e.target.value,
                     })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                 />
               </div>
 
@@ -1021,7 +941,7 @@ const AdminBookingsPage = () => {
                       destination: e.target.value,
                     })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                 />
               </div>
 
@@ -1041,7 +961,7 @@ const AdminBookingsPage = () => {
                       flightNumber: e.target.value,
                     })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                 />
               </div>
 
@@ -1056,7 +976,7 @@ const AdminBookingsPage = () => {
                   onChange={(e) =>
                     setEditFormData({ ...editFormData, date: e.target.value })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                 />
               </div>
 
@@ -1070,7 +990,7 @@ const AdminBookingsPage = () => {
                   onChange={(e) =>
                     setEditFormData({ ...editFormData, roomNo: e.target.value })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                 />
               </div>
 
@@ -1084,7 +1004,7 @@ const AdminBookingsPage = () => {
                   onChange={(e) =>
                     setEditFormData({ ...editFormData, time: e.target.value })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                 />
               </div>
 
@@ -1113,7 +1033,7 @@ const AdminBookingsPage = () => {
                           totalFare: totalFare,
                         });
                       }}
-                      className="bg-white text-black"
+                      className="bg-white text-black border-gray-300"
                     />
                   </div>
 
@@ -1139,7 +1059,7 @@ const AdminBookingsPage = () => {
                           totalFare: totalFare,
                         });
                       }}
-                      className="bg-white text-black"
+                      className="bg-white text-black border-gray-300"
                     />
                   </div>
 
@@ -1180,7 +1100,7 @@ const AdminBookingsPage = () => {
                       driverName: e.target.value,
                     })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                 />
               </div>
 
@@ -1200,7 +1120,7 @@ const AdminBookingsPage = () => {
                       driverNumber: e.target.value,
                     })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                 />
               </div>
               <div className="space-y-2">
@@ -1220,7 +1140,7 @@ const AdminBookingsPage = () => {
                       noOfVehicle: e.target.value,
                     })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                 />
               </div>
 
@@ -1237,7 +1157,7 @@ const AdminBookingsPage = () => {
                     setEditFormData({ ...editFormData, status: value })
                   }
                 >
-                  <SelectTrigger className="bg-white text-black">
+                  <SelectTrigger className="bg-white text-black border-gray-300">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -1526,7 +1446,7 @@ const AdminBookingsPage = () => {
                   onChange={(e) =>
                     setEditFormData({ ...editFormData, note: e.target.value })
                   }
-                  className="bg-white text-black"
+                  className="bg-white text-black border-gray-300"
                   rows={3}
                 />
               </div>
@@ -1607,6 +1527,29 @@ const AdminBookingsPage = () => {
           .p-8 {
             padding: 0.5rem !important;
           }
+        }
+      `}</style>
+      <style jsx global>{`
+        .break-words {
+          word-break: break-word;
+          white-space: normal;
+        }
+        
+        @media (max-width: 1024px) {
+          .table-container {
+            overflow-x: auto;
+          }
+          
+          table {
+            min-width: 1000px;
+          }
+        }
+
+        input, textarea, select {
+          color: black !important;
+        }
+        .text-black {
+          color: black !important;
         }
       `}</style>
     </div>

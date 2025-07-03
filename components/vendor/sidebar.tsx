@@ -1,7 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
+import { useRouter} from "next/navigation"
+
 import { cn } from "@/lib/utils"
 import {
   Sidebar,
@@ -44,7 +46,7 @@ export function VendorSidebar() {
    }
 
   return (
-    <Sidebar className="border-r border-gray-800 bg-gray-900 pb-14 md:pb-0">
+    <Sidebar className="fixed border-r border-gray-800 bg-gray-900 pb-14 md:pb-0">
       <SidebarHeader className="border-b border-gray-800 p-4 bg-gray-900">
         <div className="flex items-center space-x-3">
           <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg">
@@ -63,7 +65,7 @@ export function VendorSidebar() {
             Menu
           </SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="flex flex-col justify-between">
               {menuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton
@@ -83,16 +85,17 @@ export function VendorSidebar() {
                 </SidebarMenuItem>
               ))}
             </SidebarMenu>
+          
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-gray-800 p-4 bg-gray-900 fixed bottom-0 left-0 right-0 md:relative w-full z-40">       
+      <SidebarFooter className="border-t border-gray-800 p-4 bg-gray-900 sticky bottom-0 left-0 w-full">       
         <Button
           onClick={handleLogout}
           variant="outline"
           size="sm"
-          className="w-full border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent hover:border-gray-600"
+          className="w-full border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-white bg-transparent hover:border-gray-600 transition-colors"
         >
           <LogOut className="w-4 h-4 mr-2" />
           Logout

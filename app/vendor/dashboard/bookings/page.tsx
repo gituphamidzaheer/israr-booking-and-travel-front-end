@@ -7,8 +7,16 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Calendar, MapPin, User, Car, Clock, Phone, CreditCard, Users, Plane, Eye, Search } from 'lucide-react'
+import { Calendar, MapPin, User, Car, Clock, Phone, CreditCard, Users, Plane, Eye, Search, Download } from 'lucide-react'
 import { BookingAPI, type Booking } from '@/public/api/booking'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 const BookingsPage = () => {
   const [bookings, setBookings] = useState<Booking[]>([])
@@ -17,7 +25,11 @@ const BookingsPage = () => {
   const [error, setError] = useState("")
   const [searchId, setSearchId] = useState("")
   const [searchName, setSearchName] = useState("")
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [searchDate, setSearchDate] = useState("")
+  const [searchBookedBy, setSearchBookedBy] = useState("")
+  const [deleteId, setDeleteId] = useState<number | null>(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     fetchBookings()
@@ -25,7 +37,7 @@ const BookingsPage = () => {
 
   useEffect(() => {
     filterBookings()
-  }, [bookings, searchId, searchName])
+  }, [bookings, searchId, searchName, searchDate, searchBookedBy])
 
   const fetchBookings = async () => {
     setIsLoading(true)
@@ -70,7 +82,6 @@ const BookingsPage = () => {
               booking.id === id ? bookingData : booking
             )
           );
-          setSelectedBooking(bookingData);
         }
       } else {
         setError(data.message || "Failed to fetch booking details");
@@ -85,7 +96,6 @@ const BookingsPage = () => {
     let filtered = bookings
 
     if (searchId) {
-      // If searching by ID, try to fetch that specific booking
       const id = parseInt(searchId);
       if (!isNaN(id)) {
         fetchBookingById(id);
@@ -98,6 +108,18 @@ const BookingsPage = () => {
     if (searchName) {
       filtered = filtered.filter(booking => 
         booking.passengerName.toLowerCase().includes(searchName.toLowerCase())
+      )
+    }
+
+    if (searchDate) {
+      filtered = filtered.filter(booking => 
+        booking.date?.includes(searchDate)
+      )
+    }
+
+    if (searchBookedBy) {
+      filtered = filtered.filter(booking => 
+        booking.bookBy?.toLowerCase().includes(searchBookedBy.toLowerCase())
       )
     }
 
@@ -123,6 +145,89 @@ const BookingsPage = () => {
       month: 'short',
       day: 'numeric'
     })
+  }
+
+  const deleteBooking = async (bookingId: number) => {
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`${BookingAPI.getBaseUrl()}/${bookingId}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        setBookings(prev => prev.filter(booking => booking.id !== bookingId));
+        setFilteredBookings(prev => prev.filter(booking => booking.id !== bookingId));
+        setShowDeleteModal(false);
+        setDeleteId(null);
+      } else {
+        setError('Failed to delete booking');
+      }
+    } catch (error) {
+      console.error('Error deleting booking:', error);
+      setError('Error deleting booking');
+    } finally {
+      setIsDeleting(false)
+    }
+  }
+
+  const downloadCSV = () => {
+    const headers = ['Booking ID', 'Date & Time', 'Room No', 'Guest Name', 'Guest Phone', 'Pickup', 'Destination', 'Driver', 'Note', 'Booked By', 'Fare', 'Extra Charge', 'Total Amount', 'Status'];
+    const csvData = filteredBookings.map(b => [
+      b.id,
+      `${b.date} ${b.time}`,
+      b.roomNo,
+      b.passengerName,
+      b.guest_phoneno || '',
+      b.pickupAdress,
+      b.destination,
+      `${b.driverName || ''} ${b.driverNumber ? `(${b.driverNumber})` : ''}`,
+      b.note || '',
+      b.bookBy,
+      b.fare,
+      b.extraCharge,
+      (Number(b.fare) || 0) + (Number(b.extraCharge) || 0),
+      b.status
+    ]);
+
+    const csvContent = [headers, ...csvData]
+      .map(row => row.map(cell => `"${cell}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `bookings_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
+  }
+
+  const downloadSingleBookingCSV = (booking: Booking) => {
+    const headers = ['Booking ID', 'Date & Time', 'Room No', 'Guest Name', 'Guest Phone', 'Pickup', 'Destination', 'Driver', 'Note', 'Booked By', 'Fare', 'Extra Charge', 'Total Amount', 'Status'];
+    const csvData = [[
+      booking.id,
+      `${booking.date} ${booking.time}`,
+      booking.roomNo,
+      booking.passengerName,
+      booking.guest_phoneno || '',
+      booking.pickupAdress,
+      booking.destination,
+      `${booking.driverName || ''} ${booking.driverNumber ? `(${booking.driverNumber})` : ''}`,
+      booking.note || '',
+      booking.bookBy,
+      booking.fare,
+      booking.extraCharge,
+      (Number(booking.fare) || 0) + (Number(booking.extraCharge) || 0),
+      booking.status
+    ]];
+
+    const csvContent = [headers, ...csvData]
+      .map(row => row.map(cell => `"${cell}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `booking_${booking.id}_${new Date().toISOString().split('T')[0]}.csv`;
+    link.click();
   }
 
   if (isLoading) {
@@ -173,396 +278,186 @@ const BookingsPage = () => {
           </div>
         )}
 
-        {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Card className="bg-white border-gray-200 shadow-sm">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Total Bookings</p>
-                  <p className="text-2xl font-bold text-gray-800">{bookings.length}</p>
-                </div>
-                <Car className="w-8 h-8 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          <Card className="bg-white border-gray-200 shadow-sm">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">In Progress</p>
-                  <p className="text-2xl font-bold text-gray-800">
-                    {bookings.filter(b => b.status?.toLowerCase() === 'inprogress').length}
-                  </p>
-                </div>
-                <Clock className="w-8 h-8 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-white border-gray-200 shadow-sm">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Completed</p>
-                  <p className="text-2xl font-bold text-gray-800">
-                    {bookings.filter(b => b.status?.toLowerCase() === 'completed').length}
-                  </p>
-                </div>
-                <Users className="w-8 h-8 text-green-500" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
         {/* Search Filters */}
-        <Card className="bg-white shadow-sm border-gray-200 mb-6">
-          <CardContent className="p-4">
-            <div className="flex flex-col sm:flex-row gap-4 items-center">
-              <div className="flex items-center space-x-2 w-full sm:w-auto">
-                <Search className="w-4 h-4 text-gray-500" />
-                <span className="text-sm font-medium text-gray-700">Filters:</span>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4 w-full">
-                <div className="w-full sm:w-48">
-                  <Input
-                    placeholder="Search by ID..."
-                    value={searchId}
-                    onChange={(e) => setSearchId(e.target.value)}
-                    className="bg-white text-black border-gray-300 text-sm"
-                  />
-                </div>
-                <div className="w-full sm:w-48">
-                  <Input
-                    placeholder="Search by passenger name..."
-                    value={searchName}
-                    onChange={(e) => setSearchName(e.target.value)}
-                    className="bg-white text-black border-gray-300 text-sm"
-                  />
-                </div>
+        <Card className="bg-white shadow-sm grid grid-cols-2 border-gray-200 mb-6">
+          <CardContent className="p-4 w-[800px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <Input
+                placeholder="Search by ID..."
+                value={searchId}
+                onChange={(e) => setSearchId(e.target.value)}
+                className="bg-white  text-black border-gray-300"
+              />
+              <Input
+                placeholder="Search by name..."
+                value={searchName}
+                onChange={(e) => setSearchName(e.target.value)}
+                className="bg-white text-black border-gray-300"
+              />
+              <Input
+                type="date"
+                value={searchDate}
+                onChange={(e) => setSearchDate(e.target.value)}
+                className="bg-white text-black border-gray-300"
+              />
+              <Input
+                placeholder="Search by booked by..."
+                value={searchBookedBy}
+                onChange={(e) => setSearchBookedBy(e.target.value)}
+                className="bg-white text-black border-gray-300"
+              />
+              <div className="flex gap-2">
                 <Button 
                   variant="outline" 
-                  onClick={() => { setSearchId(""); setSearchName("") }}
-                  className="w-full sm:w-auto"
+                  onClick={() => { 
+                    setSearchId(""); 
+                    setSearchName(""); 
+                    setSearchDate("");
+                    setSearchBookedBy("");
+                  }}
+                  className="flex-1"
                 >
-                  Clear Filters
+                  Clear
+                </Button>
+                <Button 
+                  onClick={downloadCSV}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                >
+                  Download CSV
                 </Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Beautiful Table */}
-        <Card className="bg-white shadow-lg border-gray-200">
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-gradient-to-r from-gray-50 to-gray-100 top-0 z-20">
-                  <TableRow className="border-b border-gray-200">
-                    <TableHead className="font-semibold text-gray-700 text-center py-4 w-20">ID</TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-48">Passenger Details</TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-40">Pickup Address</TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-40">Destination</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4 w-32">Date & Time</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4 w-28">Vehicle Info</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4 w-32">Fare Details</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4 w-28">Extra Charge</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4 w-32">Total Fare</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4 w-36">Driver</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4 w-24">Status</TableHead>
-                    <TableHead className="font-semibold text-gray-700 text-center py-4 w-48">Notes</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredBookings.length > 0 ? (
-                    filteredBookings.map((booking, index) => (
-                      <TableRow 
-                        key={booking.id} 
-                        className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-                          index % 2 === 0 ? 'bg-white' : 'bg-gray-25'
-                        }`}
-                      >
-                        {/* ID */}
-                        <TableCell className="text-center py-4 w-20">
-                          <div className="flex flex-col items-center space-y-1">
-                            <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center">
-                              <Car className="w-4 h-4 text-white" />
-                            </div>
-                            <span className="text-sm font-semibold text-gray-800">#{booking.id}</span>
-                          </div>
-                        </TableCell>
-
-                        {/* Passenger Details */}
-                        <TableCell className="py-4 w-48">
-                          <div className="space-y-1">
-                            <div className="flex items-center space-x-2">
-                              <User className="w-4 h-4 text-gray-500 flex-shrink-0" />
-                              <span className="font-medium text-gray-900 text-sm truncate">{booking.passengerName}</span>
-                            </div>
-                            {booking.guest_phoneno && (
-                              <div className="flex items-center space-x-2">
-                                <Phone className="w-3 h-3 text-gray-400 flex-shrink-0" />
-                                <span className="text-xs text-gray-600 truncate">{booking.guest_phoneno}</span>
-                              </div>
-                            )}
-                            {booking.roomNo && (
-                              <span className="inline-block bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
-                                Room {booking.roomNo}
-                              </span>
-                            )}
-                            <div className="text-xs text-gray-500 truncate">
-                              By: {booking.bookBy}
-                            </div>
-                            {booking.flightNumber && (
-                              <div className="flex items-center space-x-2">
-                                <Plane className="w-3 h-3 text-blue-500 flex-shrink-0" />
-                                <span className="text-xs text-blue-600 bg-blue-50 px-2 py-1 rounded truncate">
-                                  {booking.flightNumber}
-                                </span>
-                              </div>
-                            )}
-                            <div className="text-xs text-gray-500">
-                              {booking.bookingType}
-                            </div>
-                          </div>
-                        </TableCell>
-
-                        {/* Pickup Address */}
-                        <TableCell className="py-4 w-40">
-                          <div className="space-y-1">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                              <span className="text-sm font-medium text-green-700">From</span>
-                            </div>
-                            <div className="text-sm text-gray-800 font-medium truncate" title={booking.pickupAdress}>
-                              {booking.pickupAdress}
-                            </div>
-                          </div>
-                        </TableCell>
-
-                        {/* Destination */}
-                        <TableCell className="py-4 w-40">
-                          <div className="space-y-1">
-                            <div className="flex items-center space-x-2">
-                              <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
-                              <span className="text-sm font-medium text-red-700">To</span>
-                            </div>
-                            <div className="text-sm text-gray-800 font-medium truncate" title={booking.destination}>
-                              {booking.destination}
-                            </div>
-                          </div>
-                        </TableCell>
-
-                        {/* Date & Time */}
-                        <TableCell className="text-center py-4 w-32">
-                          <div className="space-y-1">
-                            <div className="flex items-center justify-center space-x-1">
-                              <Calendar className="w-3 h-3 text-gray-500" />
-                              <span className="text-xs font-medium text-gray-800">
-                                {formatDate(booking.date)}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-center space-x-1">
-                              <Clock className="w-3 h-3 text-gray-400" />
-                              <span className="text-xs text-gray-600">{booking.time}</span>
-                            </div>
-                            {booking.createdAt && (
-                              <div className="text-xs text-gray-400">
-                                {formatDate(booking.createdAt)}
-                              </div>
-                            )}
-                          </div>
-                        </TableCell>
-
-                        {/* Vehicle Info */}
-                        <TableCell className="text-center py-4 w-28">
-                          <div className="space-y-1">
-                            <span className="inline-block bg-blue-50 text-blue-700 text-xs font-medium px-2 py-1 rounded">
-                              {booking.type || 'N/A'}
-                            </span>
-                            <div className="text-xs text-gray-600">
-                              Qty: {booking.quantity || 0}
-                            </div>
-                            {booking.noOfVehicle && (
-                              <div className="text-xs text-gray-500">
-                                Total: {booking.noOfVehicle}
-                              </div>
-                            )}
-                          </div>
-                        </TableCell>
-
-                        {/* Base Fare */}
-                        <TableCell className="text-center py-4 w-32">
-                          <div className="space-y-1">
-                            <div className="text-lg font-bold text-blue-600">
-                              ${booking.fare || 0}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              Base Fare
-                            </div>
-                          </div>
-                        </TableCell>
-
-                        {/* Extra Charge */}
-                        <TableCell className="text-center py-4 w-28">
-                          <div className="space-y-1">
-                            {booking.extraCharge && Number(booking.extraCharge) > 0 ? (
-                              <>
-                                <div className="text-lg font-bold text-orange-600">
-                                  +${booking.extraCharge}
-                                </div>
-                                <div className="text-xs text-gray-500">
-                                  Additional
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <div className="text-lg font-medium text-gray-400">
-                                  $0
-                                </div>
-                                <div className="text-xs text-gray-400">
-                                  No Extra
-                                </div>
-                              </>
-                            )}
-                          </div>
-                        </TableCell>
-
-                        {/* Total Fare */}
-                        <TableCell className="text-center py-4 w-32">
-                          <div className="space-y-1">
-                            <div className="text-xl font-bold text-green-600">
-                              ${(Number(booking.fare) || 0) + (Number(booking.extraCharge) || 0)}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              Final Amount
-                            </div>
-                          </div>
-                        </TableCell>
-
-                        {/* Driver Info */}
-                        <TableCell className="text-center py-4 w-36">
-                          {booking.driverName || booking.driverNumber ? (
-                            <div className="space-y-1">
-                              {booking.driverName && (
-                                <div className="text-sm font-medium text-gray-800 truncate">
-                                  {booking.driverName}
-                                </div>
-                              )}
-                              {booking.driverNumber && (
-                                <div className="text-xs text-gray-600 truncate">
-                                  {booking.driverNumber}
-                                </div>
-                              )}
-                              <div className="inline-block bg-purple-50 text-purple-700 text-xs px-2 py-1 rounded">
-                                Assigned
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="space-y-1">
-                              <span className="text-xs text-gray-400">Not Assigned</span>
-                              <div className="inline-block bg-gray-50 text-gray-500 text-xs px-2 py-1 rounded">
-                                Pending
-                              </div>
-                            </div>
-                          )}
-                        </TableCell>
-
-                        {/* Status */}
-                        <TableCell className="text-center py-4 w-24">
-                          <div className="space-y-1">
-                            <Badge className={`${getStatusColor(booking.status)} font-medium text-xs px-2 py-1`}>
-                              {booking.status || 'In Progress'}
-                            </Badge>
-                            {booking.isActive !== undefined && (
-                              <div className="text-xs">
-                                {booking.isActive ? (
-                                  <span className="text-green-600">● Active</span>
-                                ) : (
-                                  <span className="text-red-600">● Inactive</span>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        </TableCell>
-
-                        {/* Notes */}
-                        <TableCell className="py-4 w-48">
-                          {booking.note ? (
-                            <div className="text-xs text-gray-600 truncate" title={booking.note}>
-                              {booking.note}
-                            </div>
-                          ) : (
-                            <span className="text-xs text-gray-400 italic">No notes</span>
-                          )}
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={12} className="text-center py-12">
-                        <div className="flex flex-col items-center space-y-4">
-                          <Car className="w-16 h-16 text-gray-300" />
-                          <div>
-                            <h3 className="text-lg font-medium text-gray-700 mb-2">
-                              {searchId || searchName ? 'No matching bookings found' : 'No bookings found'}
-                            </h3>
-                            <p className="text-gray-500">
-                              {searchId || searchName 
-                                ? 'Try adjusting your search filters.' 
-                                : 'Your bookings will appear here once you create them.'
-                              }
-                            </p>
-                          </div>
+        {/* Table */}
+        <Card className="shadow-lg border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <Table>
+              {/* Table Header */}
+              <TableHeader className=''>
+                <TableRow className='bg-blue-600 text-white'>
+                  <TableHead className="w-20 text-white">ID</TableHead>
+                  <TableHead className="w-32 text-white">Date & Time</TableHead>
+                  <TableHead className="w-24 text-white">Room</TableHead>
+                  <TableHead className="w-40 text-white">Guest Info</TableHead>
+                  <TableHead className="w-40 text-white">Pickup</TableHead>
+                  <TableHead className="w-40 text-white">Destination</TableHead>
+                  <TableHead className="w-40 text-white">Driver</TableHead>
+                  <TableHead className="w-40 text-white">Note</TableHead>
+                  <TableHead className="w-32 text-white">Booked By</TableHead>
+                  <TableHead className="w-24 text-white">Fare</TableHead>
+                  <TableHead className="w-24 text-white">Extra</TableHead>
+                  <TableHead className="w-24 text-white">Total</TableHead>
+                  <TableHead className="w-28 text-white">Status</TableHead>
+                  <TableHead className="w-32 text-white">Actions</TableHead>
+                </TableRow> 
+              </TableHeader>
+              <TableBody className='bg-white text-black'>
+                {filteredBookings.map((booking) => (
+                  <TableRow key={booking.id}>
+                    <TableCell className="font-medium">#{booking.id}</TableCell>
+                    <TableCell className="whitespace-normal">
+                      {formatDate(booking.date)}<br/>
+                      <span className="text-sm text-gray-500">{booking.time}</span>
+                    </TableCell>
+                    <TableCell>{booking.roomNo}</TableCell>
+                    <TableCell className="whitespace-normal">
+                      <div className="font-medium">{booking.passengerName}</div>
+                      {booking.guest_phoneno && (
+                        <div className="text-sm text-gray-500">
+                          <Phone className="w-3 h-3 inline mr-1" />
+                          {booking.guest_phoneno}
                         </div>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
+                      )}
+                    </TableCell>
+                    <TableCell className="whitespace-normal">{booking.pickupAdress}</TableCell>
+                    <TableCell className="whitespace-normal">{booking.destination}</TableCell>
+                    <TableCell className="whitespace-normal">
+                      {booking.driverName && <div>{booking.driverName}</div>}
+                      {booking.driverNumber && <div className="text-sm text-gray-500">{booking.driverNumber}</div>}
+                    </TableCell>
+                    <TableCell className="whitespace-normal">{booking.note}</TableCell>
+                    <TableCell>{booking.bookBy}</TableCell>
+                    <TableCell>${booking.fare}</TableCell>
+                    <TableCell>${booking.extraCharge || 0}</TableCell>
+                    <TableCell className="font-bold">
+                      ${(Number(booking.fare) || 0) + (Number(booking.extraCharge) || 0)}
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={getStatusColor(booking.status)}>
+                        {booking.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex flex-col gap-2">
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => {
+                            setDeleteId(booking.id!);
+                            setShowDeleteModal(true);
+                          }}
+                          className="w-full bg-blue-600 hover:bg-blue-700"
+                        >
+                          Delete
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => downloadSingleBookingCSV(booking)}
+                          className="w-full bg-[#111827] text-white "
+                        >
+                          <Download className="w-4 h-4 mr-1" />
+                          CSV
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
-
-        {/* Fare Summary Card */}
-        {filteredBookings.length > 0 && (
-          <Card className="bg-white shadow-sm border-gray-200 mt-6">
-            <CardContent className="p-4">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <CreditCard className="w-5 h-5 mr-2 text-green-600" />
-                Fare Summary
-              </h3>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-blue-50 p-3 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-blue-600">
-                    ${filteredBookings.reduce((sum, b) => sum + (Number(b.fare) || 0), 0)}
-                  </div>
-                  <div className="text-sm text-blue-700">Total Base Fare</div>
-                </div>
-                <div className="bg-orange-50 p-3 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-orange-600">
-                    ${filteredBookings.reduce((sum, b) => sum + (Number(b.extraCharge) || 0), 0)}
-                  </div>
-                  <div className="text-sm text-orange-700">Total Extra Charges</div>
-                </div>
-                <div className="bg-green-50 p-3 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-green-600">
-                    ${filteredBookings.reduce((sum, b) => sum + (Number(b.fare) || 0) + (Number(b.extraCharge) || 0), 0)}
-                  </div>
-                  <div className="text-sm text-green-700">Grand Total</div>
-                </div>
-                <div className="bg-purple-50 p-3 rounded-lg text-center">
-                  <div className="text-2xl font-bold text-purple-600">
-                    ${Math.round(filteredBookings.reduce((sum, b) => sum + (Number(b.fare) || 0) + (Number(b.extraCharge) || 0), 0) / filteredBookings.length)}
-                  </div>
-                  <div className="text-sm text-purple-700">Average Fare</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirm Deletion</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this booking? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowDeleteModal(false);
+                setDeleteId(null);
+              }}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={() => deleteId && deleteBooking(deleteId)}
+              className="bg-red-600 hover:bg-red-700"
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  Deleting...
+                </>
+              ) : (
+                'Delete'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
