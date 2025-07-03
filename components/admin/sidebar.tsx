@@ -82,7 +82,7 @@ export function AdminSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-gray-800 mb-8 p-4 bg-gray-900">       
+      <SidebarFooter className="border-t border-gray-800 p-4 bg-gray-900 fixed bottom-0 left-0 right-0 md:relative w-full">       
         <Button
           onClick={handleLogout}
           variant="outline"
