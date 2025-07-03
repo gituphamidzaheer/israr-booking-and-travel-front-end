@@ -17,6 +17,7 @@ const BookingsPage = () => {
   const [error, setError] = useState("")
   const [searchId, setSearchId] = useState("")
   const [searchName, setSearchName] = useState("")
+  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
   useEffect(() => {
     fetchBookings()
@@ -29,11 +30,18 @@ const BookingsPage = () => {
   const fetchBookings = async () => {
     setIsLoading(true)
     try {
-      const response = await BookingAPI.getAllBookings()
-      if (response.success && Array.isArray(response.data)) {
-        setBookings(response.data)
+      const hotelId = localStorage.getItem('user_id');
+      if (!hotelId) {
+        setError("Hotel ID not found");
+        return;
+      }
+      const response = await fetch(`${BookingAPI.getBaseUrl()}/hotel/${hotelId}`);
+      const data = await response.json();
+      
+      if (response.ok && Array.isArray(data)) {
+        setBookings(data);
       } else {
-        setError(response.message || "Failed to fetch bookings")
+        setError(data.message || "Failed to fetch bookings");
       }
     } catch (error) {
       console.error('Error fetching bookings:', error)
@@ -43,10 +51,45 @@ const BookingsPage = () => {
     }
   }
 
+  const fetchBookingById = async (id: number) => {
+    try {
+      const hotelId = localStorage.getItem('id');
+      if (!hotelId) {
+        setError("Hotel ID not found");
+        return;
+      }
+      
+      const response = await fetch(`${BookingAPI.getBaseUrl()}/hotel/${hotelId}/${id}`);
+      const data = await response.json();
+      
+      if (response.ok) {
+        const bookingData = Array.isArray(data) ? data[0] : data;
+        if (bookingData) {
+          setBookings(prevBookings => 
+            prevBookings.map(booking => 
+              booking.id === id ? bookingData : booking
+            )
+          );
+          setSelectedBooking(bookingData);
+        }
+      } else {
+        setError(data.message || "Failed to fetch booking details");
+      }
+    } catch (error) {
+      console.error('Error fetching booking:', error);
+      setError("An error occurred while fetching the booking details");
+    }
+  };
+
   const filterBookings = () => {
     let filtered = bookings
 
     if (searchId) {
+      // If searching by ID, try to fetch that specific booking
+      const id = parseInt(searchId);
+      if (!isNaN(id)) {
+        fetchBookingById(id);
+      }
       filtered = filtered.filter(booking => 
         booking.id?.toString().includes(searchId)
       )
@@ -336,10 +379,10 @@ const BookingsPage = () => {
                         <TableCell className="text-center py-4 w-28">
                           <div className="space-y-1">
                             <span className="inline-block bg-blue-50 text-blue-700 text-xs font-medium px-2 py-1 rounded">
-                              {booking.vehicleInfo?.type || 'N/A'}
+                              {booking.type || 'N/A'}
                             </span>
                             <div className="text-xs text-gray-600">
-                              Qty: {booking.vehicleInfo?.quantity || 0}
+                              Qty: {booking.quantity || 0}
                             </div>
                             {booking.noOfVehicle && (
                               <div className="text-xs text-gray-500">

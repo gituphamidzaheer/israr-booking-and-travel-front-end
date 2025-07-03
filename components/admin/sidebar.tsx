@@ -22,7 +22,7 @@ import { AuthAPI } from "@/public/api/auth"
 
 const menuItems = [
   {
-    title:"Users",
+    title:"Hotels",
     url: "/admin/dashboard/users",
     icon: BarChart3,
   },

@@ -48,16 +48,12 @@ export default function VendorLogin() {
     }
   }
 
- 
-
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/images/login.png)' }}>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat relative" style={{ backgroundImage: 'url(/images/login.png)' }}>
       <div className="absolute inset-0 bg-black/20"></div>
       <Card className="w-full max-w-md gradient-card border-gray-700 relative z-10">
         <CardHeader className="text-center">
-          <div className="flex justify-center items-center mb-4">
-            {/* <img src="/images/logo.png" alt="Logo" className="w-34 h-28 object-contain mx-auto" /> */}
-          </div>
+          <div className="flex justify-center items-center mb-4"></div>
           <CardTitle className="text-2xl text-white">Login</CardTitle>
           <CardDescription className="text-gray-400">Sign in to your account</CardDescription>
         </CardHeader>
@@ -117,6 +113,15 @@ export default function VendorLogin() {
           </form>
         </CardContent>
       </Card>
+      {/* Loader Overlay */}
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="flex flex-col items-center">
+            <div className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <span className="text-white font-medium text-lg">Signing In...</span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

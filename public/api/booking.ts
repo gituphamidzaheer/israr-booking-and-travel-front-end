@@ -13,19 +13,20 @@ export interface Booking {
   destination: string
   time: string
   flightNumber?: string
-  vehicleInfo?: {
     sClass: number
     vClass: number
-    others: number
+    others: {
+      vehicleType: string;
+      quantity: number;
+    },
     type?: string;
     quantity?: number;
-  }
   bookingType: string
   status?: string
   note?: string
   bookBy: string
   fare: string | number
-  noOfVehicle?: number
+  noOfVehicle?: string
   extraCharge?: number
   totalFare?: number
   driverName?: string
@@ -40,6 +41,11 @@ export interface BookingResponse {
 
 export class BookingAPI {
   private static baseUrl = `${config.baseUrl}/bookings`
+
+  // Add this public method
+  public static getBaseUrl() {
+    return this.baseUrl;
+  }
 
   static async createBooking(bookingData: Omit<Booking, 'id'>): Promise<BookingResponse> {
     try {
@@ -67,13 +73,20 @@ export class BookingAPI {
 
   static async getBookingById(id: number): Promise<BookingResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/${id}`)
+      const hotelId = localStorage.getItem('id');
 
-      const data = await response.json()
-      return { success: response.ok, data, message: data.message }
+      const response = await fetch(`${this.baseUrl}/hotel/${id}`, {
+  });
+
+      const data = await response.json();
+      return { 
+        success: response.ok, 
+        data: Array.isArray(data) ? data[0] : data, // Handle array response
+        message: data.message 
+      };
     } catch (error) {
-      console.error('Get booking error:', error)
-      return { success: false, message: 'Network error occurred' }
+      console.error('Get booking error:', error);
+      return { success: false, message: 'Network error occurred' };
     }
   }
 
