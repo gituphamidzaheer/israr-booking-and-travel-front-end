@@ -1,5 +1,4 @@
 "use client"
-
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
@@ -18,6 +17,7 @@ import {
 import { Shield, BarChart3, Calendar, Users, Settings, LogOut, User } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AuthAPI } from "@/public/api/auth"
+import { useRouter } from "next/navigation"
 
 
 const menuItems = [
@@ -36,9 +36,11 @@ const menuItems = [
 
 export function AdminSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
 
   const handleLogout = () => {
-    AuthAPI.logout()
+    localStorage.clear()
+    router.replace('/login')
   }
 
   return (

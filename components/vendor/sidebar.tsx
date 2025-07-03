@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
   Sidebar,
@@ -36,9 +36,12 @@ const menuItems = [
 
 export function VendorSidebar() {
   const pathname = usePathname()
+  const router = useRouter()
+ 
    const handleLogout = () => {
-    AuthAPI.logout()
-  }
+     localStorage.clear()
+     router.replace('/login')
+   }
 
   return (
     <Sidebar className="border-r border-gray-800 bg-gray-900 pb-14 md:pb-0">
