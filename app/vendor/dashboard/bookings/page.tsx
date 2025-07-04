@@ -300,7 +300,7 @@ const BookingsPage = () => {
         {/* Search Filters */}
         <Card className="bg-white shadow-sm grid grid-cols-2 border-gray-200 mb-6">
           <CardContent className="p-4 w-[800px] ">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-10 ">
               <Input
                 placeholder="Search by ID..."
                 value={searchId}
