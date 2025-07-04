@@ -339,7 +339,7 @@ const BookingsPage = () => {
                       id="passengerName"
                       value={formData.passengerName}
                       onChange={handleInputChange("passengerName")}
-                      placeholder="Enter passenger name"
+                      placeholder="Enter guest name"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
                       required
                       disabled={isFormLoading}
