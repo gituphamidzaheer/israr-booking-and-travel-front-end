@@ -541,10 +541,11 @@ export default function AdminBookingsPage() {
                   <Label className="text-sm text-gray-600 font-medium">
                     Filter by Hotel:
                   </Label>
-                  <Select
+                 <div className="w-[220px] bg-white"
+>
+                   <Select
                     value={selectedHotel}
                     onValueChange={(value) => setSelectedHotel(value)}
-                    className="w-[180px] bg-white"
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select hotel" />
@@ -557,6 +558,7 @@ export default function AdminBookingsPage() {
                       ))}
                     </SelectContent>
                   </Select>
+                 </div>
                 </div>
               </CardContent>
             </Card>
@@ -624,7 +626,7 @@ export default function AdminBookingsPage() {
           <CardContent className="p-0">
             <div className="overflow-x-auto w-full">
               <Table className="min-w-[900px] md:min-w-full">
-                <TableHeader className="bg-gradient-to-r from-indigo-50 to-purple-50 top-0 z-20">
+                <TableHeader className="bg-gradient-to-r from-indigo-50 to-blue-50 top-0 z-20">
                   <TableRow className="border-b border-gray-200">
                     <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
                       ID
@@ -685,7 +687,7 @@ export default function AdminBookingsPage() {
                         {/* ID */}
                         <TableCell className="py-4 text-center text-black">
                           <div className="flex flex-col items-center space-y-1">
-                            <div className="w-8 h-8 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-full flex items-center justify-center">
+                            <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center">
                               <Car className="w-4 h-4 text-white" />
                             </div>
                             <span className="text-sm font-semibold text-gray-800">
@@ -1253,7 +1255,7 @@ export default function AdminBookingsPage() {
                           bookingType: JSON.stringify(updated),
                         }));
                       }}
-                      className="w-4 h-4 text-purple-600 border-gray-300 rounded"
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded"
                     />
                     <Label htmlFor="edit-pickAndDrop" className="text-gray-700">
                       Pick & Drop
@@ -1282,7 +1284,7 @@ export default function AdminBookingsPage() {
                           bookingType: JSON.stringify(updated),
                         }));
                       }}
-                      className="w-4 h-4 text-purple-600 border-gray-300 rounded"
+                      className="w-4 h-4 text-blue-600 border-gray-300 rounded"
                     />
                     <Label htmlFor="edit-hourly" className="text-gray-700">
                       Hourly
@@ -1360,7 +1362,7 @@ export default function AdminBookingsPage() {
                             });
                           }
                         }}
-                        className="w-4 h-4 text-purple-600 border-gray-300 rounded"
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded"
                       />
                       <Label
                         htmlFor="edit-sclass-checkbox"
@@ -1400,7 +1402,7 @@ export default function AdminBookingsPage() {
                             });
                           }
                         }}
-                        className="w-4 h-4 text-purple-600 border-gray-300 rounded"
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded"
                       />
                       <Label
                         htmlFor="edit-vclass-checkbox"
@@ -1443,7 +1445,7 @@ export default function AdminBookingsPage() {
                             }));
                           }
                         }}
-                        className="w-4 h-4 text-purple-600 border-gray-300 rounded"
+                        className="w-4 h-4 text-blue-600 border-gray-300 rounded"
                       />
                       <Label
                         htmlFor="edit-others-checkbox"

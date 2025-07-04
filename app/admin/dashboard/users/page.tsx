@@ -132,19 +132,19 @@ const UsersPage = () => {
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
               <div className="relative w-24 h-24 mx-auto mb-6">
-                <div className="absolute inset-0 border-4 border-purple-200 rounded-full animate-pulse"></div>
-                <div className="absolute inset-2 border-4 border-purple-400 border-t-transparent rounded-full animate-spin"></div>
-                <div className="absolute inset-4 border-4 border-purple-600 border-t-transparent rounded-full animate-spin animation-delay-150"></div>
-                <div className="absolute inset-6 w-12 h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center animate-bounce">
+                <div className="absolute inset-0 border-4 border-blue-200 rounded-full animate-pulse"></div>
+                <div className="absolute inset-2 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                <div className="absolute inset-4 border-4 border-blue-600 border-t-transparent rounded-full animate-spin animation-delay-150"></div>
+                <div className="absolute inset-6 w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center animate-bounce">
                   <Users className="w-6 h-6 text-white" />
                 </div>
               </div>
               <div className="space-y-2">
                 <h3 className="text-lg font-semibold text-gray-700 animate-pulse">Loading Users...</h3>
                 <div className="flex justify-center space-x-1">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce animation-delay-100"></div>
-                  <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce animation-delay-200"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce animation-delay-100"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce animation-delay-200"></div>
                 </div>
               </div>
             </div>
@@ -154,16 +154,16 @@ const UsersPage = () => {
         {/* Stats Cards - Only show when not loading */}
         {!isLoading && (
           <div className="grid grid-cols-1 gap-4 mb-6">
-            <Card className="bg-gradient-to-br from-purple-25 to-purple-50 border-purple-100 shadow-sm">
+            <Card className="bg-gradient-to-br from-purple-25 to-blue-50 border-purple-100 shadow-sm">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-purple-600 font-medium">Total Hotels</p>
-                    <p className="text-2xl font-bold text-purple-800">
+                    <p className="text-sm text-blue-600 font-medium">Total Hotels</p>
+                    <p className="text-2xl font-bold text-blue-800">
                       {users.filter(u => u.role === 'hotel').length}
                     </p>
                   </div>
-                  <Users className="w-8 h-8 text-purple-500" />
+                  <Users className="w-8 h-8 text-blue-500" />
                 </div>
               </CardContent>
             </Card>
@@ -176,7 +176,7 @@ const UsersPage = () => {
             <DialogTrigger asChild>
               <Button 
                 onClick={() => { resetForm(); setIsDialogOpen(true) }}
-                className="mb-6 bg-gradient-to-r from-purple-400 to-purple-500 hover:from-purple-500 hover:to-purple-600 shadow-sm"
+                className="mb-6 bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 shadow-sm"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Create New Hotel
@@ -204,7 +204,7 @@ const UsersPage = () => {
                 {isFormLoading && (
                   <div className="absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg z-10">
                     <div className="text-center">
-                      <div className="w-8 h-8 border-2 border-purple-200 border-t-purple-500 rounded-full animate-spin mx-auto mb-2"></div>
+                      <div className="w-8 h-8 border-2 border-purple-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-2"></div>
                       <p className="text-sm text-gray-600">
                         {editingUser ? 'Updating...' : 'Creating...'}
                       </p>
@@ -276,7 +276,7 @@ const UsersPage = () => {
                   <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} className="border-gray-200 text-gray-600" disabled={isFormLoading}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={isFormLoading} className="bg-purple-500 hover:bg-purple-600 min-w-[100px]">
+                  <Button type="submit" disabled={isFormLoading} className="bg-blue-500 hover:bg-blue-600 min-w-[100px]">
                     {isFormLoading ? (
                       <div className="flex items-center space-x-2">
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -300,7 +300,7 @@ const UsersPage = () => {
                 <CardContent className="p-6">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between space-y-4 sm:space-y-0">
                     <div className="flex items-start space-x-4">
-                      <div className="w-12 h-12 bg-gradient-to-r from-purple-400 to-purple-500 rounded-full flex items-center justify-center shadow-sm">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center shadow-sm">
                         {getRoleIcon(user.role)}
                       </div>
                       <div className="flex-1">
