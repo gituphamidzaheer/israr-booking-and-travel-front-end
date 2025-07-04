@@ -899,12 +899,12 @@ export default function AdminBookingsPage() {
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                  <AlertDialogCancel className="text-white">Cancel</AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={() =>
                                       booking.id && handleDelete(booking.id)
                                     }
-                                    className="bg-red-600 hover:bg-red-700"
+                                    className="bg-red-600  hover:bg-red-700"
                                   >
                                     Delete
                                   </AlertDialogAction>
@@ -1553,7 +1553,7 @@ export default function AdminBookingsPage() {
                 variant="outline"
                 onClick={() => setIsEditModalOpen(false)}
                 disabled={isEditLoading}
-                className="w-full sm:w-auto order-2 sm:order-1 h-10 sm:h-auto min-h-[44px]"
+                className="w-full sm:w-auto order-2  text-white sm:order-1 h-10 sm:h-auto min-h-[44px]"
               >
                 Cancel
               </Button>
