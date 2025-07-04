@@ -150,7 +150,7 @@ const BookingsPage = () => {
   const deleteBooking = async (bookingId: number) => {
     setIsDeleting(true)
     try {
-      const response = await fetch(`${BookingAPI.getBaseUrl()}/${bookingId}`, {
+      const response = await fetch(`${BookingAPI.getBaseUrl()}/bookings/${bookingId}`, {
         method: 'DELETE',
       });
 
@@ -171,7 +171,7 @@ const BookingsPage = () => {
   }
 
   const downloadCSV = () => {
-    const headers = ['Booking ID', 'Date & Time', 'Room No', 'Guest Name', 'Guest Phone', 'Pickup', 'Destination', 'Driver', 'Note', 'Booked By', 'Fare', 'Extra Charge', 'Total Amount', 'Status'];
+    const headers = ['Booking ID', 'Date & Time', 'Room No', 'Guest Name', 'Guest Phone', 'Pickup', 'Destination','Vehicle', 'Driver', 'Note', 'Booked By', 'Fare', 'Extra Charge', 'Total Amount', 'Status'];
     const csvData = filteredBookings.map(b => [
       b.id,
       `${b.date} ${b.time}`,
@@ -180,6 +180,7 @@ const BookingsPage = () => {
       b.guest_phoneno || '',
       b.pickupAdress,
       b.destination,
+      b.sClass|| b.vClass|| b.others?.vehicleType || "",
       `${b.driverName || ''} ${b.driverNumber ? `(${b.driverNumber})` : ''}`,
       b.note || '',
       b.bookBy,
@@ -201,7 +202,7 @@ const BookingsPage = () => {
   }
 
   const downloadSingleBookingCSV = (booking: Booking) => {
-    const headers = ['Booking ID', 'Date & Time', 'Room No', 'Guest Name', 'Guest Phone', 'Pickup', 'Destination', 'Driver', 'Note', 'Booked By', 'Fare', 'Extra Charge', 'Total Amount', 'Status'];
+    const headers = ['Booking ID', 'Date & Time', 'Room No', 'Guest Name', 'Guest Phone', 'Pickup', 'Destination','vehicle', 'Driver', 'Note', 'Booked By', 'Fare', 'Extra Charge', 'Total Amount', 'Status'];
     const csvData = [[
       booking.id,
       `${booking.date} ${booking.time}`,
@@ -210,6 +211,7 @@ const BookingsPage = () => {
       booking.guest_phoneno || '',
       booking.pickupAdress,
       booking.destination,
+      booking.sClass|| booking.vClass|| booking.others?.vehicleType || "",
       `${booking.driverName || ''} ${booking.driverNumber ? `(${booking.driverNumber})` : ''}`,
       booking.note || '',
       booking.bookBy,
@@ -343,6 +345,7 @@ const BookingsPage = () => {
                   <TableHead className="w-40 text-white">Guest Info</TableHead>
                   <TableHead className="w-40 text-white">Pickup</TableHead>
                   <TableHead className="w-40 text-white">Destination</TableHead>
+                  <TableHead className="w-40 text-white">Vehicle</TableHead>
                   <TableHead className="w-40 text-white">Driver</TableHead>
                   <TableHead className="w-40 text-white">Note</TableHead>
                   <TableHead className="w-32 text-white">Booked By</TableHead>
@@ -373,6 +376,31 @@ const BookingsPage = () => {
                     </TableCell>
                     <TableCell className="whitespace-normal">{booking.pickupAdress}</TableCell>
                     <TableCell className="whitespace-normal">{booking.destination}</TableCell>
+                    <TableCell className="whitespace-normal">
+                          <div className="space-y-1">
+                            {booking.sClass > 0 && (
+                              <div className="text-sm font-medium">
+                                S-Class <span className="text-xs text-gray-500">Qty: {booking.sClass}</span>
+                              </div>
+                            )}
+                            {booking.vClass > 0 && (
+                              <div className="text-sm font-medium">
+                                V-Class <span className="text-xs text-gray-500">Qty: {booking.vClass}</span>
+                              </div>
+                            )}
+                            {booking.others && booking.others.vehicleType && (
+                              <div className="text-sm font-medium">
+                                {booking.others.vehicleType} <span className="text-xs text-gray-500">Qty: {booking.others.quantity}</span>
+                              </div>
+                            )}
+                            {!booking.sClass && !booking.vClass && (!booking.others || !booking.others.vehicleType) && (
+                              <div className="text-sm text-gray-500">
+                                N/A
+                                <div className="text-xs">Qty: 0</div>
+                              </div>
+                            )}
+                          </div>
+                        </TableCell>
                     <TableCell className="whitespace-normal">
                       {booking.driverName && <div>{booking.driverName}</div>}
                       {booking.driverNumber && <div className="text-sm text-gray-500">{booking.driverNumber}</div>}

@@ -145,7 +145,7 @@ export class BookingAPI {
 
   static async getAllBookings(hotelId?: string): Promise<BookingResponse> {
     try {
-      let url = `${this.baseUrl}/bookings/all`;
+      let url = `${this.baseUrl}/bookings/all/hotel/${hotelId}`;
       if (hotelId) {
         url = `${this.baseUrl}/bookings/all/hotel/${hotelId}`;
       }
