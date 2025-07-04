@@ -299,25 +299,25 @@ const BookingsPage = () => {
 
         {/* Search Filters */}
         <Card className="bg-white shadow-sm grid grid-cols-2 border-gray-200 mb-6">
-          <CardContent className="p-4 w-[800px]">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          <CardContent className="p-4 w-[800px] ">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 ">
               <Input
                 placeholder="Search by ID..."
                 value={searchId}
                 onChange={(e) => setSearchId(e.target.value)}
-                className="bg-white  text-black border-gray-300"
+                className="bg-white w-[160px]  text-black border-gray-300"
               />
               <Input
                 placeholder="Search by name..."
                 value={searchName}
                 onChange={(e) => setSearchName(e.target.value)}
-                className="bg-white text-black border-gray-300"
+                className="bg-white w-[160px] text-black border-gray-300"
               />
               <Input
                 type="date"
                 value={searchDate}
                 onChange={(e) => setSearchDate(e.target.value)}
-                className="bg-white text-black border-gray-300"
+                className="bg-white w-[160px] text-black border-gray-300"
               />
               {/* <Input
                 placeholder="Search by booked by..."
@@ -330,7 +330,7 @@ const BookingsPage = () => {
                                   value={searchMonth || "all"}
                                   onValueChange={(value) => setSearchMonth(value === "all" ? "" : value)}
                                 >
-                                  <SelectTrigger className="bg-white text-black border-gray-300 text-sm">
+                                  <SelectTrigger className="bg-white w-[160px] text-black border-gray-300 text-sm">
                                     <SelectValue placeholder="Filter by month" />
                                   </SelectTrigger>
                                   <SelectContent>
@@ -359,13 +359,13 @@ const BookingsPage = () => {
                     setSearchDate("");
                     setSearchBookedBy("");
                   }}
-                  className="flex-1"
+                  className="flex-1 w-[160px]"
                 >
                   Clear
                 </Button>
                 <Button 
                   onClick={downloadCSV}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  className="flex-1 bg-blue-600 w-[160px] hover:bg-blue-700"
                 >
                   Download CSV
                 </Button>
