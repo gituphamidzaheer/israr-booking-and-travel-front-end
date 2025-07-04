@@ -313,7 +313,7 @@ const BookingsPage = () => {
                       htmlFor="roomNo"
                       className="text-blue-700 font-medium text-sm sm:text-base"
                     >
-                      Room No (Optional)
+                      Room No(Optional)
                     </Label>
                     <Input
                       id="roomNo"
@@ -333,7 +333,7 @@ const BookingsPage = () => {
                       htmlFor="passengerName"
                       className="text-blue-700 font-medium text-sm sm:text-base"
                     >
-                      Name of Passenger *
+                      Guest Name *
                     </Label>
                     <Input
                       id="passengerName"
@@ -429,7 +429,7 @@ const BookingsPage = () => {
                       type="text"
                       value={formData.time}
                       onChange={handleInputChange("time")}
-                      placeholder="Enter time (e.g., 14:30 or 2:30 PM)"
+                      placeholder="Enter time (24hours)"
                       pattern="^([0]?[1-9]|1[0-2]):[0-5][0-9](\s?[AaPp][Mm])?$|^(?:[01]?[0-9]|2[0-3]):[0-5][0-9]$"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 text-sm sm:text-base"
                       required
@@ -562,13 +562,13 @@ const BookingsPage = () => {
                       htmlFor="bookBy"
                       className="text-blue-700 font-medium text-sm sm:text-base"
                     >
-                      Book By *
+                      Request By *
                     </Label>
                     <Input
                       id="bookBy"
                       value={formData.bookBy}
                       onChange={handleInputChange("bookBy")}
-                      placeholder="Enter who booked this"
+                      placeholder="Enter No"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
                       required
                       disabled={isFormLoading}
