@@ -670,7 +670,7 @@ export default function AdminBookingsPage() {
                       Room No
                     </TableHead>
                     <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
-                      Guest Info
+                      Guest Name
                     </TableHead>
                     <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
                       Pickup
@@ -688,7 +688,7 @@ export default function AdminBookingsPage() {
                       Note
                     </TableHead>
                     <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
-                      Booked By
+                      Request By
                     </TableHead>
                     <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
                       Fare
