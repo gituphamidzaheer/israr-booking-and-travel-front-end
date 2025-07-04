@@ -299,6 +299,7 @@ export default function AdminBookingsPage() {
       "Phone Number",
       "Pickup Address",
       "Destination",
+      "Vehicle",
       "Date",
       "Time",
       "Room No",
@@ -328,6 +329,7 @@ export default function AdminBookingsPage() {
       booking.guest_phoneno || "",
       booking.pickupAdress || "",
       booking.destination || "",
+      booking.sClass|| booking.vClass|| booking.others?.vehicleType || "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
       booking.time || "",
       booking.roomNo || "",
@@ -378,6 +380,7 @@ export default function AdminBookingsPage() {
       "Phone Number",
       "Pickup Address",
       "Destination",
+      "Vehicle",
       "Date",
       "Time",
       "Room No",
@@ -386,7 +389,7 @@ export default function AdminBookingsPage() {
       "Vehicle Type",
       "Vehicle Quantity",
       "Vehicle No",
-      "Base Fare",
+      "Fare",
       "Extra Charge",
       "Total Fare",
       "Driver Name",
@@ -408,6 +411,7 @@ export default function AdminBookingsPage() {
       booking.guest_phoneno || "",
       booking.pickupAdress || "",
       booking.destination || "",
+      booking.sClass|| booking.vClass|| booking.others?.vehicleType || "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
       booking.time || "",
       booking.roomNo || "",
@@ -641,6 +645,9 @@ export default function AdminBookingsPage() {
                       Destination
                     </TableHead>
                     <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
+                      Vehicle
+                    </TableHead>
+                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
                       Driver
                     </TableHead>
                     <TableHead className="font-semibold text-gray-700 py-4 w-[12%]">
@@ -650,7 +657,7 @@ export default function AdminBookingsPage() {
                       Booked By
                     </TableHead>
                     <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
-                      Base Fare
+                      Fare
                     </TableHead>
                     <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
                       Extra
@@ -730,6 +737,32 @@ export default function AdminBookingsPage() {
                         <TableCell className="py-4 text-black">
                           <div className="text-sm break-words">
                             {booking.destination}
+                          </div>
+                        </TableCell>
+
+                       <TableCell className="py-4 text-black">
+                          <div className="space-y-1">
+                            {booking.sClass > 0 && (
+                              <div className="text-sm font-medium">
+                                S-Class <span className="text-xs text-gray-500">Qty: {booking.sClass}</span>
+                              </div>
+                            )}
+                            {booking.vClass > 0 && (
+                              <div className="text-sm font-medium">
+                                V-Class <span className="text-xs text-gray-500">Qty: {booking.vClass}</span>
+                              </div>
+                            )}
+                            {booking.others && booking.others.vehicleType && (
+                              <div className="text-sm font-medium">
+                                {booking.others.vehicleType} <span className="text-xs text-gray-500">Qty: {booking.others.quantity}</span>
+                              </div>
+                            )}
+                            {!booking.sClass && !booking.vClass && (!booking.others || !booking.others.vehicleType) && (
+                              <div className="text-sm text-gray-500">
+                                N/A
+                                <div className="text-xs">Qty: 0</div>
+                              </div>
+                            )}
                           </div>
                         </TableCell>
 

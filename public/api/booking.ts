@@ -131,7 +131,7 @@ export class BookingAPI {
 
   static async deleteBooking(id: number): Promise<BookingResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/${id}`, {
+      const response = await fetch(`${this.baseUrl}/bookings/${id}`, {
         method: 'DELETE',
       })
 
