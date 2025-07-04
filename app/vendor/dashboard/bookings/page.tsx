@@ -507,6 +507,7 @@ const BookingsPage = () => {
                 setDeleteId(null);
               }}
               disabled={isDeleting}
+              className='text-white'
             >
               Cancel
             </Button>
