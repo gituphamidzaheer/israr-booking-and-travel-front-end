@@ -31,17 +31,31 @@ export default function VendorLogin() {
         password
       })
 
-      if (response.success) {
+      if (response.success && response.data) {
+        console.log('Login successful:', response.data) // Debug log
+        
+        // Give a small delay to ensure session is saved
+        await new Promise(resolve => setTimeout(resolve, 100))
+        
         const sessionData = AuthAPI.getSession()
+        console.log('Session data:', sessionData) // Debug log
+        
+        // Navigate based on role
         if (sessionData.role === 'admin') {
-          router.push("/admin/dashboard/users")
+          console.log('Navigating to admin dashboard') // Debug log
+          router.replace("/admin/dashboard/users")
+        } else if (sessionData.role === 'vendor' || sessionData.role === 'hotel') {
+          console.log('Navigating to vendor dashboard') // Debug log
+          router.replace("/vendor/dashboard/bookings")
         } else {
-          router.push("/vendor/dashboard/bookings")
+          console.log('Unknown role:', sessionData.role) // Debug log
+          setError("Invalid user role")
         }
       } else {
         setError(response.message || "Login failed")
       }
     } catch (error) {
+      console.error('Login error:', error) // Debug log
       setError("An error occurred during login")
     } finally {
       setIsLoading(false)

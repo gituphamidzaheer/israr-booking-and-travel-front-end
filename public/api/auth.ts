@@ -45,10 +45,19 @@ export class AuthAPI {
 
   static saveSession(token: string, responseData: AuthResponse) {
     if (typeof window !== 'undefined') {
+      console.log('Saving session:', { token: token.substring(0, 10) + '...', role: responseData.role, id: responseData.id }) // Debug log
+      
       localStorage.setItem('access_token', token)
       localStorage.setItem('user_role', responseData.role || '')
       localStorage.setItem('user_id', responseData.id?.toString() || '')
       localStorage.setItem('auth_data', JSON.stringify(responseData))
+      
+      // Also set cookies for middleware access
+      const isSecure = window.location.protocol === 'https:'
+      document.cookie = `access_token=${token}; path=/; max-age=86400; SameSite=Strict${isSecure ? '; Secure' : ''}`
+      document.cookie = `user_role=${responseData.role || ''}; path=/; max-age=86400; SameSite=Strict${isSecure ? '; Secure' : ''}`
+      
+      console.log('Session saved successfully') // Debug log
     }
   }
 
@@ -59,12 +68,15 @@ export class AuthAPI {
       const id = localStorage.getItem('user_id')
       const authData = localStorage.getItem('auth_data')
       
-      return {
+      const session = {
         token,
         role,
         id,
         data: authData ? JSON.parse(authData) : null,
       }
+      
+      console.log('Getting session:', { hasToken: !!token, role, id }) // Debug log
+      return session
     }
     return { token: null, role: null, id: null, data: null }
   }
@@ -75,6 +87,10 @@ export class AuthAPI {
       localStorage.removeItem('user_role')
       localStorage.removeItem('user_id')
       localStorage.removeItem('auth_data')
+      
+      // Also clear cookies
+      document.cookie = 'access_token=; path=/; max-age=0'
+      document.cookie = 'user_role=; path=/; max-age=0'
     }
   }
 

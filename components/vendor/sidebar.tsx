@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useRouter} from "next/navigation"
+import { AuthAPI } from "@/public/api/auth"
 
 import { cn } from "@/lib/utils"
 import {
@@ -19,7 +20,6 @@ import {
 } from "@/components/ui/sidebar"
 import { Hotel, Plus, Calendar, LogOut, User, BarChart3 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { AuthAPI } from "@/public/api/auth"
 
 
 const menuItems = [
@@ -41,8 +41,19 @@ export function VendorSidebar() {
   const router = useRouter()
  
    const handleLogout = () => {
+     // Clear all authentication data
+     AuthAPI.clearSession()
+     
+     // Clear all localStorage data
      localStorage.clear()
+     
+     // Replace current history entry to prevent back navigation
      router.replace('/login')
+     
+     // Additional security: reload the page to clear any cached state
+     setTimeout(() => {
+       window.location.href = '/login'
+     }, 100)
    }
 
   return (

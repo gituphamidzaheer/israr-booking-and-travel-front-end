@@ -512,8 +512,8 @@ export default function AdminBookingsPage() {
   }
 
   return (
-    <div className="w-full mt-24">
-      <div className="px-2 sm:px-4 md:px-6 pb-6">
+    <div className="w-full min-h-screen mt-16 sm:mt-20 md:mt-24">
+      <div className="px-3 sm:px-4 md:px-6 pb-6">
         <AdminHeader
           title="Bookings Management"
           description="Manage all booking requests and their details"
@@ -526,9 +526,9 @@ export default function AdminBookingsPage() {
         )} */}
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <Card className="bg-white border-gray-200 shadow-sm">
-            <CardContent className="p-4">
+            <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm text-gray-600 font-medium">
@@ -545,13 +545,12 @@ export default function AdminBookingsPage() {
 
           <div className="sm:col-span-2">
             <Card className="bg-white border-gray-200 shadow-sm h-full">
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-4">
-                  <Label className="text-sm text-gray-600 font-medium">
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+                  <Label className="text-sm text-gray-600 font-medium whitespace-nowrap">
                     Filter by Hotel:
                   </Label>
-                 <div className="w-[220px] bg-white"
->
+                 <div className="w-full sm:w-[220px] bg-white">
                    <Select
                     value={selectedHotel}
                     onValueChange={(value) => setSelectedHotel(value)}
@@ -575,20 +574,20 @@ export default function AdminBookingsPage() {
         </div>
 
         {/* Search Filters */}
-        <Card className="bg-white shadow-sm border-gray-200 mb-6">
-          <CardContent className="p-4">
-            <div className="flex flex-col sm:flex-row gap-4 items-center">
+        <Card className="bg-white shadow-sm border-gray-200 mb-4 sm:mb-6">
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
               <div className="flex items-center space-x-2 w-full sm:w-auto">
                 <Search className="w-4 h-4 text-gray-500" />
                 <span className="text-sm font-medium text-gray-700">Filters:</span>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 w-full">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
                 <div className="w-full sm:w-48">
                   <Input
                     placeholder="Search by ID..."
                     value={searchId}
                     onChange={(e) => setSearchId(e.target.value)}
-                    className="bg-white text-black border-gray-300 text-sm"
+                    className="bg-white text-black border-gray-300 text-sm h-11 sm:h-10"
                   />
                 </div>
                 <div className="w-full sm:w-48">
@@ -596,7 +595,7 @@ export default function AdminBookingsPage() {
                     placeholder="Search by passenger name..."
                     value={searchName}
                     onChange={(e) => setSearchName(e.target.value)}
-                    className="bg-white text-black border-gray-300 text-sm"
+                    className="bg-white text-black border-gray-300 text-sm h-11 sm:h-10"
                   />
                 </div>
                 <div className="w-full sm:w-48">
@@ -604,7 +603,7 @@ export default function AdminBookingsPage() {
                     type="date"
                     value={searchDate}
                     onChange={(e) => setSearchDate(e.target.value)}
-                    className="bg-white text-black border-gray-300 text-sm"
+                    className="bg-white text-black border-gray-300 text-sm h-11 sm:h-10"
                   />
                 </div>
                 <div className="w-full sm:w-48">
@@ -612,7 +611,7 @@ export default function AdminBookingsPage() {
                     value={searchMonth || "all"}
                     onValueChange={(value) => setSearchMonth(value === "all" ? "" : value)}
                   >
-                    <SelectTrigger className="bg-white text-black border-gray-300 text-sm">
+                    <SelectTrigger className="bg-white text-black border-gray-300 text-sm h-11 sm:h-10">
                       <SelectValue placeholder="Filter by month" />
                     </SelectTrigger>
                     <SelectContent>
@@ -640,13 +639,13 @@ export default function AdminBookingsPage() {
                     setSearchDate("");
                     setSearchMonth("");
                   }}
-                  className="w-[160px] h-[48px] font-medium"
+                  className="w-full sm:w-[160px] h-11 sm:h-[48px] font-medium"
                 >
                   Clear Filters
                 </Button>
                 <Button
                   onClick={downloadCSV}
-                  className="w-[160px] h-[48px] bg-green-600 hover:bg-green-700 text-white font-medium"
+                  className="w-full sm:w-[160px] h-11 sm:h-[48px] bg-green-600 hover:bg-green-700 text-white font-medium"
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Download CSV
@@ -659,8 +658,8 @@ export default function AdminBookingsPage() {
         {/* Responsive Table */}
         <Card className="bg-white shadow-lg border-gray-200">
           <CardContent className="p-0">
-            <div className="overflow-x-auto w-full">
-              <Table className="min-w-[900px] md:min-w-full">
+            <div className="overflow-x-auto w-full -mx-1 sm:mx-0">
+              <Table className="min-w-[800px] sm:min-w-[900px] md:min-w-full">
                 <TableHeader className="bg-gradient-to-r from-indigo-50 to-blue-50 top-0 z-20">
                   <TableRow className="border-b border-gray-200">
                     <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
@@ -947,25 +946,25 @@ export default function AdminBookingsPage() {
 
         {/* Edit Modal */}
         <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-          <DialogContent className="max-w-full md:max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-2 md:p-8">
-            <DialogHeader>
-              <DialogTitle className="flex items-center space-x-2">
-                <Edit className="w-5 h-5 text-blue-600" />
+          <DialogContent className="w-[98vw] max-w-none sm:max-w-2xl md:max-w-3xl lg:max-w-4xl xl:max-w-5xl max-h-[98vh] overflow-y-auto bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-2 sm:p-4 md:p-6 lg:p-8 m-1 sm:m-4">
+            <DialogHeader className="space-y-2 pb-4">
+              <DialogTitle className="flex items-center space-x-2 text-lg sm:text-xl">
+                <Edit className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                 <span className="text-blue-600">
                   Edit Booking #{editingBooking?.id}
                 </span>
               </DialogTitle>
-              <DialogDescription>
+              <DialogDescription className="text-sm text-gray-600">
                 Update booking details. Fields marked with * are required.
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 md:gap-4 py-2 sm:py-4">
               {/* Editable fields */}
               <div className="space-y-2">
                 <Label
                   htmlFor="edit-passenger"
-                  className="text-gray-800 font-bold"
+                  className="text-gray-800 font-bold text-sm"
                 >
                   Passenger Name *
                 </Label>
@@ -978,12 +977,12 @@ export default function AdminBookingsPage() {
                       passengerName: e.target.value,
                     })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm h-11 sm:h-10 touch-manipulation"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-phone" className="text-gray-800 font-bold">
+                <Label htmlFor="edit-phone" className="text-gray-800 font-bold text-sm">
                   Phone Number
                 </Label>
                 <Input
@@ -995,14 +994,14 @@ export default function AdminBookingsPage() {
                       guest_phoneno: e.target.value,
                     })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm h-10"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label
                   htmlFor="edit-pickup"
-                  className="text-gray-800 font-bold"
+                  className="text-gray-800 font-bold text-sm"
                 >
                   Pickup Address *
                 </Label>
@@ -1015,14 +1014,14 @@ export default function AdminBookingsPage() {
                       pickupAdress: e.target.value,
                     })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm h-10"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label
                   htmlFor="edit-destination"
-                  className="text-gray-800 font-bold"
+                  className="text-gray-800 font-bold text-sm"
                 >
                   Destination *
                 </Label>
@@ -1035,14 +1034,14 @@ export default function AdminBookingsPage() {
                       destination: e.target.value,
                     })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm h-10"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label
                   htmlFor="edit-flight"
-                  className="text-gray-800 font-bold"
+                  className="text-gray-800 font-bold text-sm"
                 >
                   Flight Number
                 </Label>
@@ -1055,12 +1054,12 @@ export default function AdminBookingsPage() {
                       flightNumber: e.target.value,
                     })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm h-10"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-date" className="text-gray-800 font-bold">
+                <Label htmlFor="edit-date" className="text-gray-800 font-bold text-sm">
                   Date *
                 </Label>
                 <Input
@@ -1070,12 +1069,12 @@ export default function AdminBookingsPage() {
                   onChange={(e) =>
                     setEditFormData({ ...editFormData, date: e.target.value })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm h-10"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-room" className="text-gray-800 font-bold">
+                <Label htmlFor="edit-room" className="text-gray-800 font-bold text-sm">
                   Room Number
                 </Label>
                 <Input
@@ -1084,12 +1083,12 @@ export default function AdminBookingsPage() {
                   onChange={(e) =>
                     setEditFormData({ ...editFormData, roomNo: e.target.value })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm h-10"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-time" className="text-gray-800 font-bold">
+                <Label htmlFor="edit-time" className="text-gray-800 font-bold text-sm">
                   Time *
                 </Label>
                 <Input
@@ -1098,17 +1097,18 @@ export default function AdminBookingsPage() {
                   onChange={(e) =>
                     setEditFormData({ ...editFormData, time: e.target.value })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm h-10"
                 />
               </div>
 
               {/* Fare Calculation Section */}
-              <div className="col-span-2 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="col-span-1 md:col-span-2 space-y-3 sm:space-y-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800 border-b pb-2">Fare Information</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                   <div className="space-y-2">
                     <Label
                       htmlFor="edit-fare"
-                      className="text-gray-800 font-bold"
+                      className="text-gray-800 font-bold text-sm"
                     >
                       Base Fare *
                     </Label>
@@ -1127,14 +1127,14 @@ export default function AdminBookingsPage() {
                           totalFare: totalFare,
                         });
                       }}
-                      className="bg-white text-black border-gray-300"
+                      className="bg-white text-black border-gray-300 text-sm h-10"
                     />
                   </div>
 
                   <div className="space-y-2">
                     <Label
                       htmlFor="edit-extra"
-                      className="text-gray-800 font-bold"
+                      className="text-gray-800 font-bold text-sm"
                     >
                       Extra Charge
                     </Label>
@@ -1153,14 +1153,14 @@ export default function AdminBookingsPage() {
                           totalFare: totalFare,
                         });
                       }}
-                      className="bg-white text-black border-gray-300"
+                      className="bg-white text-black border-gray-300 text-sm h-10"
                     />
                   </div>
 
                   <div className="space-y-2">
                     <Label
                       htmlFor="edit-total-fare"
-                      className="text-gray-800 font-bold"
+                      className="text-gray-800 font-bold text-sm"
                     >
                       Total Fare
                     </Label>
@@ -1169,7 +1169,7 @@ export default function AdminBookingsPage() {
                       type="number"
                       value={editFormData.totalFare || 0}
                       readOnly
-                      className="bg-gray-100 text-black cursor-not-allowed"
+                      className="bg-gray-100 text-black cursor-not-allowed text-sm h-10"
                     />
                     <p className="text-xs text-gray-500">
                       Auto-calculated (Base + Extra)
@@ -1181,7 +1181,7 @@ export default function AdminBookingsPage() {
               <div className="space-y-2">
                 <Label
                   htmlFor="edit-driver-name"
-                  className="text-gray-800 font-bold"
+                  className="text-gray-800 font-bold text-sm"
                 >
                   Driver Name
                 </Label>
@@ -1194,14 +1194,14 @@ export default function AdminBookingsPage() {
                       driverName: e.target.value,
                     })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm h-10"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label
                   htmlFor="edit-driver-number"
-                  className="text-gray-800 font-bold"
+                  className="text-gray-800 font-bold text-sm"
                 >
                   Driver Number
                 </Label>
@@ -1214,13 +1214,14 @@ export default function AdminBookingsPage() {
                       driverNumber: e.target.value,
                     })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm h-10"
                 />
               </div>
+              
               <div className="space-y-2">
                 <Label
                   htmlFor="edit-noofvehicle"
-                  className="text-gray-800 font-bold"
+                  className="text-gray-800 font-bold text-sm"
                 >
                   Vehicle No
                 </Label>
@@ -1234,14 +1235,14 @@ export default function AdminBookingsPage() {
                       noOfVehicle: e.target.value,
                     })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm h-10"
                 />
               </div>
 
               <div className="space-y-2">
                 <Label
                   htmlFor="edit-status"
-                  className="text-gray-800 font-bold"
+                  className="text-gray-800 font-bold text-sm"
                 >
                   Status
                 </Label>
@@ -1251,7 +1252,7 @@ export default function AdminBookingsPage() {
                     setEditFormData({ ...editFormData, status: value })
                   }
                 >
-                  <SelectTrigger className="bg-white text-black border-gray-300">
+                  <SelectTrigger className="bg-white text-black border-gray-300 text-sm h-10">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -1263,11 +1264,11 @@ export default function AdminBookingsPage() {
                 </Select>
               </div>
 
-              <div className="space-y-2">
-                <Label className="text-gray-800 font-bold">
+              <div className="col-span-1 md:col-span-2 space-y-2">
+                <Label className="text-gray-800 font-bold text-sm">
                   Booking Type *
                 </Label>
-                <div className="space-y-2 bg-white p-3 rounded-md border border-gray-200">
+                <div className="space-y-2 bg-white p-2 sm:p-3 rounded-md border border-gray-200">
                   <div className="flex items-center space-x-2">
                     <input
                       type="checkbox"
@@ -1292,7 +1293,7 @@ export default function AdminBookingsPage() {
                       }}
                       className="w-4 h-4 text-blue-600 border-gray-300 rounded"
                     />
-                    <Label htmlFor="edit-pickAndDrop" className="text-gray-700">
+                    <Label htmlFor="edit-pickAndDrop" className="text-gray-700 text-sm">
                       Pick & Drop
                     </Label>
                   </div>
@@ -1321,7 +1322,7 @@ export default function AdminBookingsPage() {
                       }}
                       className="w-4 h-4 text-blue-600 border-gray-300 rounded"
                     />
-                    <Label htmlFor="edit-hourly" className="text-gray-700">
+                    <Label htmlFor="edit-hourly" className="text-gray-700 text-sm">
                       Hourly
                     </Label>
                   </div>
@@ -1347,7 +1348,7 @@ export default function AdminBookingsPage() {
                       }}
                       className="w-4 h-4 text-purple-600 border-gray-300 rounded"
                     />
-                    <Label htmlFor="edit-other-type" className="text-gray-700">
+                    <Label htmlFor="edit-other-type" className="text-gray-700 text-sm">
                       Other
                     </Label>
                   </div>
@@ -1366,13 +1367,13 @@ export default function AdminBookingsPage() {
                           const updated = {
                             ...current,
                             other: e.target.value,
-                          }; // Added missing closing curly brace here
+                          };
                           setEditFormData((prev) => ({
                             ...prev,
                             bookingType: JSON.stringify(updated),
                           }));
                         }}
-                        className="bg-white text-black w-full"
+                        className="bg-white text-black w-full text-sm h-10"
                       />
                     </div>
                   )}
@@ -1380,8 +1381,9 @@ export default function AdminBookingsPage() {
               </div>
 
               {/* Vehicle Information */}
-              <div className="col-span-2 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="col-span-1 md:col-span-2 space-y-3 sm:space-y-4">
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800 border-b pb-2">Vehicle Information</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <input
@@ -1401,9 +1403,9 @@ export default function AdminBookingsPage() {
                       />
                       <Label
                         htmlFor="edit-sclass-checkbox"
-                        className="text-gray-800 font-bold"
+                        className="text-gray-800 font-bold text-sm"
                       >
-                        Mercedes S-Class(Sadan)
+                        Mercedes S-Class (Sedan)
                       </Label>
                     </div>
                     {showSClass && (
@@ -1418,10 +1420,11 @@ export default function AdminBookingsPage() {
                             sClass: parseInt(e.target.value) || 0,
                           })
                         }
-                        className="bg-white text-black mt-2"
+                        className="bg-white text-black mt-2 text-sm h-10"
                       />
                     )}
                   </div>
+                  
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <input
@@ -1441,9 +1444,9 @@ export default function AdminBookingsPage() {
                       />
                       <Label
                         htmlFor="edit-vclass-checkbox"
-                        className="text-gray-800 font-bold"
+                        className="text-gray-800 font-bold text-sm"
                       >
-                        Mercedes V-Class(7 seater)
+                        Mercedes V-Class (7 seater)
                       </Label>
                     </div>
                     {showVClass && (
@@ -1458,10 +1461,11 @@ export default function AdminBookingsPage() {
                             vClass: parseInt(e.target.value) || 0,
                           })
                         }
-                        className="bg-white text-black mt-2"
+                        className="bg-white text-black mt-2 text-sm h-10"
                       />
                     )}
                   </div>
+                  
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <input
@@ -1484,13 +1488,13 @@ export default function AdminBookingsPage() {
                       />
                       <Label
                         htmlFor="edit-others-checkbox"
-                        className="text-gray-800 font-bold"
+                        className="text-gray-800 font-bold text-sm"
                       >
                         Others
                       </Label>
                     </div>
                     {showOthers && (
-                      <>
+                      <div className="space-y-2">
                         <Input
                           id="edit-others-type"
                           type="text"
@@ -1504,7 +1508,7 @@ export default function AdminBookingsPage() {
                               },
                             }))
                           }
-                          className="bg-white text-black mt-2"
+                          className="bg-white text-black mt-2 text-sm h-10"
                           placeholder="Enter vehicle type"
                         />
                         <Input
@@ -1521,17 +1525,17 @@ export default function AdminBookingsPage() {
                               },
                             }))
                           }
-                          className="bg-white text-black mt-2"
+                          className="bg-white text-black mt-2 text-sm h-10"
                           placeholder="Enter quantity"
                         />
-                      </>
+                      </div>
                     )}
                   </div>
                 </div>
               </div>
 
-              <div className="col-span-2 space-y-2">
-                <Label htmlFor="edit-note" className="text-gray-800 font-bold">
+              <div className="col-span-1 md:col-span-2 space-y-2">
+                <Label htmlFor="edit-note" className="text-gray-800 font-bold text-sm">
                   Notes
                 </Label>
                 <Textarea
@@ -1540,27 +1544,28 @@ export default function AdminBookingsPage() {
                   onChange={(e) =>
                     setEditFormData({ ...editFormData, note: e.target.value })
                   }
-                  className="bg-white text-black border-gray-300"
+                  className="bg-white text-black border-gray-300 text-sm min-h-[80px]"
                   rows={3}
                 />
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2 pt-4 border-t">
+            <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2 pt-4 border-t border-gray-200">
               <Button
                 variant="outline"
                 onClick={() => setIsEditModalOpen(false)}
                 disabled={isEditLoading}
+                className="w-full sm:w-auto order-2 sm:order-1 h-10 sm:h-auto min-h-[44px]"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleEditSubmit}
                 disabled={isEditLoading}
-                className="bg-indigo-600 hover:bg-indigo-700"
+                className="bg-indigo-600 hover:bg-indigo-700 w-full sm:w-auto order-1 sm:order-2 h-10 sm:h-auto min-h-[44px]"
               >
                 {isEditLoading ? (
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 justify-center">
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                     <span>Updating...</span>
                   </div>
@@ -1591,7 +1596,7 @@ export default function AdminBookingsPage() {
                         }
                       });
                     }}
-                    className="bg-purple-600 hover:bg-purple-700 text-white"
+                    className="bg-purple-600 hover:bg-purple-700 text-white w-full sm:w-auto order-3 h-10 sm:h-auto min-h-[44px]"
                   >
                     Rebook
                   </Button>
