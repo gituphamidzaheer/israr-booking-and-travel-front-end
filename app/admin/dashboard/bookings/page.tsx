@@ -515,9 +515,7 @@ export default function AdminBookingsPage() {
     <div className="w-full min-h-screen mt-16 sm:mt-20 md:mt-24">
       <div className="px-3 sm:px-4 md:px-6 pb-6">
         <AdminHeader
-          title="Bookings Management"
-          description="Manage all booking requests and their details"
-        />
+          title="Bookings Management"/>
 
         {/* {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm mb-6">
@@ -550,7 +548,7 @@ export default function AdminBookingsPage() {
                   <Label className="text-sm text-gray-600 font-medium whitespace-nowrap">
                     Filter by Hotel:
                   </Label>
-                 <div className="w-full sm:w-[220px] bg-white">
+                 <div className="w-[220px] bg-white">
                    <Select
                     value={selectedHotel}
                     onValueChange={(value) => setSelectedHotel(value)}
@@ -581,8 +579,8 @@ export default function AdminBookingsPage() {
                 <Search className="w-4 h-4 text-gray-500" />
                 <span className="text-sm font-medium text-gray-700">Filters:</span>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full">
-                <div className="w-full sm:w-48">
+              <div className="grid sm:grid-cols-2 md:flex md:flex-row gap-3 sm:gap-4  w-full">
+                <div className="w-[200px] ">
                   <Input
                     placeholder="Search by ID..."
                     value={searchId}
@@ -590,7 +588,7 @@ export default function AdminBookingsPage() {
                     className="bg-white text-black border-gray-300 text-sm h-11 sm:h-10"
                   />
                 </div>
-                <div className="w-full sm:w-48">
+                <div className="w-[200px] ">
                   <Input
                     placeholder="Search by passenger name..."
                     value={searchName}
@@ -598,7 +596,7 @@ export default function AdminBookingsPage() {
                     className="bg-white text-black border-gray-300 text-sm h-11 sm:h-10"
                   />
                 </div>
-                <div className="w-full sm:w-48">
+                <div className="w-[200px]">
                   <Input
                     type="date"
                     value={searchDate}
@@ -606,7 +604,7 @@ export default function AdminBookingsPage() {
                     className="bg-white text-black border-gray-300 text-sm h-11 sm:h-10"
                   />
                 </div>
-                <div className="w-full sm:w-48">
+                <div className="w-[200px] ">
                   <Select
                     value={searchMonth || "all"}
                     onValueChange={(value) => setSearchMonth(value === "all" ? "" : value)}
@@ -639,13 +637,13 @@ export default function AdminBookingsPage() {
                     setSearchDate("");
                     setSearchMonth("");
                   }}
-                  className="w-full sm:w-[160px] h-11 sm:h-[48px] font-medium"
+                  className="w-[150px] h-11 sm:h-[48px] font-medium"
                 >
                   Clear Filters
                 </Button>
                 <Button
                   onClick={downloadCSV}
-                  className="w-full sm:w-[160px] h-11 sm:h-[48px] bg-green-600 hover:bg-green-700 text-white font-medium"
+                  className="w-[150px] h-11 sm:h-[48px] bg-green-600 hover:bg-green-700 text-white font-medium"
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Download CSV
