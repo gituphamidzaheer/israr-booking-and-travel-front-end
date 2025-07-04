@@ -49,7 +49,7 @@ export class BookingAPI {
 
   static async createBooking(bookingData: Omit<Booking, 'id'>): Promise<BookingResponse> {
     try {
-      const response = await fetch(this.baseUrl, {
+      const response = await fetch(`${this.baseUrl}/bookings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

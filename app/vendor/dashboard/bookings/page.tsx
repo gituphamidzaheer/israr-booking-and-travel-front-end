@@ -47,7 +47,7 @@ const BookingsPage = () => {
         setError("Hotel ID not found");
         return;
       }
-      const response = await fetch(`${BookingAPI.getBaseUrl()}/hotel/${hotelId}`);
+      const response = await fetch(`${BookingAPI.getBaseUrl()}/bookings/hotel/${hotelId}`);
       const data = await response.json();
       
       if (response.ok && Array.isArray(data)) {

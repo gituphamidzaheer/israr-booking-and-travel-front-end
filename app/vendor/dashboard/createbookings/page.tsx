@@ -457,27 +457,7 @@ const BookingsPage = () => {
                     />
                   </div>
                 </div>
-
-                {/* Book By */}
-                <div className="bg-white p-3 sm:p-4 rounded-lg">
-                  <div className="space-y-2">
-                    <Label
-                      htmlFor="bookBy"
-                      className="text-blue-700 font-medium text-sm sm:text-base"
-                    >
-                      Book By *
-                    </Label>
-                    <Input
-                      id="bookBy"
-                      value={formData.bookBy}
-                      onChange={handleInputChange("bookBy")}
-                      placeholder="Enter who booked this"
-                      className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
-                      required
-                      disabled={isFormLoading}
-                    />
-                  </div>
-                </div>
+                
               </div>
 
               {/* Booking Type and Book By Row */}
