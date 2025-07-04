@@ -113,7 +113,7 @@ export class BookingAPI {
 
   static async updateBooking(id: number, bookingData: Partial<Booking>): Promise<BookingResponse> {
     try {
-      const response = await fetch(`${this.baseUrl}/${id}`, {
+      const response = await fetch(`${this.baseUrl}/bookings/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -47,7 +47,7 @@ export function AdminSidebar() {
     <Sidebar className="border-r border-gray-800 bg-gray-900 pb-14 md:pb-0">
       <SidebarHeader className="border-b border-gray-800 p-4 bg-gray-900">
         <div className="flex items-center space-x-3">
-          <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-purple-600 to-purple-700 rounded-lg shadow-lg">
+          <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-lg">
             <Shield className="w-6 h-6 text-white" />
           </div>
           <div>

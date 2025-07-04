@@ -28,7 +28,7 @@ export function AdminHeader({ title, description, className }: HeaderProps) {
           </SidebarTrigger>
 
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
               <Shield className="w-4 h-4 text-white" />
             </div>
             <div>

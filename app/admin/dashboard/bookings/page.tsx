@@ -242,7 +242,7 @@ export default function AdminBookingsPage() {
 
     setIsEditLoading(true);
     try {
-      const url = `/api/bookings/${editingBooking.id}`;
+      const url = `/bookings/${editingBooking.id}`;
       console.log('Updating booking at:', url);
       const { bookingType, type, quantity, ...rest } = editFormData;
       const types = [];
@@ -506,11 +506,11 @@ export default function AdminBookingsPage() {
           description="Manage all booking requests and their details"
         />
 
-        {error && (
+        {/* {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm mb-6">
             {error}
           </div>
-        )}
+        )} */}
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -1333,7 +1333,7 @@ export default function AdminBookingsPage() {
                         htmlFor="edit-sclass-checkbox"
                         className="text-gray-800 font-bold"
                       >
-                        S-Class
+                        Mercedes S-Class(Sadan)
                       </Label>
                     </div>
                     {showSClass && (
@@ -1373,7 +1373,7 @@ export default function AdminBookingsPage() {
                         htmlFor="edit-vclass-checkbox"
                         className="text-gray-800 font-bold"
                       >
-                        V-Class
+                        Mercedes V-Class(7 seater)
                       </Label>
                     </div>
                     {showVClass && (
