@@ -72,6 +72,7 @@ export default function AdminBookingsPage() {
   const [searchId, setSearchId] = useState("");
   const [searchName, setSearchName] = useState("");
   const [searchDate, setSearchDate] = useState("");
+  const [searchMonth, setSearchMonth] = useState("");
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [editFormData, setEditFormData] = useState<Partial<Booking>>({
     others: {
@@ -124,9 +125,8 @@ export default function AdminBookingsPage() {
     if (bookings.length > 0) {
       let filtered = [...bookings];
       
-      if (selectedHotel) {
-        filtered = filtered.filter(booking => booking.hotelId === selectedHotel);
-      }
+      // Note: Hotel filtering is handled by the API call, not client-side filtering
+      // The selectedHotel filter is applied when fetching data from the API
       
       if (statusFilter !== "all") {
         filtered = filtered.filter(booking => booking.status === statusFilter);
@@ -159,7 +159,7 @@ export default function AdminBookingsPage() {
 
   useEffect(() => {
     filterBookings();
-  }, [bookings, searchId, searchName, searchDate]); // Removed statusFilter
+  }, [bookings, searchId, searchName, searchDate, searchMonth]); // Added searchMonth
 
   const filterBookings = () => {
     let filtered = bookings;
@@ -180,6 +180,15 @@ export default function AdminBookingsPage() {
       filtered = filtered.filter((booking) =>
         booking.date?.includes(searchDate)
       );
+    }
+
+    if (searchMonth) {
+      filtered = filtered.filter((booking) => {
+        if (!booking.date) return false;
+        const bookingDate = new Date(booking.date);
+        const bookingMonth = String(bookingDate.getMonth() + 1).padStart(2, '0');
+        return bookingMonth === searchMonth;
+      });
     }
 
     setFilteredBookings(filtered);
@@ -598,12 +607,38 @@ export default function AdminBookingsPage() {
                     className="bg-white text-black border-gray-300 text-sm"
                   />
                 </div>
+                <div className="w-full sm:w-48">
+                  <Select
+                    value={searchMonth || "all"}
+                    onValueChange={(value) => setSearchMonth(value === "all" ? "" : value)}
+                  >
+                    <SelectTrigger className="bg-white text-black border-gray-300 text-sm">
+                      <SelectValue placeholder="Filter by month" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Months</SelectItem>
+                      <SelectItem value="01">January</SelectItem>
+                      <SelectItem value="02">February</SelectItem>
+                      <SelectItem value="03">March</SelectItem>
+                      <SelectItem value="04">April</SelectItem>
+                      <SelectItem value="05">May</SelectItem>
+                      <SelectItem value="06">June</SelectItem>
+                      <SelectItem value="07">July</SelectItem>
+                      <SelectItem value="08">August</SelectItem>
+                      <SelectItem value="09">September</SelectItem>
+                      <SelectItem value="10">October</SelectItem>
+                      <SelectItem value="11">November</SelectItem>
+                      <SelectItem value="12">December</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
                 <Button
                   variant="outline"
                   onClick={() => {
                     setSearchId("");
                     setSearchName("");
                     setSearchDate("");
+                    setSearchMonth("");
                   }}
                   className="w-[160px] h-[48px] font-medium"
                 >
