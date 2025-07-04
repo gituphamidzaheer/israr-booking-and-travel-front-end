@@ -40,7 +40,7 @@ export interface BookingResponse {
 }
 
 export class BookingAPI {
-  private static baseUrl = `${config.baseUrl}/bookings`
+  private static baseUrl = `${config.baseUrl}`
 
   // Add this public method
   public static getBaseUrl() {
@@ -75,7 +75,7 @@ export class BookingAPI {
     try {
       const hotelId = localStorage.getItem('id');
 
-      const response = await fetch(`${this.baseUrl}/hotel/${id}`, {
+      const response = await fetch(`${this.baseUrl}/bookings/hotel/${id}`, {
   });
 
       const data = await response.json();
@@ -86,6 +86,27 @@ export class BookingAPI {
       };
     } catch (error) {
       console.error('Get booking error:', error);
+      return { success: false, message: 'Network error occurred' };
+    }
+  }
+
+  static async getBookingsByHotel(id: string) {
+    try {
+      const response = await fetch(`${this.baseUrl}/bookings/hotel/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const data = await response.json();
+      return { 
+        success: response.ok, 
+        data: Array.isArray(data) ? data[0] : data, // Handle array response
+        message: data.message 
+      };
+    } catch (error) {
+      console.error('Get booking by hotel error:', error);
       return { success: false, message: 'Network error occurred' };
     }
   }
@@ -122,15 +143,25 @@ export class BookingAPI {
     }
   }
 
-  static async getAllBookings(): Promise<BookingResponse> {
+  static async getAllBookings(hotelId?: string): Promise<BookingResponse> {
     try {
-      const response = await fetch(this.baseUrl)
+      let url = `${this.baseUrl}/bookings/all`;
+      if (hotelId) {
+        url = `${this.baseUrl}/bookings/all/hotel/${hotelId}`;
+      }
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-      const data = await response.json()
-      return { success: response.ok, data, message: data.message }
+      const data = await response.json();
+      return { success: response.ok, data, message: data.message };
     } catch (error) {
-      console.error('Get bookings error:', error)
-      return { success: false, message: 'Network error occurred' }
+      console.error('Get bookings error:', error);
+      return { success: false, message: 'Network error occurred' };
     }
   }
 
@@ -141,3 +172,5 @@ export class BookingAPI {
     return ''
   }
 }
+
+

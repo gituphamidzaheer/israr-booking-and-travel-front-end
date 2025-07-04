@@ -300,12 +300,12 @@ const BookingsPage = () => {
                 onChange={(e) => setSearchDate(e.target.value)}
                 className="bg-white text-black border-gray-300"
               />
-              <Input
+              {/* <Input
                 placeholder="Search by booked by..."
                 value={searchBookedBy}
                 onChange={(e) => setSearchBookedBy(e.target.value)}
                 className="bg-white text-black border-gray-300"
-              />
+              /> */}
               <div className="flex gap-2">
                 <Button 
                   variant="outline" 

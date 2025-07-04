@@ -1,5 +1,6 @@
 "use client";
 
+// Ensure these imports are at the top
 import { AdminHeader } from "@/components/admin/header";
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -59,8 +60,9 @@ import {
   Plus,
 } from "lucide-react";
 import { BookingAPI, type Booking } from "@/public/api/booking";
+import { UserAPI } from "@/public/api/user";
 
-const AdminBookingsPage = () => {
+export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -82,21 +84,68 @@ const AdminBookingsPage = () => {
   const [showOthers, setShowOthers] = useState(false);
   const [showOtherBookingType, setShowOtherBookingType] = useState(false);
   const [otherBookingType, setOtherBookingType] = useState("");
+  const [show, setShow] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const [selectedHotel, setSelectedHotel] = useState<string>("");
+  const [hotels, setHotels] = useState<Array<{ id: string; name: string }>>([]);
+  const [users, setUsers] = useState<Array<{ id: number; name: string }>>([]);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(true);
+
+  const fetchUsers = async () => {
+    setIsLoadingUsers(true);
+    try {
+      const response = await UserAPI.getAllUsers();
+      if (response.success && response.data) {
+        // Filter users with role "hotel"
+        const hotelUsers = response.data.filter((user: any) => user.role === "hotel");
+        setUsers(hotelUsers.map((user: any) => ({
+          id: user.id,
+          name: user.name
+        })));
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setIsLoadingUsers(false);
+    }
+  };
 
   useEffect(() => {
-    fetchBookings();
+    fetchUsers();
   }, []);
 
+  // Fetch bookings when hotel selection changes
   useEffect(() => {
-    filterBookings();
-  }, [bookings, searchId, searchName, searchDate]);
+    fetchBookings();
+  }, [selectedHotel]);
+
+  // Filter bookings when hotel selection changes
+  useEffect(() => {
+    if (bookings.length > 0) {
+      let filtered = [...bookings];
+      
+      if (selectedHotel) {
+        filtered = filtered.filter(booking => booking.hotelId === selectedHotel);
+      }
+      
+      if (statusFilter !== "all") {
+        filtered = filtered.filter(booking => booking.status === statusFilter);
+      }
+
+      setFilteredBookings(filtered);
+    }
+  }, [selectedHotel, statusFilter, bookings]);
 
   const fetchBookings = async () => {
     setIsLoading(true);
     try {
-      const response = await BookingAPI.getAllBookings();
-      if (response.success && Array.isArray(response.data)) {
-        setBookings(response.data);
+      const response = await BookingAPI.getAllBookings(selectedHotel || undefined);
+      if (response.success && response.data) {
+        const bookingsData = Array.isArray(response.data) ? response.data : [response.data];
+        // Filter out any undefined values and ensure all entries are of type Booking
+        const validBookings = bookingsData.filter((booking): booking is Booking => booking !== undefined);
+        setBookings(validBookings);
+        setFilteredBookings(validBookings);
       } else {
         setError(response.message || "Failed to fetch bookings");
       }
@@ -107,6 +156,10 @@ const AdminBookingsPage = () => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    filterBookings();
+  }, [bookings, searchId, searchName, searchDate]); // Removed statusFilter
 
   const filterBookings = () => {
     let filtered = bookings;
@@ -189,6 +242,8 @@ const AdminBookingsPage = () => {
 
     setIsEditLoading(true);
     try {
+      const url = `/api/bookings/${editingBooking.id}`;
+      console.log('Updating booking at:', url);
       const { bookingType, type, quantity, ...rest } = editFormData;
       const types = [];
       const parsedBookingType = JSON.parse(bookingType || "{}");
@@ -467,7 +522,7 @@ const AdminBookingsPage = () => {
                     Total Bookings
                   </p>
                   <p className="text-2xl font-bold text-gray-800">
-                    {bookings.length}
+                    {filteredBookings.length}
                   </p>
                 </div>
                 <Car className="w-8 h-8 text-indigo-500" />
@@ -475,64 +530,33 @@ const AdminBookingsPage = () => {
             </CardContent>
           </Card>
 
-          {/* <Card className="bg-white border-gray-200 shadow-sm">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">
-                    In Progress
-                  </p>
-                  <p className="text-2xl font-bold text-gray-800">
-                    {
-                      bookings.filter(
-                        (b) => b.status?.toLowerCase() === "inprogress"
-                      ).length
-                    }
-                  </p>
+          <div className="sm:col-span-2">
+            <Card className="bg-white border-gray-200 shadow-sm h-full">
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-4">
+                  <Label className="text-sm text-gray-600 font-medium">
+                    Filter by Hotel:
+                  </Label>
+                  <Select
+                    value={selectedHotel}
+                    onValueChange={(value) => setSelectedHotel(value)}
+                    className="w-[180px] bg-white"
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select hotel" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {users.map((user) => (
+                        <SelectItem key={user.id} value={user.id.toString()}>
+                          {user.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <Clock className="w-8 h-8 text-blue-500" />
-              </div>
-            </CardContent>
-          </Card> */}
-
-          {/* <Card className="bg-white border-gray-200 shadow-sm">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Completed</p>
-                  <p className="text-2xl font-bold text-gray-800">
-                    {
-                      bookings.filter(
-                        (b) => b.status?.toLowerCase() === "completed"
-                      ).length
-                    }
-                  </p>
-                </div>
-                <Users className="w-8 h-8 text-green-500" />
-              </div>
-            </CardContent>
-          </Card> */}
-
-          {/* <Card className="bg-white border-gray-200 shadow-sm">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-gray-600 font-medium">Revenue</p>
-                  <p className="text-2xl font-bold text-gray-800">
-                    $$
-                    {bookings.reduce(
-                      (sum, b) =>
-                        sum +
-                        (Number(b.fare) || 0) +
-                        (Number(b.extraCharge) || 0),
-                      0
-                    )}
-                  </p>
-                </div>
-                <CreditCard className="w-8 h-8 text-purple-500" />
-              </div>
-            </CardContent>
-          </Card> */}
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         {/* Search Filters */}
@@ -1272,7 +1296,7 @@ const AdminBookingsPage = () => {
                           const updated = {
                             ...current,
                             other: e.target.value,
-                          };
+                          }; // Added missing closing curly brace here
                           setEditFormData((prev) => ({
                             ...prev,
                             bookingType: JSON.stringify(updated),
@@ -1554,6 +1578,6 @@ const AdminBookingsPage = () => {
       `}</style>
     </div>
   );
-};
+}
 
-export default AdminBookingsPage;
+
