@@ -10,6 +10,13 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Calendar, MapPin, User, Car, Clock, Phone, CreditCard, Users, Plane, Eye, Search, Download } from 'lucide-react'
 import { BookingAPI, type Booking } from '@/public/api/booking'
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -30,6 +37,8 @@ const BookingsPage = () => {
   const [deleteId, setDeleteId] = useState<number | null>(null)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
+  const [searchMonth, setSearchMonth] = useState("")
+  
 
   useEffect(() => {
     fetchBookings()
@@ -37,7 +46,7 @@ const BookingsPage = () => {
 
   useEffect(() => {
     filterBookings()
-  }, [bookings, searchId, searchName, searchDate, searchBookedBy])
+  }, [bookings, searchId, searchName, searchDate, searchBookedBy,searchMonth])
 
   const fetchBookings = async () => {
     setIsLoading(true)
@@ -121,6 +130,14 @@ const BookingsPage = () => {
       filtered = filtered.filter(booking => 
         booking.bookBy?.toLowerCase().includes(searchBookedBy.toLowerCase())
       )
+    }
+    if (searchMonth) {
+      filtered = filtered.filter((booking) => {
+        if (!booking.date) return false;
+        const bookingDate = new Date(booking.date);
+        const bookingMonth = String(bookingDate.getMonth() + 1).padStart(2, '0');
+        return bookingMonth === searchMonth;
+      });
     }
 
     setFilteredBookings(filtered)
@@ -272,7 +289,7 @@ const BookingsPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 w-full mt-12">
       <div className="p-2 sm:p-4 lg:p-6">
-        <VendorHeader title="My Bookings" description="View and manage all your booking requests" />
+        <VendorHeader title="My Bookings" />
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm mb-6">
@@ -308,7 +325,32 @@ const BookingsPage = () => {
                 onChange={(e) => setSearchBookedBy(e.target.value)}
                 className="bg-white text-black border-gray-300"
               /> */}
-              <div className="flex gap-2">
+              <div className="w-full sm:w-48 ">
+                                <Select
+                                  value={searchMonth || "all"}
+                                  onValueChange={(value) => setSearchMonth(value === "all" ? "" : value)}
+                                >
+                                  <SelectTrigger className="bg-white text-black border-gray-300 text-sm">
+                                    <SelectValue placeholder="Filter by month" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="all">All Months</SelectItem>
+                                    <SelectItem value="01">January</SelectItem>
+                                    <SelectItem value="02">February</SelectItem>
+                                    <SelectItem value="03">March</SelectItem>
+                                    <SelectItem value="04">April</SelectItem>
+                                    <SelectItem value="05">May</SelectItem>
+                                    <SelectItem value="06">June</SelectItem>
+                                    <SelectItem value="07">July</SelectItem>
+                                    <SelectItem value="08">August</SelectItem>
+                                    <SelectItem value="09">September</SelectItem>
+                                    <SelectItem value="10">October</SelectItem>
+                                    <SelectItem value="11">November</SelectItem>
+                                    <SelectItem value="12">December</SelectItem>
+                                  </SelectContent>
+                                </Select>
+                              </div>
+              <div className="flex gap-2 ml-14">
                 <Button 
                   variant="outline" 
                   onClick={() => { 

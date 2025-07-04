@@ -313,7 +313,7 @@ const BookingsPage = () => {
                       htmlFor="roomNo"
                       className="text-blue-700 font-medium text-sm sm:text-base"
                     >
-                      Room No(Optional)
+                      Room/Ref.No(Optional)
                     </Label>
                     <Input
                       id="roomNo"
