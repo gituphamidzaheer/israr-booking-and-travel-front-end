@@ -384,13 +384,13 @@ const BookingsPage = () => {
                   <TableHead className="w-20 text-white">ID</TableHead>
                   <TableHead className="w-32 text-white">Date & Time</TableHead>
                   <TableHead className="w-24 text-white">Room</TableHead>
-                  <TableHead className="w-40 text-white">Guest Info</TableHead>
+                  <TableHead className="w-40 text-white">Guest Name</TableHead>
                   <TableHead className="w-40 text-white">Pickup</TableHead>
                   <TableHead className="w-40 text-white">Destination</TableHead>
                   <TableHead className="w-40 text-white">Vehicle</TableHead>
                   <TableHead className="w-40 text-white">Driver</TableHead>
                   <TableHead className="w-40 text-white">Note</TableHead>
-                  <TableHead className="w-32 text-white">Booked By</TableHead>
+                  <TableHead className="w-32 text-white">Request By</TableHead>
                   <TableHead className="w-24 text-white">Fare</TableHead>
                   <TableHead className="w-24 text-white">Extra</TableHead>
                   <TableHead className="w-24 text-white">Total</TableHead>
