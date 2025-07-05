@@ -73,6 +73,7 @@ export default function AdminBookingsPage() {
   const [searchName, setSearchName] = useState("");
   const [searchDate, setSearchDate] = useState("");
   const [searchMonth, setSearchMonth] = useState("");
+  const [searchYear, setSearchYear] = useState("");
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
   const [editFormData, setEditFormData] = useState<Partial<Booking>>({
     others: {
@@ -159,7 +160,7 @@ export default function AdminBookingsPage() {
 
   useEffect(() => {
     filterBookings();
-  }, [bookings, searchId, searchName, searchDate, searchMonth]); // Added searchMonth
+  }, [bookings, searchId, searchName, searchDate, searchMonth, searchYear]); // Added searchMonth and searchYear
 
   const filterBookings = () => {
     let filtered = bookings;
@@ -188,6 +189,15 @@ export default function AdminBookingsPage() {
         const bookingDate = new Date(booking.date);
         const bookingMonth = String(bookingDate.getMonth() + 1).padStart(2, '0');
         return bookingMonth === searchMonth;
+      });
+    }
+
+    if (searchYear) {
+      filtered = filtered.filter((booking) => {
+        if (!booking.date) return false;
+        const bookingDate = new Date(booking.date);
+        const bookingYear = bookingDate.getFullYear().toString();
+        return bookingYear === searchYear;
       });
     }
 
@@ -548,17 +558,21 @@ export default function AdminBookingsPage() {
                   <Label className="text-sm text-gray-600 font-medium whitespace-nowrap">
                     Filter by Hotel:
                   </Label>
-                 <div className="w-[220px] bg-white">
+                 <div className="w-[220px] bg-blue-700 rounded-lg">
                    <Select
                     value={selectedHotel}
                     onValueChange={(value) => setSelectedHotel(value)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-blue-700 border-blue-700 text-white rounded-lg">
                       <SelectValue placeholder="Select hotel" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="bg-blue-700 rounded-lg">
                       {users.map((user) => (
-                        <SelectItem key={user.id} value={user.id.toString()}>
+                        <SelectItem 
+                          key={user.id} 
+                          value={user.id.toString()}
+                          className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                        >
                           {user.name}
                         </SelectItem>
                       ))}
@@ -580,7 +594,7 @@ export default function AdminBookingsPage() {
                 <span className="text-sm font-medium text-gray-700">Filters:</span>
               </div>
               <div className="grid sm:grid-cols-2 md:flex md:flex-row gap-3 sm:gap-4  w-full">
-                <div className="w-[200px] ">
+                <div className="w-[200px] rounded-lg ">
                   <Input
                     placeholder="Search by ID..."
                     value={searchId}
@@ -609,23 +623,43 @@ export default function AdminBookingsPage() {
                     value={searchMonth || "all"}
                     onValueChange={(value) => setSearchMonth(value === "all" ? "" : value)}
                   >
-                    <SelectTrigger className="bg-white text-black border-gray-300 text-sm h-11 sm:h-10">
+                    <SelectTrigger className="bg-blue-700 text-white border-blue-700 text-sm h-11 sm:h-10 rounded-lg">
                       <SelectValue placeholder="Filter by month" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Months</SelectItem>
-                      <SelectItem value="01">January</SelectItem>
-                      <SelectItem value="02">February</SelectItem>
-                      <SelectItem value="03">March</SelectItem>
-                      <SelectItem value="04">April</SelectItem>
-                      <SelectItem value="05">May</SelectItem>
-                      <SelectItem value="06">June</SelectItem>
-                      <SelectItem value="07">July</SelectItem>
-                      <SelectItem value="08">August</SelectItem>
-                      <SelectItem value="09">September</SelectItem>
-                      <SelectItem value="10">October</SelectItem>
-                      <SelectItem value="11">November</SelectItem>
-                      <SelectItem value="12">December</SelectItem>
+                    <SelectContent className="bg-blue-700 rounded-lg">
+                      <SelectItem value="all" className="text-white hover:bg-blue-500 focus:bg-blue-500">All Months</SelectItem>
+                      <SelectItem value="01" className="text-white hover:bg-blue-500 focus:bg-blue-500">January</SelectItem>
+                      <SelectItem value="02" className="text-white hover:bg-blue-500 focus:bg-blue-500">February</SelectItem>
+                      <SelectItem value="03" className="text-white hover:bg-blue-500 focus:bg-blue-500">March</SelectItem>
+                      <SelectItem value="04" className="text-white hover:bg-blue-500 focus:bg-blue-500">April</SelectItem>
+                      <SelectItem value="05" className="text-white hover:bg-blue-500 focus:bg-blue-500">May</SelectItem>
+                      <SelectItem value="06" className="text-white hover:bg-blue-500 focus:bg-blue-500">June</SelectItem>
+                      <SelectItem value="07" className="text-white hover:bg-blue-500 focus:bg-blue-500">July</SelectItem>
+                      <SelectItem value="08" className="text-white hover:bg-blue-500 focus:bg-blue-500">August</SelectItem>
+                      <SelectItem value="09" className="text-white hover:bg-blue-500 focus:bg-blue-500">September</SelectItem>
+                      <SelectItem value="10" className="text-white hover:bg-blue-500 focus:bg-blue-500">October</SelectItem>
+                      <SelectItem value="11" className="text-white hover:bg-blue-500 focus:bg-blue-500">November</SelectItem>
+                      <SelectItem value="12" className="text-white hover:bg-blue-500 focus:bg-blue-500">December</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="w-[200px] ">
+                  <Select
+                    value={searchYear || "all"}
+                    onValueChange={(value) => setSearchYear(value === "all" ? "" : value)}
+                  >
+                    <SelectTrigger className="bg-blue-700 text-white border-blue-700 text-sm h-11 sm:h-10 rounded-lg">
+                      <SelectValue placeholder="Filter by year" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-blue-700 rounded-lg">
+                      <SelectItem value="all" className="text-white hover:bg-blue-500 focus:bg-blue-500">All Years</SelectItem>
+                      <SelectItem value="2025" className="text-white hover:bg-blue-500 focus:bg-blue-500">2026</SelectItem>
+                      <SelectItem value="2025" className="text-white hover:bg-blue-500 focus:bg-blue-500">2025</SelectItem>
+                      <SelectItem value="2024" className="text-white hover:bg-blue-500 focus:bg-blue-500">2024</SelectItem>
+                      <SelectItem value="2023" className="text-white hover:bg-blue-500 focus:bg-blue-500">2023</SelectItem>
+                      <SelectItem value="2022" className="text-white hover:bg-blue-500 focus:bg-blue-500">2022</SelectItem>
+                      <SelectItem value="2021" className="text-white hover:bg-blue-500 focus:bg-blue-500">2021</SelectItem>
+                      <SelectItem value="2025" className="text-white hover:bg-blue-500 focus:bg-blue-500">2020</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -636,14 +670,15 @@ export default function AdminBookingsPage() {
                     setSearchName("");
                     setSearchDate("");
                     setSearchMonth("");
+                    setSearchYear("");
                   }}
-                  className="w-[150px] h-11 sm:h-[48px] font-medium"
+                  className="w-[150px] h-11 sm:h-[48px] font-medium bg-blue-700 text-white border-blue-700 hover:bg-blue-800"
                 >
                   Clear Filters
                 </Button>
                 <Button
                   onClick={downloadCSV}
-                  className="w-[150px] h-11 sm:h-[48px] bg-green-600 hover:bg-green-700 text-white font-medium"
+                  className="w-[150px] h-11 sm:h-[48px] bg-blue-700 hover:bg-blue-800 text-white font-medium"
                 >
                   <Download className="w-4 h-4 mr-2" />
                   Download CSV
@@ -861,7 +896,7 @@ export default function AdminBookingsPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => handleEdit(booking)}
-                              className="bg-blue-50  text-blue-700 border-blue-200"
+                              className="bg-blue-700 text-white border-blue-700 hover:bg-blue-800"
                             >
                               <Edit className="w-3 h-3 mr-1" />
                               Edit
@@ -871,7 +906,7 @@ export default function AdminBookingsPage() {
                               variant="outline"
                               size="sm"
                               onClick={() => downloadSingleBookingCSV(booking)}
-                              className="bg-green-50 text-green-700 border-green-200"
+                              className="bg-blue-700 text-white border-blue-700 hover:bg-blue-800"
                             >
                               <Download className="w-3 h-3 mr-1" />
                               CSV
@@ -899,12 +934,12 @@ export default function AdminBookingsPage() {
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                  <AlertDialogCancel className="text-white">Cancel</AlertDialogCancel>
+                                  <AlertDialogCancel className="bg-blue-700 text-white border-blue-700 hover:bg-blue-800">Cancel</AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={() =>
                                       booking.id && handleDelete(booking.id)
                                     }
-                                    className="bg-red-600  hover:bg-red-700"
+                                    className="bg-red-600 hover:bg-red-700"
                                   >
                                     Delete
                                   </AlertDialogAction>
@@ -1250,14 +1285,14 @@ export default function AdminBookingsPage() {
                     setEditFormData({ ...editFormData, status: value })
                   }
                 >
-                  <SelectTrigger className="bg-white text-black border-gray-300 text-sm h-10">
+                  <SelectTrigger className="bg-blue-700 text-white border-blue-700 text-sm h-10 rounded-lg">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="inprogress">In Progress</SelectItem>
-                    <SelectItem value="completed">Completed</SelectItem>
-                    <SelectItem value="cancelled">Cancelled</SelectItem>
+                  <SelectContent className="bg-blue-700 rounded-lg">
+                    <SelectItem value="pending" className="text-white hover:bg-blue-500 focus:bg-blue-500">Pending</SelectItem>
+                    <SelectItem value="inprogress" className="text-white hover:bg-blue-500 focus:bg-blue-500">In Progress</SelectItem>
+                    <SelectItem value="completed" className="text-white hover:bg-blue-500 focus:bg-blue-500">Completed</SelectItem>
+                    <SelectItem value="cancelled" className="text-white hover:bg-blue-500 focus:bg-blue-500">Cancelled</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1553,14 +1588,14 @@ export default function AdminBookingsPage() {
                 variant="outline"
                 onClick={() => setIsEditModalOpen(false)}
                 disabled={isEditLoading}
-                className="w-full sm:w-auto order-2  text-white sm:order-1 h-10 sm:h-auto min-h-[44px]"
+                className="w-full sm:w-auto order-2 bg-blue-700 text-white border-blue-700 hover:bg-blue-800 sm:order-1 h-10 sm:h-auto min-h-[44px]"
               >
                 Cancel
               </Button>
               <Button
                 onClick={handleEditSubmit}
                 disabled={isEditLoading}
-                className="bg-indigo-600 hover:bg-indigo-700 w-full sm:w-auto order-1 sm:order-2 h-10 sm:h-auto min-h-[44px]"
+                className="bg-blue-700 hover:bg-blue-800 w-full sm:w-auto order-1 sm:order-2 h-10 sm:h-auto min-h-[44px]"
               >
                 {isEditLoading ? (
                   <div className="flex items-center space-x-2 justify-center">
@@ -1594,7 +1629,7 @@ export default function AdminBookingsPage() {
                         }
                       });
                     }}
-                    className="bg-purple-600 hover:bg-purple-700 text-white w-full sm:w-auto order-3 h-10 sm:h-auto min-h-[44px]"
+                    className="bg-blue-700 hover:bg-blue-800 text-white w-full sm:w-auto order-3 h-10 sm:h-auto min-h-[44px]"
                   >
                     Rebook
                   </Button>

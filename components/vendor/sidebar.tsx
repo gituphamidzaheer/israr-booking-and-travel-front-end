@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useRouter} from "next/navigation"
 import { AuthAPI } from "@/public/api/auth"
+import { useCurrentUser } from "@/hooks/use-current-user"
 
 import { cn } from "@/lib/utils"
 import {
@@ -39,6 +40,7 @@ const menuItems = [
 export function VendorSidebar() {
   const pathname = usePathname()
   const router = useRouter()
+  const { user, loading } = useCurrentUser()
  
    const handleLogout = () => {
      // Clear all authentication data
@@ -64,7 +66,9 @@ export function VendorSidebar() {
             <Hotel className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-lg font-semibold text-white">Hotels</h2>
+            <h2 className="text-lg font-semibold text-white">
+              {loading ? "Loading..." : user?.name || "Hotels"}
+            </h2>
             <p className="text-sm text-gray-400">Dashboard</p>
           </div>
         </div>

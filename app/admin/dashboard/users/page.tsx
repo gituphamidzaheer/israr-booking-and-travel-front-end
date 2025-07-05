@@ -176,18 +176,18 @@ const UsersPage = () => {
             <DialogTrigger asChild>
               <Button 
                 onClick={() => { resetForm(); setIsDialogOpen(true) }}
-                className="mb-6 bg-gradient-to-r from-blue-400 to-blue-500 hover:from-blue-500 hover:to-blue-600 shadow-sm"
+                className="text-white mb-6 bg-blue-700 hover:from-blue-500 hover:to-blue-600 shadow-sm"
               >
-                <Plus className="w-4 h-4 mr-2" />
+                <Plus className="w-4 h-4 mr-2 text-white" />
                 Create New Hotel
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md bg-white">
+            <DialogContent className="sm:max-w-md bg-gray-800">
               <DialogHeader>
-                <DialogTitle className="text-gray-800">
+                <DialogTitle className="text-white">
                   {editingUser ? 'Edit User' : 'Create New User'}
                 </DialogTitle>
-                <DialogDescription className="text-gray-600">
+                <DialogDescription className="text-gray-300">
                   {editingUser ? 'Update user information' : 'Add a new user to the system'}
                 </DialogDescription>
               </DialogHeader>
@@ -202,10 +202,10 @@ const UsersPage = () => {
 
                 {/* Loading overlay for form */}
                 {isFormLoading && (
-                  <div className="absolute inset-0 bg-white/80 flex items-center justify-center rounded-lg z-10">
+                  <div className="absolute inset-0 bg-gray-800/80 flex items-center justify-center rounded-lg z-10">
                     <div className="text-center">
-                      <div className="w-8 h-8 border-2 border-purple-200 border-t-blue-500 rounded-full animate-spin mx-auto mb-2"></div>
-                      <p className="text-sm text-gray-600">
+                      <div className="w-8 h-8 border-2 border-gray-600 border-t-white rounded-full animate-spin mx-auto mb-2"></div>
+                      <p className="text-sm text-white">
                         {editingUser ? 'Updating...' : 'Creating...'}
                       </p>
                     </div>
@@ -213,31 +213,33 @@ const UsersPage = () => {
                 )}
                 
                 <div className="space-y-2">
-                  <Label htmlFor="name">Name</Label>
+                  <Label htmlFor="name" className="text-white">Name</Label>
                   <Input
                     id="name"
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     placeholder="Enter full name"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
+                  <Label htmlFor="email" className="text-white">Email</Label>
                   <Input
                     id="email"
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                     placeholder="Enter email address"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">
-                    Password {editingUser && <span className="text-sm text-gray-500">(leave empty to keep current)</span>}
+                  <Label htmlFor="password" className="text-white">
+                    Password {editingUser && <span className="text-sm text-gray-400">(leave empty to keep current)</span>}
                   </Label>
                   <Input
                     id="password"
@@ -245,35 +247,37 @@ const UsersPage = () => {
                     value={formData.password}
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
                     placeholder="Enter password"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     required={!editingUser}
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone</Label>
+                  <Label htmlFor="phone" className="text-white">Phone</Label>
                   <Input
                     id="phone"
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     placeholder="Enter phone number"
+                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
                     required
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="role">Role</Label>
+                  <Label htmlFor="role" className="text-white">Role</Label>
                   <Select value={formData.role} onValueChange={(value: 'admin' | 'hotel') => setFormData({...formData, role: value})}>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
                       <SelectValue placeholder="Select role" />
                     </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="hotel">Hotel</SelectItem>
+                    <SelectContent className="bg-gray-700 border-gray-600">
+                      <SelectItem value="hotel" className="text-white hover:bg-gray-600">Hotel</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
 
                 <div className="flex justify-end space-x-2">
-                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} className="border-gray-200 text-gray-600" disabled={isFormLoading}>
+                  <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} className="border-gray-600 text-gray-300 hover:bg-gray-700" disabled={isFormLoading}>
                     Cancel
                   </Button>
                   <Button type="submit" disabled={isFormLoading} className="bg-blue-500 hover:bg-blue-600 min-w-[100px]">
@@ -326,7 +330,7 @@ const UsersPage = () => {
                         variant="outline"
                         size="sm"
                         onClick={() => handleEdit(user)}
-                        className="text-blue-500 border-blue-200 min-w-[70px]"
+                        className="text-white bg-blue-700 border-blue-200 min-w-[70px]"
                       >
                         <Edit className="w-4 h-4 mr-1" />
                         Edit

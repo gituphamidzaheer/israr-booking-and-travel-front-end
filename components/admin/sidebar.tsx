@@ -80,12 +80,23 @@ export function AdminSidebar() {
                     className={cn(
                       "w-full justify-start text-gray-400 hover:text-white hover:bg-gray-800 transition-all duration-200 mx-2 rounded-lg",
                       pathname === item.url &&
-                        "bg-gradient-to-r from-purple-600/20 to-purple-700/20 text-purple-400 border-r-2 border-purple-500 shadow-lg",
+                        "bg-gradient-to-r from-blue-600/20 to-blue-700/20 text-white border-r-2 border-blue-500 shadow-lg",
                     )}
                   >
-                    <Link href={item.url} className="flex items-center space-x-3 px-3 py-2">
-                      <item.icon className="w-5 h-5" />
-                      <span>{item.title}</span>
+                    <Link 
+                      href={item.url} 
+                      className={cn(
+                        "flex items-center space-x-3 px-3 py-2",
+                        pathname === item.url && "text-white"
+                      )}
+                    >
+                      <item.icon className={cn(
+                        "w-5 h-5",
+                        pathname === item.url ? "text-white" : ""
+                      )} />
+                      <span className={cn(
+                        pathname === item.url && "text-white"
+                      )}>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
