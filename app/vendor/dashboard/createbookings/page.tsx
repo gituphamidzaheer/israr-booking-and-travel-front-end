@@ -525,22 +525,22 @@ const BookingsPage = () => {
                         <div className="flex items-center space-x-2">
                           <input
                             type="checkbox"
-                            id="pickAndDrop"
-                            checked={formData.bookingType.pickAndDrop}
+                            id="departure"
+                            checked={formData.bookingType.departure}
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
                                 bookingType: {
                                   ...prev.bookingType,
-                                  pickAndDrop: e.target.checked,
+                                  departure: e.target.checked,
                                 },
                               }))
                             }
                             className="w-4 h-4 text-blue-600 border-blue-300"
                             disabled={isFormLoading}
                           />
-                          <Label htmlFor="pickAndDrop" className="text-gray-700">
-                            Pick & Drop
+                          <Label htmlFor="departure" className="text-gray-700">
+                            Departure
                           </Label>
                         </div>
                         <div className="flex items-center space-x-2">
@@ -570,22 +570,22 @@ const BookingsPage = () => {
                         <div className="flex items-center space-x-2">
                           <input
                             type="checkbox"
-                            id="departure"
-                            checked={formData.bookingType.departure}
+                            id="pickAndDrop"
+                            checked={formData.bookingType.pickAndDrop}
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
                                 bookingType: {
                                   ...prev.bookingType,
-                                  departure: e.target.checked,
+                                  pickAndDrop: e.target.checked,
                                 },
                               }))
                             }
                             className="w-4 h-4 text-blue-600 border-blue-300"
                             disabled={isFormLoading}
                           />
-                          <Label htmlFor="departure" className="text-gray-700">
-                            Departure
+                          <Label htmlFor="pickAndDrop" className="text-gray-700">
+                            Pick & Drop
                           </Label>
                         </div>
                         <div className="flex items-center space-x-2">

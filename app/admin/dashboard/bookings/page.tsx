@@ -221,6 +221,57 @@ export default function AdminBookingsPage() {
     }
   };
 
+  // Calculate statistics for selected hotel
+  const calculateHotelStats = () => {
+    if (!selectedHotel || filteredBookings.length === 0) {
+      return {
+        total: 0,
+        pending: 0,
+        completed: 0,
+        inprogress: 0,
+        cancelled: 0,
+        totalRevenue: 0
+      };
+    }
+
+    const stats = filteredBookings.reduce((acc, booking) => {
+      const fare = Number(booking.fare) || 0;
+      const extraCharge = Number(booking.extraCharge) || 0;
+      const total = fare + extraCharge;
+
+      acc.total += 1;
+      acc.totalRevenue += total;
+
+      switch (booking.status?.toLowerCase()) {
+        case 'pending':
+          acc.pending += 1;
+          break;
+        case 'completed':
+          acc.completed += 1;
+          break;
+        case 'inprogress':
+          acc.inprogress += 1;
+          break;
+        case 'cancelled':
+          acc.cancelled += 1;
+          break;
+      }
+
+      return acc;
+    }, {
+      total: 0,
+      pending: 0,
+      completed: 0,
+      inprogress: 0,
+      cancelled: 0,
+      totalRevenue: 0
+    });
+
+    return stats;
+  };
+
+  const hotelStats = calculateHotelStats();
+
   const formatDate = (dateString?: string) => {
     if (!dateString) return "N/A";
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -485,21 +536,21 @@ export default function AdminBookingsPage() {
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
               <div className="relative w-24 h-24 mx-auto mb-6">
-                <div className="absolute inset-0 border-4 border-indigo-200 rounded-full animate-pulse"></div>
-                <div className="absolute inset-2 border-4 border-indigo-400 border-t-transparent rounded-full animate-spin"></div>
-                <div className="absolute inset-4 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin animation-delay-150"></div>
-                <div className="absolute inset-6 w-12 h-12 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center animate-bounce">
+                <div className="absolute inset-0 border-4 border-blue-200 rounded-full animate-pulse"></div>
+                <div className="absolute inset-2 border-4 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                <div className="absolute inset-4 border-4 border-blue-600 border-t-transparent rounded-full animate-spin animation-delay-150"></div>
+                <div className="absolute inset-6 w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center animate-bounce">
                   <Car className="w-6 h-6 text-white" />
                 </div>
               </div>
               <div className="space-y-2">
-                <h3 className="text-lg font-semibold text-gray-700 animate-pulse">
+                <h3 className="text-lg font-semibold text-blue-700 animate-pulse">
                   Loading Bookings...
                 </h3>
                 <div className="flex justify-center space-x-1">
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce animation-delay-100"></div>
-                  <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce animation-delay-200"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce animation-delay-100"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce animation-delay-200"></div>
                 </div>
               </div>
             </div>
@@ -534,7 +585,7 @@ export default function AdminBookingsPage() {
         )} */}
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <Card className="bg-white border-gray-200 shadow-sm">
             <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
@@ -543,47 +594,110 @@ export default function AdminBookingsPage() {
                     Total Bookings
                   </p>
                   <p className="text-2xl font-bold text-gray-800">
-                    {filteredBookings.length}
+                    {hotelStats.total}
                   </p>
                 </div>
-                <Car className="w-8 h-8 text-indigo-500" />
+                <Car className="w-8 h-8 text-blue-500" />
               </div>
             </CardContent>
           </Card>
 
-          <div className="sm:col-span-2">
-            <Card className="bg-white border-gray-200 shadow-sm h-full">
-              <CardContent className="p-3 sm:p-4">
-                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-                  <Label className="text-sm text-gray-600 font-medium whitespace-nowrap">
-                    Filter by Hotel:
-                  </Label>
-                 <div className="w-[220px] bg-blue-700 rounded-lg">
-                   <Select
-                    value={selectedHotel}
-                    onValueChange={(value) => setSelectedHotel(value)}
-                  >
-                    <SelectTrigger className="bg-blue-700 border-blue-700 text-white rounded-lg">
-                      <SelectValue placeholder="Select hotel" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-blue-700 rounded-lg">
-                      {users.map((user) => (
-                        <SelectItem 
-                          key={user.id} 
-                          value={user.id.toString()}
-                          className="text-white hover:bg-blue-500 focus:bg-blue-500"
-                        >
-                          {user.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                 </div>
+          <Card className="bg-white border-gray-200 shadow-sm">
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-yellow-600 font-medium">
+                    Pending
+                  </p>
+                  <p className="text-2xl font-bold text-yellow-800">
+                    {hotelStats.pending}
+                  </p>
                 </div>
-              </CardContent>
-            </Card>
-          </div>
+                <Clock className="w-8 h-8 text-yellow-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white border-gray-200 shadow-sm">
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-green-600 font-medium">
+                    Completed
+                  </p>
+                  <p className="text-2xl font-bold text-green-800">
+                    {hotelStats.completed}
+                  </p>
+                </div>
+                <CreditCard className="w-8 h-8 text-green-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white border-gray-200 shadow-sm">
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-blue-600 font-medium">
+                    In Progress
+                  </p>
+                  <p className="text-2xl font-bold text-blue-800">
+                    {hotelStats.inprogress}
+                  </p>
+                </div>
+                <Car className="w-8 h-8 text-blue-500" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white border-gray-200 shadow-sm">
+            <CardContent className="p-3 sm:p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-green-600 font-medium">
+                    Total Revenue
+                  </p>
+                  <p className="text-2xl font-bold text-green-800">
+                    ${hotelStats.totalRevenue.toFixed(2)}
+                  </p>
+                </div>
+                <CreditCard className="w-8 h-8 text-green-500" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
+
+        {/* Hotel Filter */}
+        <Card className="bg-white border-gray-200 shadow-sm mb-4 sm:mb-6">
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+              <Label className="text-sm text-gray-600 font-medium whitespace-nowrap">
+                Filter by Hotel:
+              </Label>
+             <div className="w-[220px] bg-blue-700 rounded-lg">
+               <Select
+                value={selectedHotel}
+                onValueChange={(value) => setSelectedHotel(value)}
+              >
+                <SelectTrigger className="bg-blue-700 border-blue-700 text-white rounded-lg">
+                  <SelectValue placeholder="Select hotel" />
+                </SelectTrigger>
+                <SelectContent className="bg-blue-700 rounded-lg">
+                  {users.map((user) => (
+                    <SelectItem 
+                      key={user.id} 
+                      value={user.id.toString()}
+                      className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                    >
+                      {user.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+             </div>
+            </div>
+          </CardContent>
+        </Card>
 
         {/* Search Filters */}
         <Card className="bg-white shadow-sm border-gray-200 mb-4 sm:mb-6">
