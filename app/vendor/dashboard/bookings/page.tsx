@@ -253,7 +253,7 @@ const BookingsPage = () => {
     return (
       <div className="min-h-screen bg-gray-50 w-full">
         <div className="p-2 sm:p-4 lg:p-6">
-          <VendorHeader title="My Bookings" description="View and manage all your booking requests" />
+          <VendorHeader title="My Bookings"  />
           
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -330,10 +330,10 @@ const BookingsPage = () => {
                                   value={searchMonth || "all"}
                                   onValueChange={(value) => setSearchMonth(value === "all" ? "" : value)}
                                 >
-                                  <SelectTrigger className="bg-white w-[160px] text-black border-gray-300 text-sm">
+                                  <SelectTrigger className="bg-blue-600 text-white w-[160px]  border-gray-300 text-sm">
                                     <SelectValue placeholder="Filter by month" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent className="bg-blue-600 text-white">
                                     <SelectItem value="all">All Months</SelectItem>
                                     <SelectItem value="01">January</SelectItem>
                                     <SelectItem value="02">February</SelectItem>
@@ -359,13 +359,13 @@ const BookingsPage = () => {
                     setSearchDate("");
                     setSearchBookedBy("");
                   }}
-                  className="flex-1 w-[160px]"
+                  className="flex-1 w-[160px] bg-blue-600"
                 >
                   Clear
                 </Button>
                 <Button 
                   onClick={downloadCSV}
-                  className="flex-1 bg-blue-600 w-[160px] hover:bg-blue-700"
+                  className="flex-1 bg-blue-600 w-[160px] text-white hover:bg-blue-700"
                 >
                   Download CSV
                 </Button>
@@ -475,7 +475,7 @@ const BookingsPage = () => {
                         <Button
                           size="sm"
                           onClick={() => downloadSingleBookingCSV(booking)}
-                          className="w-full bg-[#111827] text-white "
+                          className="w-full   bg-blue-600 text-white "
                         >
                           <Download className="w-4 h-4 mr-1" />
                           CSV
