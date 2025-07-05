@@ -154,12 +154,12 @@ const UsersPage = () => {
         {/* Stats Cards - Only show when not loading */}
         {!isLoading && (
           <div className="grid grid-cols-1 gap-4 mb-6">
-            <Card className="bg-gradient-to-br from-purple-25 to-blue-50 border-purple-100 shadow-sm">
+            <Card className="bg-blue-700 text-white ">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-blue-600 font-medium">Total Hotels</p>
-                    <p className="text-2xl font-bold text-blue-800">
+                    <p className="text-sm text-white font-medium">Total Hotels</p>
+                    <p className="text-2xl font-bold text-white">
                       {users.filter(u => u.role === 'hotel').length}
                     </p>
                   </div>
@@ -182,7 +182,7 @@ const UsersPage = () => {
                 Create New Hotel
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md bg-gray-800">
+            <DialogContent className="sm:max-w-md bg-blue-600">
               <DialogHeader>
                 <DialogTitle className="text-white">
                   {editingUser ? 'Edit User' : 'Create New User'}
@@ -219,7 +219,7 @@ const UsersPage = () => {
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     placeholder="Enter full name"
-                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                    className="bg-white border-gray-600 text-black placeholder-gray-400"
                     required
                   />
                 </div>
@@ -232,7 +232,7 @@ const UsersPage = () => {
                     value={formData.email}
                     onChange={(e) => setFormData({...formData, email: e.target.value})}
                     placeholder="Enter email address"
-                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                    className="bg-white border-gray-600 text-black placeholder-gray-400"
                     required
                   />
                 </div>
@@ -247,7 +247,7 @@ const UsersPage = () => {
                     value={formData.password}
                     onChange={(e) => setFormData({...formData, password: e.target.value})}
                     placeholder="Enter password"
-                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                    className="bg-white border-gray-600 text-black placeholder-gray-400"
                     required={!editingUser}
                   />
                 </div>
@@ -259,7 +259,7 @@ const UsersPage = () => {
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     placeholder="Enter phone number"
-                    className="bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                    className="bg-white border-gray-600 text-black placeholder-gray-400"
                     required
                   />
                 </div>
@@ -267,11 +267,11 @@ const UsersPage = () => {
                 <div className="space-y-2">
                   <Label htmlFor="role" className="text-white">Role</Label>
                   <Select value={formData.role} onValueChange={(value: 'admin' | 'hotel') => setFormData({...formData, role: value})}>
-                    <SelectTrigger className="bg-gray-700 border-gray-600 text-white">
+                    <SelectTrigger className="bg-white border-gray-600 text-black">
                       <SelectValue placeholder="Select role" />
                     </SelectTrigger>
                     <SelectContent className="bg-gray-700 border-gray-600">
-                      <SelectItem value="hotel" className="text-white hover:bg-gray-600">Hotel</SelectItem>
+                      <SelectItem value="hotel" className="text-white hover:bg-blue">Hotel</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -280,7 +280,7 @@ const UsersPage = () => {
                   <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} className="border-gray-600 text-gray-300 hover:bg-gray-700" disabled={isFormLoading}>
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={isFormLoading} className="bg-blue-500 hover:bg-blue-600 min-w-[100px]">
+                  <Button type="submit" disabled={isFormLoading} className="bg-black text-white hover:bg-gray-600 min-w-[100px]">
                     {isFormLoading ? (
                       <div className="flex items-center space-x-2">
                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -340,7 +340,7 @@ const UsersPage = () => {
                         size="sm"
                         onClick={() => handleDelete(user.id!)}
                         disabled={deletingId === user.id}
-                        className="text-red-500 border-red-200 min-w-[80px]"
+                        className="text-white bg-blue-700 border-red-200 min-w-[80px]"
                       >
                         {deletingId === user.id ? (
                           <div className="flex items-center space-x-1">

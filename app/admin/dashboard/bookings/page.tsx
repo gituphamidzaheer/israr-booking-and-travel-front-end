@@ -99,11 +99,15 @@ export default function AdminBookingsPage() {
       const response = await UserAPI.getAllUsers();
       if (response.success && response.data) {
         // Filter users with role "hotel"
-        const hotelUsers = response.data.filter((user: any) => user.role === "hotel");
-        setUsers(hotelUsers.map((user: any) => ({
-          id: user.id,
-          name: user.name
-        })));
+        const hotelUsers = response.data.filter(
+          (user: any) => user.role === "hotel"
+        );
+        setUsers(
+          hotelUsers.map((user: any) => ({
+            id: user.id,
+            name: user.name,
+          }))
+        );
       }
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -125,12 +129,14 @@ export default function AdminBookingsPage() {
   useEffect(() => {
     if (bookings.length > 0) {
       let filtered = [...bookings];
-      
+
       // Note: Hotel filtering is handled by the API call, not client-side filtering
       // The selectedHotel filter is applied when fetching data from the API
-      
+
       if (statusFilter !== "all") {
-        filtered = filtered.filter(booking => booking.status === statusFilter);
+        filtered = filtered.filter(
+          (booking) => booking.status === statusFilter
+        );
       }
 
       setFilteredBookings(filtered);
@@ -140,11 +146,17 @@ export default function AdminBookingsPage() {
   const fetchBookings = async () => {
     setIsLoading(true);
     try {
-      const response = await BookingAPI.getAllBookings(selectedHotel || undefined);
+      const response = await BookingAPI.getAllBookings(
+        selectedHotel || undefined
+      );
       if (response.success && response.data) {
-        const bookingsData = Array.isArray(response.data) ? response.data : [response.data];
+        const bookingsData = Array.isArray(response.data)
+          ? response.data
+          : [response.data];
         // Filter out any undefined values and ensure all entries are of type Booking
-        const validBookings = bookingsData.filter((booking): booking is Booking => booking !== undefined);
+        const validBookings = bookingsData.filter(
+          (booking): booking is Booking => booking !== undefined
+        );
         setBookings(validBookings);
         setFilteredBookings(validBookings);
       } else {
@@ -187,7 +199,10 @@ export default function AdminBookingsPage() {
       filtered = filtered.filter((booking) => {
         if (!booking.date) return false;
         const bookingDate = new Date(booking.date);
-        const bookingMonth = String(bookingDate.getMonth() + 1).padStart(2, '0');
+        const bookingMonth = String(bookingDate.getMonth() + 1).padStart(
+          2,
+          "0"
+        );
         return bookingMonth === searchMonth;
       });
     }
@@ -230,42 +245,45 @@ export default function AdminBookingsPage() {
         completed: 0,
         inprogress: 0,
         cancelled: 0,
-        totalRevenue: 0
+        totalRevenue: 0,
       };
     }
 
-    const stats = filteredBookings.reduce((acc, booking) => {
-      const fare = Number(booking.fare) || 0;
-      const extraCharge = Number(booking.extraCharge) || 0;
-      const total = fare + extraCharge;
+    const stats = filteredBookings.reduce(
+      (acc, booking) => {
+        const fare = Number(booking.fare) || 0;
+        const extraCharge = Number(booking.extraCharge) || 0;
+        const total = fare + extraCharge;
 
-      acc.total += 1;
-      acc.totalRevenue += total;
+        acc.total += 1;
+        acc.totalRevenue += total;
 
-      switch (booking.status?.toLowerCase()) {
-        case 'pending':
-          acc.pending += 1;
-          break;
-        case 'completed':
-          acc.completed += 1;
-          break;
-        case 'inprogress':
-          acc.inprogress += 1;
-          break;
-        case 'cancelled':
-          acc.cancelled += 1;
-          break;
+        switch (booking.status?.toLowerCase()) {
+          case "pending":
+            acc.pending += 1;
+            break;
+          case "completed":
+            acc.completed += 1;
+            break;
+          case "inprogress":
+            acc.inprogress += 1;
+            break;
+          case "cancelled":
+            acc.cancelled += 1;
+            break;
+        }
+
+        return acc;
+      },
+      {
+        total: 0,
+        pending: 0,
+        completed: 0,
+        inprogress: 0,
+        cancelled: 0,
+        totalRevenue: 0,
       }
-
-      return acc;
-    }, {
-      total: 0,
-      pending: 0,
-      completed: 0,
-      inprogress: 0,
-      cancelled: 0,
-      totalRevenue: 0
-    });
+    );
 
     return stats;
   };
@@ -283,15 +301,14 @@ export default function AdminBookingsPage() {
 
   const handleEdit = (booking: Booking) => {
     const types = booking.bookingType?.split(",") || [];
-    const otherType = types.find(
-      (t) => t !== "PICK&DROP" && t !== "HOURLY"
-    );
+    const otherType = types.find((t) => t !== "PICK&DROP" && t !== "HOURLY");
 
     setEditingBooking(booking);
     setShowSClass(booking.sClass > 0);
     setShowVClass(booking.vClass > 0);
     setShowOthers(
-      booking.others && (booking.others.quantity > 0 || booking.others.vehicleType !== "")
+      booking.others &&
+        (booking.others.quantity > 0 || booking.others.vehicleType !== "")
     );
     setShowOtherBookingType(!!otherType);
     setOtherBookingType(otherType || "");
@@ -313,7 +330,7 @@ export default function AdminBookingsPage() {
     setIsEditLoading(true);
     try {
       const url = `/bookings/${editingBooking.id}`;
-      console.log('Updating booking at:', url);
+      console.log("Updating booking at:", url);
       const { bookingType, type, quantity, ...rest } = editFormData;
       const types = [];
       const parsedBookingType = JSON.parse(bookingType || "{}");
@@ -327,10 +344,15 @@ export default function AdminBookingsPage() {
         bookingType: types.join(","),
         sClass: Number(editFormData.sClass) || 0,
         vClass: Number(editFormData.vClass) || 0,
-        others: showOthers ? editFormData.others : { vehicleType: "", quantity: 0 },
+        others: showOthers
+          ? editFormData.others
+          : { vehicleType: "", quantity: 0 },
       };
 
-      const response = await BookingAPI.updateBooking(editingBooking.id, bookingData);
+      const response = await BookingAPI.updateBooking(
+        editingBooking.id,
+        bookingData
+      );
       if (response.success) {
         await fetchBookings();
         setIsEditModalOpen(false);
@@ -366,6 +388,7 @@ export default function AdminBookingsPage() {
     const headers = [
       "ID",
       "Passenger Name",
+      "Flight No",
       "Phone Number",
       "Pickup Address",
       "Destination",
@@ -396,10 +419,11 @@ export default function AdminBookingsPage() {
     const csvData = filteredBookings.map((booking) => [
       booking.id || "",
       booking.passengerName || "",
+      booking.flightNumber || "",
       booking.guest_phoneno || "",
       booking.pickupAdress || "",
       booking.destination || "",
-      booking.sClass|| booking.vClass|| booking.others?.vehicleType || "",
+      booking.sClass || booking.vClass || booking.others?.vehicleType || "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
       booking.time || "",
       booking.roomNo || "",
@@ -447,6 +471,7 @@ export default function AdminBookingsPage() {
     const headers = [
       "ID",
       "Passenger Name",
+      "Flight No",
       "Phone Number",
       "Pickup Address",
       "Destination",
@@ -478,10 +503,11 @@ export default function AdminBookingsPage() {
     const csvData = [
       booking.id || "",
       booking.passengerName || "",
+      booking.flightNumber || "",
       booking.guest_phoneno || "",
       booking.pickupAdress || "",
       booking.destination || "",
-      booking.sClass|| booking.vClass|| booking.others?.vehicleType || "",
+      booking.sClass || booking.vClass || booking.others?.vehicleType || "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
       booking.time || "",
       booking.roomNo || "",
@@ -575,8 +601,7 @@ export default function AdminBookingsPage() {
   return (
     <div className="w-full min-h-screen mt-16 sm:mt-20 md:mt-24">
       <div className="px-3 sm:px-4 md:px-6 pb-6">
-        <AdminHeader
-          title="Bookings Management"/>
+        <AdminHeader title="Bookings Management" />
 
         {/* {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm mb-6">
@@ -606,9 +631,7 @@ export default function AdminBookingsPage() {
             <CardContent className="p-3 sm:p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-yellow-600 font-medium">
-                    Pending
-                  </p>
+                  <p className="text-sm text-yellow-600 font-medium">Pending</p>
                   <p className="text-2xl font-bold text-yellow-800">
                     {hotelStats.pending}
                   </p>
@@ -674,27 +697,27 @@ export default function AdminBookingsPage() {
               <Label className="text-sm text-gray-600 font-medium whitespace-nowrap">
                 Filter by Hotel:
               </Label>
-             <div className="w-[220px] bg-blue-700 rounded-lg">
-               <Select
-                value={selectedHotel}
-                onValueChange={(value) => setSelectedHotel(value)}
-              >
-                <SelectTrigger className="bg-blue-700 border-blue-700 text-white rounded-lg">
-                  <SelectValue placeholder="Select hotel" />
-                </SelectTrigger>
-                <SelectContent className="bg-blue-700 rounded-lg">
-                  {users.map((user) => (
-                    <SelectItem 
-                      key={user.id} 
-                      value={user.id.toString()}
-                      className="text-white hover:bg-blue-500 focus:bg-blue-500"
-                    >
-                      {user.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-             </div>
+              <div className="w-[220px] bg-blue-700 rounded-lg">
+                <Select
+                  value={selectedHotel}
+                  onValueChange={(value) => setSelectedHotel(value)}
+                >
+                  <SelectTrigger className="bg-blue-700 border-blue-700 text-white rounded-lg">
+                    <SelectValue placeholder="Select hotel" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-blue-700 rounded-lg">
+                    {users.map((user) => (
+                      <SelectItem
+                        key={user.id}
+                        value={user.id.toString()}
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        {user.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -705,7 +728,9 @@ export default function AdminBookingsPage() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-start sm:items-center">
               <div className="flex items-center space-x-2 w-full sm:w-auto">
                 <Search className="w-4 h-4 text-gray-500" />
-                <span className="text-sm font-medium text-gray-700">Filters:</span>
+                <span className="text-sm font-medium text-gray-700">
+                  Filters:
+                </span>
               </div>
               <div className="grid sm:grid-cols-2 md:flex md:flex-row gap-3 sm:gap-4  w-full">
                 <div className="w-[200px] rounded-lg ">
@@ -735,49 +760,102 @@ export default function AdminBookingsPage() {
                 <div className="w-[200px] ">
                   <Select
                     value={searchMonth || "all"}
-                    onValueChange={(value) => setSearchMonth(value === "all" ? "" : value)}
+                    onValueChange={(value) =>
+                      setSearchMonth(value === "all" ? "" : value)
+                    }
                   >
                     <SelectTrigger className="bg-blue-700 text-white border-blue-700 text-sm h-11 sm:h-10 rounded-lg">
                       <SelectValue placeholder="Filter by month" />
                     </SelectTrigger>
                     <SelectContent className="bg-blue-700 rounded-lg">
-                      <SelectItem value="all" className="text-white hover:bg-blue-500 focus:bg-blue-500">All Months</SelectItem>
-                      <SelectItem value="01" className="text-white hover:bg-blue-500 focus:bg-blue-500">January</SelectItem>
-                      <SelectItem value="02" className="text-white hover:bg-blue-500 focus:bg-blue-500">February</SelectItem>
-                      <SelectItem value="03" className="text-white hover:bg-blue-500 focus:bg-blue-500">March</SelectItem>
-                      <SelectItem value="04" className="text-white hover:bg-blue-500 focus:bg-blue-500">April</SelectItem>
-                      <SelectItem value="05" className="text-white hover:bg-blue-500 focus:bg-blue-500">May</SelectItem>
-                      <SelectItem value="06" className="text-white hover:bg-blue-500 focus:bg-blue-500">June</SelectItem>
-                      <SelectItem value="07" className="text-white hover:bg-blue-500 focus:bg-blue-500">July</SelectItem>
-                      <SelectItem value="08" className="text-white hover:bg-blue-500 focus:bg-blue-500">August</SelectItem>
-                      <SelectItem value="09" className="text-white hover:bg-blue-500 focus:bg-blue-500">September</SelectItem>
-                      <SelectItem value="10" className="text-white hover:bg-blue-500 focus:bg-blue-500">October</SelectItem>
-                      <SelectItem value="11" className="text-white hover:bg-blue-500 focus:bg-blue-500">November</SelectItem>
-                      <SelectItem value="12" className="text-white hover:bg-blue-500 focus:bg-blue-500">December</SelectItem>
+                      <SelectItem
+                        value="all"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        All Months
+                      </SelectItem>
+                      <SelectItem
+                        value="01"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        January
+                      </SelectItem>
+                      <SelectItem
+                        value="02"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        February
+                      </SelectItem>
+                      <SelectItem
+                        value="03"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        March
+                      </SelectItem>
+                      <SelectItem
+                        value="04"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        April
+                      </SelectItem>
+                      <SelectItem
+                        value="05"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        May
+                      </SelectItem>
+                      <SelectItem
+                        value="06"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        June
+                      </SelectItem>
+                      <SelectItem
+                        value="07"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        July
+                      </SelectItem>
+                      <SelectItem
+                        value="08"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        August
+                      </SelectItem>
+                      <SelectItem
+                        value="09"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        September
+                      </SelectItem>
+                      <SelectItem
+                        value="10"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        October
+                      </SelectItem>
+                      <SelectItem
+                        value="11"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        November
+                      </SelectItem>
+                      <SelectItem
+                        value="12"
+                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                      >
+                        December
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="w-[200px] ">
-                  <Select
-                    value={searchYear || "all"}
-                    onValueChange={(value) => setSearchYear(value === "all" ? "" : value)}
-                  >
-                    <SelectTrigger className="bg-blue-700 text-white border-blue-700 text-sm h-11 sm:h-10 rounded-lg">
-                      <SelectValue placeholder="Filter by year" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-blue-700 rounded-lg">
-                      <SelectItem value="all" className="text-white hover:bg-blue-500 focus:bg-blue-500">All Years</SelectItem>
-                      <SelectItem value="2028" className="text-white hover:bg-blue-500 focus:bg-blue-500">2028</SelectItem>
-                      <SelectItem value="2027" className="text-white hover:bg-blue-500 focus:bg-blue-500">2027</SelectItem>
-                      <SelectItem value="2026" className="text-white hover:bg-blue-500 focus:bg-blue-500">2026</SelectItem>
-                      <SelectItem value="2025" className="text-white hover:bg-blue-500 focus:bg-blue-500">2025</SelectItem>
-                      <SelectItem value="2024" className="text-white hover:bg-blue-500 focus:bg-blue-500">2024</SelectItem>
-                      <SelectItem value="2023" className="text-white hover:bg-blue-500 focus:bg-blue-500">2023</SelectItem>
-                      <SelectItem value="2022" className="text-white hover:bg-blue-500 focus:bg-blue-500">2022</SelectItem>
-                      <SelectItem value="2021" className="text-white hover:bg-blue-500 focus:bg-blue-500">2021</SelectItem>
-                      <SelectItem value="2020" className="text-white hover:bg-blue-500 focus:bg-blue-500">2020</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Input
+                    placeholder="Search by year..."
+                    value={searchYear}
+                    onChange={(e) => setSearchYear(e.target.value)}
+                    className="bg-white w-[160px] text-black border-blue-600"
+                  />
                 </div>
                 <Button
                   variant="outline"
@@ -809,51 +887,54 @@ export default function AdminBookingsPage() {
           <CardContent className="p-0">
             <div className="overflow-x-auto w-full -mx-1 sm:mx-0">
               <Table className="min-w-[800px] sm:min-w-[900px] md:min-w-full">
-                <TableHeader className="bg-gradient-to-r from-indigo-50 to-blue-50 top-0 z-20">
+                <TableHeader className="bg-blue-600 z-20">
                   <TableRow className="border-b border-gray-200">
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
+                    <TableHead className="font-semibold text-white py-4 w-[6%]">
                       ID
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
+                    <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Date & Time
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
+                    <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Room No
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
+                    <TableHead className="font-semibold  text-white py-4 w-[10%]">
                       Guest Name
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
+                    <TableHead className="font-semibold text-white py-4 w-[10%]">
+                      Flight No
+                    </TableHead>
+                    <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Pickup
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
+                    <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Destination
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
+                    <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Vehicle
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[10%]">
+                    <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Driver
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[12%]">
+                    <TableHead className="font-semibold text-white py-4 w-[12%]">
                       Note
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
+                    <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Request By
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
+                    <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Fare
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
+                    <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Extra
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4 w-[6%]">
+                    <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Total
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4">
+                    <TableHead className="font-semibold text-white py-4">
                       Status
                     </TableHead>
-                    <TableHead className="font-semibold text-gray-700 py-4">
+                    <TableHead className="font-semibold text-white py-4">
                       Actions
                     </TableHead>
                   </TableRow>
@@ -893,14 +974,14 @@ export default function AdminBookingsPage() {
 
                         {/* Room No */}
                         <TableCell className="py-4 text-center text-black">
-                          {booking.roomNo || 'N/A'}
+                          {booking.roomNo || "N/A"}
                         </TableCell>
 
                         {/* Guest Info */}
                         <TableCell className="py-4 text-black">
                           <div className="space-y-1">
                             <div className="text-sm font-medium">
-                              {booking.passengerName || 'N/A'}
+                              {booking.passengerName || "N/A"}
                             </div>
                             {booking.guest_phoneno && (
                               <div className="text-xs text-gray-500 flex items-center">
@@ -909,6 +990,10 @@ export default function AdminBookingsPage() {
                               </div>
                             )}
                           </div>
+                        </TableCell>
+
+                        <TableCell className="py-4 text-center text-black">
+                          {booking.flightNumber || "N/A"}
                         </TableCell>
 
                         {/* Pickup Address */}
@@ -925,29 +1010,41 @@ export default function AdminBookingsPage() {
                           </div>
                         </TableCell>
 
-                       <TableCell className="py-4 text-black">
+                        <TableCell className="py-4 text-black">
                           <div className="space-y-1">
                             {booking.sClass > 0 && (
                               <div className="text-sm font-medium">
-                                S-Class <span className="text-xs text-gray-500">Qty: {booking.sClass}</span>
+                                S-Class{" "}
+                                <span className="text-xs text-gray-500">
+                                  Qty: {booking.sClass}
+                                </span>
                               </div>
                             )}
                             {booking.vClass > 0 && (
                               <div className="text-sm font-medium">
-                                V-Class <span className="text-xs text-gray-500">Qty: {booking.vClass}</span>
+                                V-Class{" "}
+                                <span className="text-xs text-gray-500">
+                                  Qty: {booking.vClass}
+                                </span>
                               </div>
                             )}
                             {booking.others && booking.others.vehicleType && (
                               <div className="text-sm font-medium">
-                                {booking.others.vehicleType} <span className="text-xs text-gray-500">Qty: {booking.others.quantity}</span>
+                                {booking.others.vehicleType}{" "}
+                                <span className="text-xs text-gray-500">
+                                  Qty: {booking.others.quantity}
+                                </span>
                               </div>
                             )}
-                            {!booking.sClass && !booking.vClass && (!booking.others || !booking.others.vehicleType) && (
-                              <div className="text-sm text-gray-500">
-                                N/A
-                                <div className="text-xs">Qty: 0</div>
-                              </div>
-                            )}
+                            {!booking.sClass &&
+                              !booking.vClass &&
+                              (!booking.others ||
+                                !booking.others.vehicleType) && (
+                                <div className="text-sm text-gray-500">
+                                  N/A
+                                  <div className="text-xs">Qty: 0</div>
+                                </div>
+                              )}
                           </div>
                         </TableCell>
 
@@ -955,10 +1052,10 @@ export default function AdminBookingsPage() {
                         <TableCell className="py-4 text-black">
                           <div className="space-y-1">
                             <div className="text-sm font-medium">
-                              {booking.driverName || 'Not Assigned'}
+                              {booking.driverName || "Not Assigned"}
                             </div>
                             <div className="text-xs text-gray-500">
-                              {booking.driverNumber || 'No Contact'}
+                              {booking.driverNumber || "No Contact"}
                             </div>
                           </div>
                         </TableCell>
@@ -966,31 +1063,33 @@ export default function AdminBookingsPage() {
                         {/* Note */}
                         <TableCell className="py-4 text-black">
                           <div className="text-sm break-words max-h-20 min-w-28">
-                            {booking.note || 'No notes'}
+                            {booking.note || "No notes"}
                           </div>
                         </TableCell>
 
                         {/* Booked By */}
                         <TableCell className="py-4 text-black">
                           <div className="text-sm">
-                            {booking.bookBy || 'N/A'}
+                            {booking.bookBy || "N/A"}
                           </div>
                         </TableCell>
 
                         {/* Fare */}
                         <TableCell className="py-4 text-black">
                           <div className="text-sm font-semibold">
-                            ${booking.fare || '0'}
+                            ${booking.fare || "0"}
                           </div>
                         </TableCell>
                         <TableCell className="py-4 text-black">
                           <div className="text-sm font-semibold text-orange-600">
-                            ${Number(booking.extraCharge) || '0'}
+                            ${Number(booking.extraCharge) || "0"}
                           </div>
                         </TableCell>
                         <TableCell className="py-4 text-black">
                           <div className="text-sm font-semibold text-green-600">
-                            ${(Number(booking.fare) || 0) + (Number(booking.extraCharge) || 0)}
+                            $
+                            {(Number(booking.fare) || 0) +
+                              (Number(booking.extraCharge) || 0)}
                           </div>
                         </TableCell>
 
@@ -1033,7 +1132,7 @@ export default function AdminBookingsPage() {
                                 <Button
                                   variant="outline"
                                   size="sm"
-                                  className="bg-red-50  text-red-700 border-red-200"
+                                  className="bg-blue-600 text-white"
                                 >
                                   <Trash2 className="w-3 h-3 mr-1" />
                                   Delete
@@ -1050,12 +1149,14 @@ export default function AdminBookingsPage() {
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
-                                  <AlertDialogCancel className="bg-blue-700 text-white border-blue-700 hover:bg-blue-800">Cancel</AlertDialogCancel>
+                                  <AlertDialogCancel className="bg-black text-white border-gray-700 hover:bg-gray-800">
+                                    Cancel
+                                  </AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={() =>
                                       booking.id && handleDelete(booking.id)
                                     }
-                                    className="bg-red-600 hover:bg-red-700"
+                                    className="bg-black text-white hover:bg-gray-700"
                                   >
                                     Delete
                                   </AlertDialogAction>
@@ -1131,7 +1232,10 @@ export default function AdminBookingsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-phone" className="text-gray-800 font-bold text-sm">
+                <Label
+                  htmlFor="edit-phone"
+                  className="text-gray-800 font-bold text-sm"
+                >
                   Phone Number
                 </Label>
                 <Input
@@ -1208,7 +1312,10 @@ export default function AdminBookingsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-date" className="text-gray-800 font-bold text-sm">
+                <Label
+                  htmlFor="edit-date"
+                  className="text-gray-800 font-bold text-sm"
+                >
                   Date *
                 </Label>
                 <Input
@@ -1223,7 +1330,10 @@ export default function AdminBookingsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-room" className="text-gray-800 font-bold text-sm">
+                <Label
+                  htmlFor="edit-room"
+                  className="text-gray-800 font-bold text-sm"
+                >
                   Room Number
                 </Label>
                 <Input
@@ -1237,7 +1347,10 @@ export default function AdminBookingsPage() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="edit-time" className="text-gray-800 font-bold text-sm">
+                <Label
+                  htmlFor="edit-time"
+                  className="text-gray-800 font-bold text-sm"
+                >
                   Time *
                 </Label>
                 <Input
@@ -1252,7 +1365,9 @@ export default function AdminBookingsPage() {
 
               {/* Fare Calculation Section */}
               <div className="col-span-1 md:col-span-2 space-y-3 sm:space-y-4">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-800 border-b pb-2">Fare Information</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800 border-b pb-2">
+                  Fare Information
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                   <div className="space-y-2">
                     <Label
@@ -1366,7 +1481,7 @@ export default function AdminBookingsPage() {
                   className="bg-white text-black border-gray-300 text-sm h-10"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label
                   htmlFor="edit-noofvehicle"
@@ -1405,10 +1520,30 @@ export default function AdminBookingsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-blue-700 rounded-lg">
-                    <SelectItem value="pending" className="text-white hover:bg-blue-500 focus:bg-blue-500">Pending</SelectItem>
-                    <SelectItem value="inprogress" className="text-white hover:bg-blue-500 focus:bg-blue-500">In Progress</SelectItem>
-                    <SelectItem value="completed" className="text-white hover:bg-blue-500 focus:bg-blue-500">Completed</SelectItem>
-                    <SelectItem value="cancelled" className="text-white hover:bg-blue-500 focus:bg-blue-500">Cancelled</SelectItem>
+                    <SelectItem
+                      value="pending"
+                      className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                    >
+                      Pending
+                    </SelectItem>
+                    <SelectItem
+                      value="inprogress"
+                      className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                    >
+                      In Progress
+                    </SelectItem>
+                    <SelectItem
+                      value="completed"
+                      className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                    >
+                      Completed
+                    </SelectItem>
+                    <SelectItem
+                      value="cancelled"
+                      className="text-white hover:bg-blue-500 focus:bg-blue-500"
+                    >
+                      Cancelled
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -1442,7 +1577,10 @@ export default function AdminBookingsPage() {
                       }}
                       className="w-4 h-4 text-blue-600 border-gray-300 rounded"
                     />
-                    <Label htmlFor="edit-pickAndDrop" className="text-gray-700 text-sm">
+                    <Label
+                      htmlFor="edit-pickAndDrop"
+                      className="text-gray-700 text-sm"
+                    >
                       Pick & Drop
                     </Label>
                   </div>
@@ -1471,7 +1609,10 @@ export default function AdminBookingsPage() {
                       }}
                       className="w-4 h-4 text-blue-600 border-gray-300 rounded"
                     />
-                    <Label htmlFor="edit-hourly" className="text-gray-700 text-sm">
+                    <Label
+                      htmlFor="edit-hourly"
+                      className="text-gray-700 text-sm"
+                    >
                       Hourly
                     </Label>
                   </div>
@@ -1497,7 +1638,10 @@ export default function AdminBookingsPage() {
                       }}
                       className="w-4 h-4 text-purple-600 border-gray-300 rounded"
                     />
-                    <Label htmlFor="edit-other-type" className="text-gray-700 text-sm">
+                    <Label
+                      htmlFor="edit-other-type"
+                      className="text-gray-700 text-sm"
+                    >
                       Other
                     </Label>
                   </div>
@@ -1531,7 +1675,9 @@ export default function AdminBookingsPage() {
 
               {/* Vehicle Information */}
               <div className="col-span-1 md:col-span-2 space-y-3 sm:space-y-4">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-800 border-b pb-2">Vehicle Information</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800 border-b pb-2">
+                  Vehicle Information
+                </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
@@ -1573,7 +1719,7 @@ export default function AdminBookingsPage() {
                       />
                     )}
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <input
@@ -1614,7 +1760,7 @@ export default function AdminBookingsPage() {
                       />
                     )}
                   </div>
-                  
+
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2">
                       <input
@@ -1684,7 +1830,10 @@ export default function AdminBookingsPage() {
               </div>
 
               <div className="col-span-1 md:col-span-2 space-y-2">
-                <Label htmlFor="edit-note" className="text-gray-800 font-bold text-sm">
+                <Label
+                  htmlFor="edit-note"
+                  className="text-gray-800 font-bold text-sm"
+                >
                   Notes
                 </Label>
                 <Textarea
@@ -1711,7 +1860,7 @@ export default function AdminBookingsPage() {
               <Button
                 onClick={handleEditSubmit}
                 disabled={isEditLoading}
-                className="bg-blue-700 hover:bg-blue-800 w-full sm:w-auto order-1 sm:order-2 h-10 sm:h-auto min-h-[44px]"
+                className="bg-blue-700 hover:bg-blue-800 text-white w-full sm:w-auto order-1 sm:order-2 h-10 sm:h-auto min-h-[44px]"
               >
                 {isEditLoading ? (
                   <div className="flex items-center space-x-2 justify-center">
@@ -1782,18 +1931,20 @@ export default function AdminBookingsPage() {
           word-break: break-word;
           white-space: normal;
         }
-        
+
         @media (max-width: 1024px) {
           .table-container {
             overflow-x: auto;
           }
-          
+
           table {
             min-width: 1000px;
           }
         }
 
-        input, textarea, select {
+        input,
+        textarea,
+        select {
           color: black !important;
         }
         .text-black {
@@ -1803,5 +1954,3 @@ export default function AdminBookingsPage() {
     </div>
   );
 }
-
-
