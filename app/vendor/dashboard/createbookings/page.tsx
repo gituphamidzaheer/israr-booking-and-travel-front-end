@@ -23,6 +23,7 @@ const BookingsPage = () => {
     pickupAdress: "",
     destination: "",
     time: "",
+    numberOfPassengers: "",
     flightNumber: "",
     bookingType: {
       pickAndDrop: false,
@@ -175,6 +176,7 @@ const BookingsPage = () => {
           pickupAdress: "",
           destination: "",
           time: "",
+          numberOfPassengers: "",
           flightNumber: "",
           bookingType: {
             pickAndDrop: false,
@@ -319,7 +321,7 @@ const BookingsPage = () => {
                       id="roomNo"
                       value={formData.roomNo}
                       onChange={handleInputChange("roomNo")}
-                      placeholder="Enter room number"
+                      //placeholder="Enter room number"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
                       disabled={isFormLoading}
                     />
@@ -339,7 +341,7 @@ const BookingsPage = () => {
                       id="passengerName"
                       value={formData.passengerName}
                       onChange={handleInputChange("passengerName")}
-                      placeholder="Enter guest name"
+                      //placeholder="Enter guest name"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
                       required
                       disabled={isFormLoading}
@@ -363,7 +365,7 @@ const BookingsPage = () => {
                       id="guestPhoneNo"
                       value={formData.guest_phoneno}
                       onChange={handleInputChange("guest_phoneno")}
-                      placeholder="Enter guest phone number"
+                      //placeholder="Enter guest phone number"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
                       disabled={isFormLoading}
                     />
@@ -383,7 +385,7 @@ const BookingsPage = () => {
                       id="pickupAddress"
                       value={formData.pickupAdress}
                       onChange={handleInputChange("pickupAdress")}
-                      placeholder="Enter pickup address"
+                      //placeholder="Enter pickup address"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
                       required
                       disabled={isFormLoading}
@@ -404,7 +406,7 @@ const BookingsPage = () => {
                       id="destination"
                       value={formData.destination}
                       onChange={handleInputChange("destination")}
-                      placeholder="Enter destination"
+                      //placeholder="Enter destination"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
                       required
                       disabled={isFormLoading}
@@ -413,7 +415,7 @@ const BookingsPage = () => {
                 </div>
               </div>
 
-              {/* Third Row: Time, Flight No, Book By */}
+              {/* Third Row: Time, Number of Passengers, Flight No */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
                 {/* Time */}
                 <div className="bg-white p-3 sm:p-4 rounded-lg">
@@ -429,7 +431,7 @@ const BookingsPage = () => {
                       type="text"
                       value={formData.time}
                       onChange={handleInputChange("time")}
-                      placeholder="Enter time (24hours)"
+                      //placeholder="Enter time (24hours)"
                       pattern="^([0]?[1-9]|1[0-2]):[0-5][0-9](\s?[AaPp][Mm])?$|^(?:[01]?[0-9]|2[0-3]):[0-5][0-9]$"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 text-sm sm:text-base"
                       required
@@ -451,8 +453,31 @@ const BookingsPage = () => {
                       id="flightNo"
                       value={formData.flightNumber}
                       onChange={handleInputChange("flightNumber")}
-                      placeholder="Enter flight number"
+                      //placeholder="Enter flight number"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
+                      disabled={isFormLoading}
+                    />
+                  </div>
+                </div>
+
+                  {/* Number of Passengers */}
+                <div className="bg-white p-3 sm:p-4 rounded-lg">
+                  <div className="space-y-2">
+                    <Label
+                      htmlFor="numberOfPassengers"
+                      className="text-blue-700 font-medium text-sm sm:text-base"
+                    >
+                      Number of Passengers *
+                    </Label>
+                    <Input
+                      id="numberOfPassengers"
+                      type="number"
+                      min="1"
+                      value={formData.numberOfPassengers}
+                      onChange={handleInputChange("numberOfPassengers")}
+                      //placeholder="Enter number of passengers"
+                      className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
+                      required
                       disabled={isFormLoading}
                     />
                   </div>
@@ -545,7 +570,7 @@ const BookingsPage = () => {
                                 otherBookingType: e.target.value,
                               }))
                             }
-                            placeholder="Specify other booking type"
+                            //placeholder="Specify other booking type"
                             className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 text-sm sm:text-base mt-2"
                             disabled={isFormLoading}
                           />
@@ -568,7 +593,7 @@ const BookingsPage = () => {
                       id="bookBy"
                       value={formData.bookBy}
                       onChange={handleInputChange("bookBy")}
-                      placeholder="Enter No"
+                      //placeholder="Enter No"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
                       required
                       disabled={isFormLoading}
@@ -609,7 +634,7 @@ const BookingsPage = () => {
                         min="0"
                         value={formData.sClass}
                         onChange={handleInputChange("sClass")}
-                        placeholder="Enter S-Class quantity"
+                       // placeholder="Enter S-Class quantity"
                         className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 text-sm sm:text-base mt-2"
                         disabled={isFormLoading}
                       />
@@ -640,7 +665,7 @@ const BookingsPage = () => {
                         min="0"
                         value={formData.vClass}
                         onChange={handleInputChange("vClass")}
-                        placeholder="Enter V-Class quantity"
+                        // placeholder="Enter V-Class quantity"
                         className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 text-sm sm:text-base mt-2"
                         disabled={isFormLoading}
                       />
@@ -679,7 +704,7 @@ const BookingsPage = () => {
                               },
                             }))
                           }
-                          placeholder="Enter Other Vehicle Type"
+                          // placeholder="Enter Other Vehicle Type"
                           className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 text-sm sm:text-base mt-2"
                           disabled={isFormLoading}
                         />
@@ -697,7 +722,7 @@ const BookingsPage = () => {
                               },
                             }))
                           }
-                          placeholder="Enter Other Vehicle Quantity"
+                          // placeholder="Enter Other Vehicle Quantity"
                           className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 text-sm sm:text-base mt-2"
                           disabled={isFormLoading}
                         />
@@ -739,7 +764,7 @@ const BookingsPage = () => {
                     id="note"
                     value={formData.note}
                     onChange={handleInputChange("note")}
-                    placeholder="Enter any additional note"
+                    // placeholder="Enter any additional note"
                     className="border-blue-300 min-h-[80px] bg-white text-gray-900 placeholder-gray-500 text-sm sm:text-base"
                     rows={3}
                     disabled={isFormLoading}
