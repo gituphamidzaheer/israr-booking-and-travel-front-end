@@ -380,22 +380,22 @@ const BookingsPage = () => {
             <Table>
               {/* Table Header */}
               <TableHeader className=''>
-                <TableRow className='bg-blue-600 text-white'>
-                  <TableHead className="w-20 text-white">ID</TableHead>
-                  <TableHead className="w-32 text-white">Date & Time</TableHead>
-                  <TableHead className="w-24 text-white">Room</TableHead>
-                  <TableHead className="w-40 text-white">Guest Name</TableHead>
-                  <TableHead className="w-40 text-white">Pickup</TableHead>
-                  <TableHead className="w-40 text-white">Destination</TableHead>
-                  <TableHead className="w-40 text-white">Vehicle</TableHead>
-                  <TableHead className="w-40 text-white">Driver</TableHead>
-                  <TableHead className="w-40 text-white">Note</TableHead>
-                  <TableHead className="w-32 text-white">Request By</TableHead>
-                  <TableHead className="w-24 text-white">Fare</TableHead>
-                  <TableHead className="w-24 text-white">Extra</TableHead>
-                  <TableHead className="w-24 text-white">Total</TableHead>
-                  <TableHead className="w-28 text-white">Status</TableHead>
-                  <TableHead className="w-32 text-white">Actions</TableHead>
+                <TableRow className='bg-blue-600 text-white hover:bg-blue-600'>
+                  <TableHead className="w-20 text-white hover:bg-blue-600">ID</TableHead>
+                  <TableHead className="w-32 text-white hover:bg-blue-600">Date & Time</TableHead>
+                  <TableHead className="w-24 text-white hover:bg-blue-600">Room</TableHead>
+                  <TableHead className="w-40 text-white hover:bg-blue-600">Guest Name</TableHead>
+                  <TableHead className="w-40 text-white hover:bg-blue-600">Pickup</TableHead>
+                  <TableHead className="w-40 text-white hover:bg-blue-600">Destination</TableHead>
+                  <TableHead className="w-40 text-white hover:bg-blue-600">Vehicle</TableHead>
+                  <TableHead className="w-40 text-white hover:bg-blue-600">Driver</TableHead>
+                  <TableHead className="w-40 text-white hover:bg-blue-600">Note</TableHead>
+                  <TableHead className="w-32 text-white hover:bg-blue-600">Request By</TableHead>
+                  <TableHead className="w-24 text-white hover:bg-blue-600">Fare</TableHead>
+                  <TableHead className="w-24 text-white hover:bg-blue-600">Extra</TableHead>
+                  <TableHead className="w-24 text-white hover:bg-blue-600">Total</TableHead>
+                  <TableHead className="w-28 text-white hover:bg-blue-600">Status</TableHead>
+                  <TableHead className="w-32 text-white hover:bg-blue-600">Actions</TableHead>
                 </TableRow> 
               </TableHeader>
               <TableBody className='bg-white text-black'>

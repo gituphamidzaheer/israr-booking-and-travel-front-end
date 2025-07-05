@@ -26,6 +26,8 @@ const BookingsPage = () => {
     numberOfPassengers: "",
     flightNumber: "",
     bookingType: {
+      arrival: false,
+      departure: false,
       pickAndDrop: false,
       hourly: false,
       other: false
@@ -131,6 +133,8 @@ const BookingsPage = () => {
       const types = [];
       
       // Modified booking type handling
+      if (bookingType.arrival) types.push('ARRIVAL');
+      if (bookingType.departure) types.push('DEPARTURE');
       if (bookingType.pickAndDrop) types.push('PICK&DROP');
       if (bookingType.hourly) types.push('HOURLY');
       if (bookingType.other && otherBookingType.trim()) {
@@ -179,6 +183,8 @@ const BookingsPage = () => {
           numberOfPassengers: "",
           flightNumber: "",
           bookingType: {
+            arrival: false,
+            departure: false,
             pickAndDrop: false,
             hourly: false,
             other: false
@@ -493,51 +499,50 @@ const BookingsPage = () => {
                     <Label className="text-blue-700 font-medium text-sm sm:text-base">
                       Booking Type *
                     </Label>
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id="pickAndDrop"
-                          checked={formData.bookingType.pickAndDrop}
-                          onChange={(e) =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              bookingType: {
-                                ...prev.bookingType,
-                                pickAndDrop: e.target.checked,
-                              },
-                            }))
-                          }
-                          className="w-4 h-4 text-blue-600 border-blue-300"
-                          disabled={isFormLoading}
-                        />
-                        <Label htmlFor="pickAndDrop" className="text-gray-700">
-                          Pick & Drop
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          id="hourly"
-                          checked={formData.bookingType.hourly}
-                          onChange={(e) =>
-                            setFormData((prev) => ({
-                              ...prev,
-                              bookingType: {
-                                ...prev.bookingType,
-                                hourly: e.target.checked,
-                              },
-                            }))
-                          }
-                          className="w-4 h-4 text-blue-600 border-blue-300"
-                          disabled={isFormLoading}
-                        />
-                        <Label htmlFor="hourly" className="text-gray-700">
-                          Hourly
-                        </Label>
-                      </div>
-                      {/* Add Other Booking Type */}
+                    <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id="arrival"
+                            checked={formData.bookingType.arrival}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                bookingType: {
+                                  ...prev.bookingType,
+                                  arrival: e.target.checked,
+                                },
+                              }))
+                            }
+                            className="w-4 h-4 text-blue-600 border-blue-300"
+                            disabled={isFormLoading}
+                          />
+                          <Label htmlFor="arrival" className="text-gray-700">
+                            Arrival
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id="pickAndDrop"
+                            checked={formData.bookingType.pickAndDrop}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                bookingType: {
+                                  ...prev.bookingType,
+                                  pickAndDrop: e.target.checked,
+                                },
+                              }))
+                            }
+                            className="w-4 h-4 text-blue-600 border-blue-300"
+                            disabled={isFormLoading}
+                          />
+                          <Label htmlFor="pickAndDrop" className="text-gray-700">
+                            Pick & Drop
+                          </Label>
+                        </div>
                         <div className="flex items-center space-x-2">
                           <input
                             type="checkbox"
@@ -560,23 +565,67 @@ const BookingsPage = () => {
                             Other
                           </Label>
                         </div>
-                        {formData.bookingType.other && (
-                          <Input
-                            type="text"
-                            value={formData.otherBookingType}
+                      </div>
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id="departure"
+                            checked={formData.bookingType.departure}
                             onChange={(e) =>
                               setFormData((prev) => ({
                                 ...prev,
-                                otherBookingType: e.target.value,
+                                bookingType: {
+                                  ...prev.bookingType,
+                                  departure: e.target.checked,
+                                },
                               }))
                             }
-                            //placeholder="Specify other booking type"
-                            className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 text-sm sm:text-base mt-2"
+                            className="w-4 h-4 text-blue-600 border-blue-300"
                             disabled={isFormLoading}
                           />
-                        )}
+                          <Label htmlFor="departure" className="text-gray-700">
+                            Departure
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            id="hourly"
+                            checked={formData.bookingType.hourly}
+                            onChange={(e) =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                bookingType: {
+                                  ...prev.bookingType,
+                                  hourly: e.target.checked,
+                                },
+                              }))
+                            }
+                            className="w-4 h-4 text-blue-600 border-blue-300"
+                            disabled={isFormLoading}
+                          />
+                          <Label htmlFor="hourly" className="text-gray-700">
+                            Hourly (minimum 3 hrs)
+                          </Label>
+                        </div>
                       </div>
                     </div>
+                    {formData.bookingType.other && (
+                      <Input
+                        type="text"
+                        value={formData.otherBookingType}
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            otherBookingType: e.target.value,
+                          }))
+                        }
+                        //placeholder="Specify other booking type"
+                        className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 text-sm sm:text-base mt-2"
+                        disabled={isFormLoading}
+                      />
+                    )}
                   </div>
                 </div>
 
