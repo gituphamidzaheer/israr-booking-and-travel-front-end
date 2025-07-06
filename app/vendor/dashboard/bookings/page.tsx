@@ -252,6 +252,7 @@ const BookingsPage = () => {
       "Guest Phone",
       "Pickup",
       "Destination",
+      "Booking Type",
       "Vehicle",
       "Driver",
       "Note",
@@ -270,6 +271,7 @@ const BookingsPage = () => {
       b.guest_phoneno || "",
       b.pickupAdress,
       b.destination,
+      b.bookingType || "",
       b.sClass || b.vClass || b.others?.vehicleType || "",
       `${b.driverName || ""} ${b.driverNumber ? `(${b.driverNumber})` : ""}`,
       b.note || "",
@@ -301,6 +303,7 @@ const BookingsPage = () => {
       "Guest Phone",
       "Pickup",
       "Destination",
+      "Booking Type",
       "vehicle",
       "Driver",
       "Note",
@@ -320,6 +323,7 @@ const BookingsPage = () => {
         booking.guest_phoneno || "",
         booking.pickupAdress,
         booking.destination,
+        booking.bookingType || "",
         booking.sClass || booking.vClass || booking.others?.vehicleType || "",
         `${booking.driverName || ""} ${
           booking.driverNumber ? `(${booking.driverNumber})` : ""
@@ -512,6 +516,9 @@ const BookingsPage = () => {
                   <TableHead className="w-40 text-white hover:bg-blue-600">
                     Destination
                   </TableHead>
+                   <TableHead className="w-40 text-white hover:bg-blue-600">
+                    Booking Type
+                  </TableHead>
                   <TableHead className="w-40 text-white hover:bg-blue-600">
                     Vehicle
                   </TableHead>
@@ -570,6 +577,9 @@ const BookingsPage = () => {
                     </TableCell>
                     <TableCell className="whitespace-normal">
                       {booking.destination}
+                    </TableCell>
+                    <TableCell className="whitespace-normal">
+                      {booking.type || booking.bookingType || "N/A"}
                     </TableCell>
                     <TableCell className="whitespace-normal">
                       <div className="space-y-1">

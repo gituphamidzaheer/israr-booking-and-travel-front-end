@@ -392,6 +392,7 @@ export default function AdminBookingsPage() {
       "Phone Number",
       "Pickup Address",
       "Destination",
+      "Booking Type",
       "Vehicle",
       "Date",
       "Time",
@@ -423,6 +424,7 @@ export default function AdminBookingsPage() {
       booking.guest_phoneno || "",
       booking.pickupAdress || "",
       booking.destination || "",
+      booking.bookingType || "",
       booking.sClass || booking.vClass || booking.others?.vehicleType || "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
       booking.time || "",
@@ -475,12 +477,12 @@ export default function AdminBookingsPage() {
       "Phone Number",
       "Pickup Address",
       "Destination",
+      "Booking Type",
       "Vehicle",
       "Date",
       "Time",
       "Room No",
       "Flight No",
-      "Booking Type",
       "Vehicle Type",
       "Vehicle Quantity",
       "Vehicle No",
@@ -507,12 +509,12 @@ export default function AdminBookingsPage() {
       booking.guest_phoneno || "",
       booking.pickupAdress || "",
       booking.destination || "",
+      booking.bookingType || "",
       booking.sClass || booking.vClass || booking.others?.vehicleType || "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
       booking.time || "",
       booking.roomNo || "",
       booking.flightNumber || "",
-      booking.bookingType || "",
       booking.type || "",
       booking.quantity || "",
       booking.noOfVehicle || "",
@@ -910,6 +912,9 @@ export default function AdminBookingsPage() {
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Destination
                     </TableHead>
+                     <TableHead className="font-semibold text-white py-4 w-[10%]">
+                      Booking Type
+                    </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Vehicle
                     </TableHead>
@@ -1007,6 +1012,12 @@ export default function AdminBookingsPage() {
                         <TableCell className="py-4 text-black">
                           <div className="text-sm break-words">
                             {booking.destination}
+                          </div>
+                        </TableCell>
+
+                         <TableCell className="py-4 text-black">
+                          <div className="text-sm break-words">
+                            {booking.bookingType || "N/A"}
                           </div>
                         </TableCell>
 
