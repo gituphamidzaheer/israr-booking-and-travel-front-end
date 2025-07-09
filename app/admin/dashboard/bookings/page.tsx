@@ -613,7 +613,7 @@ export default function AdminBookingsPage() {
         <div className="px-2 sm:px-4 md:px-6 pb-6">
           <AdminHeader
             title="Bookings Management"
-            description="Manage all booking requests and their details"
+            
           />
 
           <div className="flex items-center justify-center min-h-[400px]">
@@ -738,7 +738,7 @@ export default function AdminBookingsPage() {
                     Total Revenue
                   </p>
                   <p className="text-2xl font-bold text-green-800">
-                    ${hotelStats.totalRevenue.toFixed(2)}
+                    {hotelStats.totalRevenue.toFixed(2)}AED
                   </p>
                 </div>
                 <CreditCard className="w-8 h-8 text-green-500" />
@@ -974,7 +974,7 @@ export default function AdminBookingsPage() {
         <Card className="bg-white shadow-lg border-gray-200">
           <CardContent className="p-0">
             <div className="overflow-x-auto w-full -mx-1 sm:mx-0">
-              <Table className="min-w-[800px] sm:min-w-[900px] md:min-w-full">
+              <Table className="min-w-[800px] border-2 border-black sm:min-w-[900px] md:min-w-full">
                 <TableHeader className="bg-blue-600 z-20">
                   <TableRow className="border-b border-gray-200">
                     <TableHead className="font-semibold text-white py-4 w-[6%]">
@@ -1042,10 +1042,10 @@ export default function AdminBookingsPage() {
                     </TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody className=" border-2 border-black">
                   {filteredBookings.length > 0 ? (
                     filteredBookings.map((booking, index) => (
-                      <TableRow>
+                      <TableRow className=" border-2 border-black">
                         {/* ID */}
                         <TableCell className="py-4 text-center text-black">
                           <div className="flex flex-col items-center space-y-1">
