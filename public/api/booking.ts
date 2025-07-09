@@ -25,12 +25,14 @@ export interface Booking {
   status?: string
   note?: string
   bookBy: string
+  comment?: string
   fare: string | number
   noOfVehicle?: string
   extraCharge?: number
   totalFare?: number
   driverName?: string
   driverNumber?: string
+  isUpdated?: boolean
 }
 
 export interface BookingResponse {

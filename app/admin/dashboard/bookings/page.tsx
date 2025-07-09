@@ -61,6 +61,7 @@ import {
 } from "lucide-react";
 import { BookingAPI, type Booking } from "@/public/api/booking";
 import { UserAPI } from "@/public/api/user";
+import { comment } from "postcss";
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -92,12 +93,12 @@ export default function AdminBookingsPage() {
   const [hotels, setHotels] = useState<Array<{ id: string; name: string }>>([]);
   const [users, setUsers] = useState<Array<{ id: number; name: string }>>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
-  // const [showReasonInput, setShowReasonInput] = useState(false);
-  // const [extraChargeReason, setExtraChargeReason] = useState("");
+  const [showReasonInput, setShowReasonInput] = useState(false);
+  const [extraChargeReason, setExtraChargeReason] = useState("");
 
-  // const handleExtraChargeClick = () => {
-  //   setShowReasonInput(true);
-  // };
+  const handleExtraChargeClick = () => {
+    setShowReasonInput(true);
+  };
 
   const fetchUsers = async () => {
     setIsLoadingUsers(true);
@@ -394,64 +395,57 @@ export default function AdminBookingsPage() {
     const headers = [
       "ID",
       "Passenger Name",
-      "Flight No",
-      "Phone Number",
+      "Date",
+      "Room No",
+      "Time",
       "Pickup Address",
       "Destination",
       "Booking Type",
-      "Vehicle",
-      "Date",
-      "Time",
-      "Room No",
       "Flight No",
-      "Booking Type",
-      "Vehicle Type",
-      "Vehicle Quantity",
-      "Vehicle No",
-      "Base Fare",
-      "Extra Charge",
-      "Total Fare",
-      "Driver Name",
-      "Driver Number",
-      "Status",
-      "Book By",
-      "Notes",
-      "Created At",
       "S-Class",
       "V-Class",
       "Others",
+      "Notes",
+      "Driver Name",
+      "Driver Number",
+      "Base Fare",
+      "Extra Charge",
+      "comment",
+      "Total Fare",
+      "Status",
+      "Request By",
+      "Created At",
+
+      // "Vehicle",
+      // "Vehicle Quantity",
+      // "Vehicle No",
+      // "Request By",
     ];
 
     // Convert bookings data to CSV format (each booking as a row)
     const csvData = filteredBookings.map((booking) => [
       booking.id || "",
       booking.passengerName || "",
-      booking.flightNumber || "",
-      booking.guest_phoneno || "",
+      booking.date ? new Date(booking.date).toLocaleDateString() : "",
+      booking.roomNo || "",
+      booking.time || "",
       booking.pickupAdress || "",
       booking.destination || "",
-      booking.bookingType || "",
-      booking.sClass || booking.vClass || booking.others?.vehicleType || "",
-      booking.date ? new Date(booking.date).toLocaleDateString() : "",
-      booking.time || "",
-      booking.roomNo || "",
-      booking.flightNumber || "",
-      booking.bookingType || "",
       booking.type || "",
-      booking.quantity || "",
-      booking.noOfVehicle || "",
-      booking.fare || "",
-      booking.extraCharge || "",
-      (Number(booking.fare) || 0) + (Number(booking.extraCharge) || 0),
-      booking.driverName || "",
-      booking.driverNumber || "",
-      booking.status || "",
-      booking.bookBy || "",
-      booking.note || "",
-      booking.createdAt ? new Date(booking.createdAt).toLocaleDateString() : "",
+      booking.flightNumber,
       booking.sClass || "",
       booking.vClass || "",
-      booking.others || "",
+      booking.others?.vehicleType || "",
+      booking.note || "",
+      booking.driverName || "",
+      booking.driverNumber,
+      booking.fare,
+      booking.extraCharge,
+      booking.comment || "",
+      booking.totalFare,
+      booking.status || "",
+      booking.bookBy,
+      booking.createdAt,
     ]);
 
     // Combine headers and data
@@ -479,63 +473,52 @@ export default function AdminBookingsPage() {
     const headers = [
       "ID",
       "Passenger Name",
-      "Flight No",
-      "Phone Number",
+      "Date",
+      "Room No",
+      "Time",
       "Pickup Address",
       "Destination",
       "Booking Type",
-      "Vehicle",
-      "Date",
-      "Time",
-      "Room No",
       "Flight No",
-      "Vehicle Type",
-      "Vehicle Quantity",
-      "Vehicle No",
-      "Fare",
-      "Extra Charge",
-      "Total Fare",
-      "Driver Name",
-      "Driver Number",
-      "Vehicle No",
-      "Status",
-      "Book By",
-      "Notes",
-      "Created At",
       "S-Class",
       "V-Class",
       "Others",
+      "Notes",
+      "Driver Name",
+      "Driver Number",
+      "Base Fare",
+      "Extra Charge",
+      "comment",
+      "Total Fare",
+      "Status",
+      "Request By",
+      "Created At",
     ];
 
     // Convert single booking data to CSV format
     const csvData = [
       booking.id || "",
       booking.passengerName || "",
-      booking.flightNumber || "",
-      booking.guest_phoneno || "",
+      booking.date ? new Date(booking.date).toLocaleDateString() : "",
+      booking.roomNo || "",
+      booking.time || "",
       booking.pickupAdress || "",
       booking.destination || "",
-      booking.bookingType || "",
-      booking.sClass || booking.vClass || booking.others?.vehicleType || "",
-      booking.date ? new Date(booking.date).toLocaleDateString() : "",
-      booking.time || "",
-      booking.roomNo || "",
-      booking.flightNumber || "",
       booking.type || "",
-      booking.quantity || "",
-      booking.noOfVehicle || "",
-      booking.fare || "",
-      booking.extraCharge || "",
-      (Number(booking.fare) || 0) + (Number(booking.extraCharge) || 0),
-      booking.driverName || "",
-      booking.driverNumber || "",
-      booking.status || "",
-      booking.bookBy || "",
-      booking.note || "",
-      booking.createdAt ? new Date(booking.createdAt).toLocaleDateString() : "",
+      booking.flightNumber,
       booking.sClass || "",
       booking.vClass || "",
-      booking.others || "",
+      booking.others?.vehicleType || "",
+      booking.note || "",
+      booking.driverName || "",
+      booking.driverNumber,
+      booking.fare,
+      booking.extraCharge,
+      booking.comment || "",
+      booking.totalFare,
+      booking.status || "",
+      booking.bookBy,
+      booking.createdAt,
     ];
 
     // Combine headers and data
@@ -556,6 +539,46 @@ export default function AdminBookingsPage() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleCancel = async (bookingId: number) => {
+    try {
+      const response = await fetch(
+        `${BookingAPI.getBaseUrl()}/bookings/${bookingId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status: "cancelled",
+          }),
+        }
+      );
+
+      if (response.ok) {
+        // Update the booking status locally
+        setBookings((prevBookings) =>
+          prevBookings.map((booking) =>
+            booking.id === bookingId
+              ? { ...booking, status: "cancelled" }
+              : booking
+          )
+        );
+        setFilteredBookings((prevBookings) =>
+          prevBookings.map((booking) =>
+            booking.id === bookingId
+              ? { ...booking, status: "cancelled" }
+              : booking
+          )
+        );
+      } else {
+        setError("Failed to cancel booking");
+      }
+    } catch (error) {
+      console.error("Error cancelling booking:", error);
+      setError("Error cancelling booking");
+    }
   };
 
   if (isLoading) {
@@ -906,7 +929,7 @@ export default function AdminBookingsPage() {
                     <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Room No
                     </TableHead>
-                    <TableHead className="font-semibold  text-white py-4 w-[10%]">
+                    <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Guest Name
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
@@ -955,10 +978,17 @@ export default function AdminBookingsPage() {
                     filteredBookings.map((booking, index) => (
                       <TableRow
                         key={booking.id}
-                        className={` 
-  ${booking.status === 'cancelled' ? 'bg-red-200' : 'bg-white'} 
+                        className={`
+  ${
+    booking.status === "cancelled"
+      ? "bg-red-200"
+      : booking.isUpdated === true
+      ? "bg-green-300"
+      : index % 2 === 0
+      ? "bg-white"
+      : "bg-gray-25"
+  }
   border-b border-2 border-black
- '}
 `}
                       >
                         {/* ID */}
@@ -1106,9 +1136,9 @@ export default function AdminBookingsPage() {
                         </TableCell>
                         <TableCell className="py-4 text-black">
                           <div className="text-sm font-semibold text-gray-600">
-                            
                             {(Number(booking.fare) || 0) +
-                              (Number(booking.extraCharge) || 0)}AED
+                              (Number(booking.extraCharge) || 0)}
+                            AED
                           </div>
                         </TableCell>
 
@@ -1117,8 +1147,6 @@ export default function AdminBookingsPage() {
                           <Badge
                             className={`${getStatusColor(
                               booking.status
-
-
                             )} font-medium text-xs px-2 py-1`}
                           >
                             {booking.status || "Pending"}
@@ -1156,30 +1184,31 @@ export default function AdminBookingsPage() {
                                   className="bg-blue-600 text-white"
                                 >
                                   <Trash2 className="w-3 h-3 mr-1" />
-                                  Delete
+                                  Cancel
                                 </Button>
                               </AlertDialogTrigger>
                               <AlertDialogContent>
                                 <AlertDialogHeader>
                                   <AlertDialogTitle>
-                                    Are you sure?
+                                    Cancel Booking
                                   </AlertDialogTitle>
                                   <AlertDialogDescription>
-                                    This action cannot be undone. This will
-                                    permanently delete booking #{booking.id}.
+                                    Are you sure you want to cancel booking #
+                                    {booking.id}? This will mark the booking as
+                                    cancelled.
                                   </AlertDialogDescription>
                                 </AlertDialogHeader>
                                 <AlertDialogFooter>
                                   <AlertDialogCancel className="bg-black text-white border-gray-700 hover:bg-gray-800">
-                                    Cancel
+                                    No, keep it
                                   </AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={() =>
-                                      booking.id && handleDelete(booking.id)
+                                      booking.id && handleCancel(booking.id)
                                     }
                                     className="bg-black text-white hover:bg-gray-700"
                                   >
-                                    Delete
+                                    Yes, cancel booking
                                   </AlertDialogAction>
                                 </AlertDialogFooter>
                               </AlertDialogContent>
@@ -1416,32 +1445,8 @@ export default function AdminBookingsPage() {
                     />
                   </div>
 
+                 
                   <div className="space-y-2">
-                    <Label
-                      htmlFor="edit-extra"
-                      className="text-gray-800 font-bold text-sm"
-                    >
-                      Extra Charge
-                    </Label>
-                    <Input
-                      id="edit-extra"
-                      type="number"
-                      value={editFormData.extraCharge || ""}
-                      onChange={(e) => {
-                        const newExtraCharge = e.target.value;
-                        const totalFare =
-                          (Number(editFormData.fare) || 0) +
-                          (Number(newExtraCharge) || 0);
-                        setEditFormData({
-                          ...editFormData,
-                          extraCharge: Number(newExtraCharge) || 0,
-                          totalFare: totalFare,
-                        });
-                      }}
-                      className="bg-white text-black border-gray-300 text-sm h-10"
-                    />
-                  </div>
-                  {/* <div className="space-y-2">
                     <Label
                       htmlFor="edit-extra"
                       className="text-gray-800 font-bold text-sm"
@@ -1477,16 +1482,17 @@ export default function AdminBookingsPage() {
                         <Input
                           id="reason"
                           type="text"
-                          value={editFormData.extraChargeReason}
-                          onChange={(e) => setExtraChargeReason(
+                          value={editFormData.comment}
+                          onChange={(e) => setEditFormData({
                           ...editFormData,
-                          extraChargeReason:e.target.value)}
+                          comment: (e.target.value) 
+                        })}
                           className="bg-white text-black border-gray-300 text-sm h-10"
                           placeholder="Enter reason"
                         />
                       </div>
                     )}
-                  </div> */}
+                  </div>
 
                   <div className="space-y-2">
                     <Label
