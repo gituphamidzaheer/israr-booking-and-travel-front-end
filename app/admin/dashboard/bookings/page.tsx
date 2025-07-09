@@ -981,19 +981,19 @@ export default function AdminBookingsPage() {
                       ID
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
-                      Date & Time
+                      Guest Name
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[6%]">
+                      Date
+                    </TableHead>
+                    <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Room No
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
-                      Guest Name
+                      Time
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
-                      Flight No
-                    </TableHead>
-                    <TableHead className="font-semibold text-white py-4 w-[10%]">
-                      Pickup
+                      Pickup Address
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Destination
@@ -1002,16 +1002,19 @@ export default function AdminBookingsPage() {
                       Booking Type
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
-                      Vehicle
+                      Flight No
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
-                      Driver
+                      Vehicle Type
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[12%]">
                       Note
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[6%]">
-                      Request By
+                      Driver Name
+                    </TableHead>
+                    <TableHead className="font-semibold text-white py-4 w-[6%]">
+                      Driver Number
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Fare
@@ -1019,13 +1022,22 @@ export default function AdminBookingsPage() {
                     <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Extra
                     </TableHead>
-                    <TableHead className="font-semibold text-white py-4 w-[6%]">
+                    <TableHead className="font-semibold text-white py-4">
+                      Comments
+                    </TableHead>
+                    <TableHead className="font-semibold text-white py-4">
                       Total
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4">
                       Status
                     </TableHead>
-                    <TableHead className="font-semibold text-white py-4">
+                      <TableHead className="font-semibold text-white py-4">
+                      Request By
+                    </TableHead>
+                      <TableHead className="font-semibold text-white py-4">
+                      Created At
+                    </TableHead>
+                     <TableHead className="font-semibold text-white py-4">
                       Actions
                     </TableHead>
                   </TableRow>
@@ -1045,16 +1057,18 @@ export default function AdminBookingsPage() {
                             </span>
                           </div>
                         </TableCell>
+                         <TableCell className="py-4 text-center text-black">
+                          <div className="flex flex-col items-center space-y-1">
+                            {booking.passengerName || 'N/A'}
+                          </div>
+                        </TableCell>
 
                         {/* Date & Time */}
                         <TableCell className="py-4 text-black">
                           <div className="space-y-1">
                             <div className="text-sm font-medium">
                               {formatDate(booking.date)}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {booking.time}
-                            </div>
+                            </div>  
                           </div>
                         </TableCell>
 
@@ -1064,7 +1078,7 @@ export default function AdminBookingsPage() {
                         </TableCell>
 
                         {/* Guest Info */}
-                        <TableCell className="py-4 text-black">
+                        {/* <TableCell className="py-4 text-black">
                           <div className="space-y-1">
                             <div className="text-sm font-medium">
                               {booking.passengerName || "N/A"}
@@ -1076,10 +1090,10 @@ export default function AdminBookingsPage() {
                               </div>
                             )}
                           </div>
-                        </TableCell>
+                        </TableCell> */}
 
                         <TableCell className="py-4 text-center text-black">
-                          {booking.flightNumber || "N/A"}
+                          {booking.time || "N/A"}
                         </TableCell>
 
                         {/* Pickup Address */}
@@ -1099,6 +1113,12 @@ export default function AdminBookingsPage() {
                         <TableCell className="py-4 text-black">
                           <div className="text-sm break-words">
                             {booking.bookingType || "N/A"}
+                          </div>
+                        </TableCell>
+
+                         <TableCell className="py-4 text-black">
+                          <div className="text-sm break-words">
+                            {booking.flightNumber|| "N/A"}
                           </div>
                         </TableCell>
 
@@ -1144,10 +1164,7 @@ export default function AdminBookingsPage() {
                         <TableCell className="py-4 text-black">
                           <div className="space-y-1">
                             <div className="text-sm font-medium">
-                              {booking.driverName || "Not Assigned"}
-                            </div>
-                            <div className="text-xs text-gray-500">
-                              {booking.driverNumber || "No Contact"}
+                              {booking.note || "Not Assigned"}
                             </div>
                           </div>
                         </TableCell>
@@ -1155,14 +1172,14 @@ export default function AdminBookingsPage() {
                         {/* Note */}
                         <TableCell className="py-4 text-black">
                           <div className="text-sm break-words max-h-20 min-w-28">
-                            {booking.note || "No notes"}
+                            {booking.driverName|| "No notes"}
                           </div>
                         </TableCell>
 
                         {/* Booked By */}
                         <TableCell className="py-4 text-black">
                           <div className="text-sm">
-                            {booking.bookBy || "N/A"}
+                            {booking.driverNumber || "N/A"}
                           </div>
                         </TableCell>
 
@@ -1175,6 +1192,11 @@ export default function AdminBookingsPage() {
                         <TableCell className="py-4 text-black">
                           <div className="text-sm font-semibold text-black-600">
                             {Number(booking.extraCharge) || "0"}AED
+                          </div>
+                        </TableCell>
+                         <TableCell className="py-4 text-black">
+                          <div className="text-sm font-semibold text-black-600">
+                            {booking.comment}
                           </div>
                         </TableCell>
                         <TableCell className="py-4 text-black">
@@ -1195,6 +1217,19 @@ export default function AdminBookingsPage() {
                             {booking.status || "Pending"}
                           </Badge>
                         </TableCell>
+                        <TableCell className="py-4 text-center">
+                          <div className="text-sm font-medium text-gray-600">
+                            {booking.bookBy || "N/A"}
+                          </div>    
+                          </TableCell>
+
+                            <TableCell className="py-4 text-center">
+                          <div className="text-sm font-medium text-gray-600">
+                            {booking.createdAt || "N/A"}
+                          </div>    
+                          </TableCell>
+
+
 
                         {/* Actions */}
                         <TableCell className="py-4">
