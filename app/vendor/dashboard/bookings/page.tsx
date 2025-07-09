@@ -579,7 +579,7 @@ const BookingsPage = () => {
                       {booking.destination}
                     </TableCell>
                     <TableCell className="whitespace-normal">
-                      {booking.type || booking.bookingType || "N/A"}
+                      {booking.bookingType || "N/A"}
                     </TableCell>
                     <TableCell className="whitespace-normal">
                       <div className="space-y-1">

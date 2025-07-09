@@ -92,6 +92,12 @@ export default function AdminBookingsPage() {
   const [hotels, setHotels] = useState<Array<{ id: string; name: string }>>([]);
   const [users, setUsers] = useState<Array<{ id: number; name: string }>>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
+  // const [showReasonInput, setShowReasonInput] = useState(false);
+  // const [extraChargeReason, setExtraChargeReason] = useState("");
+
+  // const handleExtraChargeClick = () => {
+  //   setShowReasonInput(true);
+  // };
 
   const fetchUsers = async () => {
     setIsLoadingUsers(true);
@@ -912,7 +918,7 @@ export default function AdminBookingsPage() {
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Destination
                     </TableHead>
-                     <TableHead className="font-semibold text-white py-4 w-[10%]">
+                    <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Booking Type
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
@@ -949,9 +955,11 @@ export default function AdminBookingsPage() {
                     filteredBookings.map((booking, index) => (
                       <TableRow
                         key={booking.id}
-                        className={`border-b border-gray-100 hover:bg-gray-50 transition-colors ${
-                          index % 2 === 0 ? "bg-white" : "bg-gray-25"
-                        }`}
+                        className={` 
+  ${booking.status === 'cancelled' ? 'bg-red-200' : 'bg-white'} 
+  border-b border-2 border-black
+ '}
+`}
                       >
                         {/* ID */}
                         <TableCell className="py-4 text-center text-black">
@@ -1015,7 +1023,7 @@ export default function AdminBookingsPage() {
                           </div>
                         </TableCell>
 
-                         <TableCell className="py-4 text-black">
+                        <TableCell className="py-4 text-black">
                           <div className="text-sm break-words">
                             {booking.bookingType || "N/A"}
                           </div>
@@ -1088,19 +1096,19 @@ export default function AdminBookingsPage() {
                         {/* Fare */}
                         <TableCell className="py-4 text-black">
                           <div className="text-sm font-semibold">
-                            ${booking.fare || "0"}
+                            {booking.fare || "0"}AED
                           </div>
                         </TableCell>
                         <TableCell className="py-4 text-black">
-                          <div className="text-sm font-semibold text-orange-600">
-                            ${Number(booking.extraCharge) || "0"}
+                          <div className="text-sm font-semibold text-black-600">
+                            {Number(booking.extraCharge) || "0"}AED
                           </div>
                         </TableCell>
                         <TableCell className="py-4 text-black">
-                          <div className="text-sm font-semibold text-green-600">
-                            $
+                          <div className="text-sm font-semibold text-gray-600">
+                            
                             {(Number(booking.fare) || 0) +
-                              (Number(booking.extraCharge) || 0)}
+                              (Number(booking.extraCharge) || 0)}AED
                           </div>
                         </TableCell>
 
@@ -1109,6 +1117,8 @@ export default function AdminBookingsPage() {
                           <Badge
                             className={`${getStatusColor(
                               booking.status
+
+
                             )} font-medium text-xs px-2 py-1`}
                           >
                             {booking.status || "Pending"}
@@ -1431,6 +1441,52 @@ export default function AdminBookingsPage() {
                       className="bg-white text-black border-gray-300 text-sm h-10"
                     />
                   </div>
+                  {/* <div className="space-y-2">
+                    <Label
+                      htmlFor="edit-extra"
+                      className="text-gray-800 font-bold text-sm"
+                    >
+                      Extra Charge
+                    </Label>
+                    <Input
+                      id="edit-extra"
+                      type="number"
+                      value={editFormData.extraCharge || ""}
+                      onClick={handleExtraChargeClick}
+                      onChange={(e) => {
+                        const newExtraCharge = e.target.value;
+                        const totalFare =
+                          (Number(editFormData.fare) || 0) +
+                          (Number(newExtraCharge) || 0);
+                        setEditFormData({
+                          ...editFormData,
+                          extraCharge: Number(newExtraCharge) || 0,
+                          totalFare: totalFare,
+                        });
+                      }}
+                      className="bg-white text-black border-gray-300 text-sm h-10"
+                    />
+                    {showReasonInput && (
+                      <div className="mt-2">
+                        <Label
+                          htmlFor="reason"
+                          className="text-gray-800 font-bold text-sm"
+                        >
+                          Reason for Extra Charge
+                        </Label>
+                        <Input
+                          id="reason"
+                          type="text"
+                          value={editFormData.extraChargeReason}
+                          onChange={(e) => setExtraChargeReason(
+                          ...editFormData,
+                          extraChargeReason:e.target.value)}
+                          className="bg-white text-black border-gray-300 text-sm h-10"
+                          placeholder="Enter reason"
+                        />
+                      </div>
+                    )}
+                  </div> */}
 
                   <div className="space-y-2">
                     <Label
