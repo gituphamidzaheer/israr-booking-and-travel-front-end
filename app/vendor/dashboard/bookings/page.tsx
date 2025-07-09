@@ -56,7 +56,9 @@ interface ExtendedBooking extends Booking {
 
 const BookingsPage = () => {
   const [bookings, setBookings] = useState<ExtendedBooking[]>([]);
-  const [filteredBookings, setFilteredBookings] = useState<ExtendedBooking[]>([]);
+  const [filteredBookings, setFilteredBookings] = useState<ExtendedBooking[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [searchId, setSearchId] = useState("");
   const [searchName, setSearchName] = useState("");
@@ -70,7 +72,9 @@ const BookingsPage = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isEditLoading, setIsEditLoading] = useState(false);
   const [error, setError] = useState("");
-  const [editingBooking, setEditingBooking] = useState<ExtendedBooking | null>(null);
+  const [editingBooking, setEditingBooking] = useState<ExtendedBooking | null>(
+    null
+  );
   const [editFormData, setEditFormData] = useState<Partial<Booking>>({
     others: {
       vehicleType: "",
@@ -83,18 +87,24 @@ const BookingsPage = () => {
   const [showOtherBookingType, setShowOtherBookingType] = useState(false);
   const [otherBookingType, setOtherBookingType] = useState("");
   const [showReasonInput, setShowReasonInput] = useState(false);
+  const [searchfrom, setSearchfrom] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
 
   // Track recently updated bookings with a timeout to clear the highlight
   const updateHighlight = (bookingId: number) => {
-    const updatedBooking = bookings.find(b => b.id === bookingId);
+    const updatedBooking = bookings.find((b) => b.id === bookingId);
     if (updatedBooking) {
       updatedBooking.isUpdated = true;
       setTimeout(() => {
         updatedBooking.isUpdated = false;
         setBookings([...bookings]);
-        setFilteredBookings(prev => 
-          prev.map(booking => 
-            booking.id === bookingId ? { ...booking, isUpdated: false } : booking
+        setFilteredBookings((prev) =>
+          prev.map((booking) =>
+            booking.id === bookingId
+              ? { ...booking, isUpdated: false }
+              : booking
           )
         );
       }); // Clear highlight after 5 seconds
@@ -232,6 +242,8 @@ const BookingsPage = () => {
     searchName,
     searchDate,
     searchBookedBy,
+    fromDate,  
+    toDate,  
     searchMonth,
     searchYear,
   ]);
@@ -350,7 +362,21 @@ const BookingsPage = () => {
         return bookingYear === searchYear.trim();
       });
     }
-
+    if (fromDate && toDate) {
+    filtered = filtered.filter((booking) => {
+      if (!booking.date) return false;
+      const bookingDate = new Date(booking.date);
+      const from = new Date(fromDate);
+      const to = new Date(toDate);
+      
+      // Set hours to 0 for proper date comparison
+      bookingDate.setHours(0, 0, 0, 0);
+      from.setHours(0, 0, 0, 0);
+      to.setHours(0, 0, 0, 0);
+      
+      return bookingDate >= from && bookingDate <= to;
+    });
+  }
     // Filter by Booked By
     if (searchBookedBy?.trim()) {
       filtered = filtered.filter((booking) =>
@@ -421,42 +447,67 @@ const BookingsPage = () => {
 
   const downloadCSV = () => {
     const headers = [
-      "Booking ID",
-      "Flight No",
-      "Date & Time",
+      "ID",
+      "Passenger Name",
+      "Date",
       "Room No",
-      "Guest Name",
-      "Guest Phone",
-      "Pickup",
+      "Time",
+      "Pickup Address",
       "Destination",
       "Booking Type",
-      "Vehicle",
-      "Driver",
-      "Note",
-      "Booked By",
-      "Fare",
+      "Flight No",
+      "S-Class",
+      "V-Class",
+      "Others",
+      "Notes",
+      "Driver Name",
+      "Driver Number",
+      "Base Fare",
       "Extra Charge",
-      "Total Amount",
+      "Comment",
+      "Total Fare",
       "Status",
+      "Request By",
+      "Created At",
+
+      // "Vehicle",
+      // "Vehicle Quantity",
+      // "Vehicle No",
+      // "Request By",
     ];
     const csvData = filteredBookings.map((b) => [
       b.id,
-      `${b.date} ${b.time}`,
-      b.roomNo,
       b.passengerName,
-      b.flightNumber,
-      b.guest_phoneno || "",
+      `${b.date}`,
+      b.roomNo,
+      b.time,
       b.pickupAdress,
       b.destination,
       b.bookingType || "",
-      b.sClass || b.vClass || b.others?.vehicleType || "",
-      `${b.driverName || ""} ${b.driverNumber ? `(${b.driverNumber})` : ""}`,
+      b.flightNumber,
+      b.sClass || "",
+      b.vClass || "",
+      b.others?.vehicleType || "",
       b.note || "",
-      b.bookBy,
+      b.driverName || "",
+      b.driverNumber,
       b.fare,
       b.extraCharge,
-      (Number(b.fare) || 0) + (Number(b.extraCharge) || 0),
-      b.status,
+      b.comment || "",
+      b.totalFare,
+      b.status || "",
+      b.bookBy,
+      b.createdAt,
+
+      // b.flightNumber,
+      // b.guest_phoneno || "",
+      // `${b.driverName || ""} ${b.driverNumber ? `(${b.driverNumber})` : ""}`,
+      // b.note || "",
+      // b.bookBy,
+      // b.fare,
+      // b.extraCharge,
+      // (Number(b.fare) || 0) + (Number(b.extraCharge) || 0),
+      // b.status,
     ]);
 
     const csvContent = [headers, ...csvData]
@@ -472,45 +523,58 @@ const BookingsPage = () => {
 
   const downloadSingleBookingCSV = (booking: Booking) => {
     const headers = [
-      "Booking ID",
-      "Date & Time",
+      "ID",
+      "Passenger Name",
+      "Date",
       "Room No",
-      "Guest Name",
-      "Flight No",
-      "Guest Phone",
-      "Pickup",
+      "Time",
+      "Pickup Address",
       "Destination",
       "Booking Type",
-      "vehicle",
-      "Driver",
-      "Note",
-      "Booked By",
-      "Fare",
+      "Flight No",
+      "S-Class",
+      "V-Class",
+      "Others",
+      "Notes",
+      "Driver Name",
+      "Driver Number",
+      "Base Fare",
       "Extra Charge",
-      "Total Amount",
+      "Comment",
+      "Total Fare",
       "Status",
+      "Request By",
+      "Created At",
+
+      // "Vehicle",
+      // "Vehicle Quantity",
+      // "Vehicle No",
+      // "Request By",
     ];
     const csvData = [
       [
-        booking.id,
-        `${booking.date} ${booking.time}`,
-        booking.roomNo,
-        booking.passengerName,
+        booking.id || "",
+        booking.passengerName || "",
+        booking.date ? new Date(booking.date).toLocaleDateString() : "",
+        booking.roomNo || "",
+        booking.time || "",
+        booking.pickupAdress || "",
+        booking.destination || "",
+        booking.type || "",
         booking.flightNumber,
-        booking.guest_phoneno || "",
-        booking.pickupAdress,
-        booking.destination,
-        booking.bookingType || "",
-        booking.sClass || booking.vClass || booking.others?.vehicleType || "",
-        `${booking.driverName || ""} ${
-          booking.driverNumber ? `(${booking.driverNumber})` : ""
-        }`,
+        booking.sClass || "",
+        booking.vClass || "",
+        booking.others?.vehicleType || "",
         booking.note || "",
-        booking.bookBy,
+        booking.driverName || "",
+        booking.driverNumber,
         booking.fare,
         booking.extraCharge,
-        (Number(booking.fare) || 0) + (Number(booking.extraCharge) || 0),
-        booking.status,
+        booking.comment || "",
+        booking.totalFare,
+        booking.status || "",
+        booking.bookBy,
+        booking.createdAt,
       ],
     ];
 
@@ -583,6 +647,74 @@ const BookingsPage = () => {
           </div>
         )}
 
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <Card className="bg-yellow-50 border-yellow-200">
+            <CardContent className="p-4">
+              <div className="text-yellow-600 text-lg font-semibold">
+                Pending Bookings
+              </div>
+              <div className="text-2xl font-bold text-yellow-700 mt-2">
+                {
+                  filteredBookings.filter(
+                    (b) => b.status?.toLowerCase() === "pending"
+                  ).length
+                }
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-green-50 border-green-200">
+            <CardContent className="p-4">
+              <div className="text-green-600 text-lg font-semibold">
+                Completed Bookings
+              </div>
+              <div className="text-2xl font-bold text-green-700 mt-2">
+                {
+                  filteredBookings.filter(
+                    (b) => b.status?.toLowerCase() === "completed"
+                  ).length
+                }
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-red-50 border-red-200">
+            <CardContent className="p-4">
+              <div className="text-red-600 text-lg font-semibold">
+                Cancelled Bookings
+              </div>
+              <div className="text-2xl font-bold text-red-700 mt-2">
+                {
+                  filteredBookings.filter(
+                    (b) => b.status?.toLowerCase() === "cancelled"
+                  ).length
+                }
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-blue-50 border-blue-200">
+            <CardContent className="p-4">
+              <div className="text-blue-600 text-lg font-semibold">
+                Total Revenue
+              </div>
+              <div className="text-2xl font-bold text-blue-700 mt-2">
+                $
+                {filteredBookings
+                  .reduce(
+                    (total, b) =>
+                      total +
+                      (Number(b.fare) || 0) +
+                      (Number(b.extraCharge) || 0),
+                    0
+                  )
+                  .toFixed(2)}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Search Filters */}
         <Card className="bg-white shadow-sm  border-gray-200 mb-6">
           <CardContent className="p-4 w-[800px] ">
@@ -599,19 +731,35 @@ const BookingsPage = () => {
                 onChange={(e) => setSearchName(e.target.value)}
                 className="bg-white w-[160px] text-black border-gray-300"
               />
-              <Input
+              {/* <Input
                 type="date"
                 value={searchDate}
                 onChange={(e) => setSearchDate(e.target.value)}
                 className="bg-white w-[160px] text-black border-gray-300"
-              />
-              {/* <Input
-                placeholder="Search by booked by..."
-                value={searchBookedBy}
-                onChange={(e) => setSearchBookedBy(e.target.value)}
-                className="bg-white text-black border-gray-300"
               /> */}
 
+              <div className="flex items-center gap-1">
+        <Label htmlFor="fromDate" className="whitespace-nowrap text-black text-sm">From:</Label>
+        <Input
+          id="fromDate"
+          type="date"
+          value={fromDate}
+          onChange={(e) => setFromDate(e.target.value)}
+          className="bg-white w-[160px] text-black border-gray-300"
+        />
+      </div>
+      
+      {/* Date Range Filter - To */}
+      <div className="flex items-center gap-1">
+        <Label htmlFor="toDate" className="whitespace-nowrap text-black text-sm">To:</Label>
+        <Input
+          id="toDate"
+          type="date"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
+          className="bg-white w-[160px] text-black border-gray-300"
+        />
+      </div>
               <select
                 value={searchMonth || "all"}
                 onChange={(e) =>
@@ -649,6 +797,8 @@ const BookingsPage = () => {
                   setSearchBookedBy("");
                   setSearchMonth("");
                   setSearchYear("");
+                  setFromDate("");
+                  setToDate("");
                 }}
                 className="flex-1 w-[160px] bg-blue-600"
               >
@@ -670,24 +820,24 @@ const BookingsPage = () => {
             <Table>
               {/* Table Header */}
               <TableHeader className="">
-                <TableRow className="bg-blue-600 text-white hover:bg-blue-600">
+                <TableRow className="bg-blue-600 border-2 border-black text-white hover:bg-blue-600">
                   <TableHead className="w-20 text-white hover:bg-blue-600">
                     ID
-                  </TableHead>
-                  <TableHead className="w-32 text-white hover:bg-blue-600">
-                    Date & Time
-                  </TableHead>
-                  <TableHead className="w-24 text-white hover:bg-blue-600">
-                    Room
                   </TableHead>
                   <TableHead className="w-40 text-white hover:bg-blue-600">
                     Guest Name
                   </TableHead>
-                  <TableHead className="w-40 text-white hover:bg-blue-600">
-                    Flight No
+                  <TableHead className="w-32 text-white hover:bg-blue-600">
+                    Date
+                  </TableHead>
+                  <TableHead className="w-24 text-white hover:bg-blue-600">
+                    Room No
+                  </TableHead>
+                  <TableHead className="w-32 text-white hover:bg-blue-600">
+                    Time
                   </TableHead>
                   <TableHead className="w-40 text-white hover:bg-blue-600">
-                    Pickup
+                    Pickup Address
                   </TableHead>
                   <TableHead className="w-40 text-white hover:bg-blue-600">
                     Destination
@@ -695,23 +845,34 @@ const BookingsPage = () => {
                   <TableHead className="w-40 text-white hover:bg-blue-600">
                     Booking Type
                   </TableHead>
+
                   <TableHead className="w-40 text-white hover:bg-blue-600">
-                    Vehicle
+                    Flight No
                   </TableHead>
+
                   <TableHead className="w-40 text-white hover:bg-blue-600">
-                    Driver
+                    Vehicle Type
                   </TableHead>
                   <TableHead className="w-40 text-white hover:bg-blue-600">
                     Note
                   </TableHead>
-                  <TableHead className="w-32 text-white hover:bg-blue-600">
-                    Request By
+
+                  <TableHead className="w-40 text-white hover:bg-blue-600">
+                    Driver Name
                   </TableHead>
+
+                  <TableHead className="w-40 text-white hover:bg-blue-600">
+                    Driver Number
+                  </TableHead>
+
                   <TableHead className="w-24 text-white hover:bg-blue-600">
                     Fare
                   </TableHead>
                   <TableHead className="w-24 text-white hover:bg-blue-600">
                     Extra
+                  </TableHead>
+                  <TableHead className="w-24 text-white hover:bg-blue-600">
+                    Comment
                   </TableHead>
                   <TableHead className="w-24 text-white hover:bg-blue-600">
                     Total
@@ -720,53 +881,54 @@ const BookingsPage = () => {
                     Status
                   </TableHead>
                   <TableHead className="w-32 text-white hover:bg-blue-600">
+                    Request By
+                  </TableHead>
+                  <TableHead className="w-32 text-white hover:bg-blue-600">
+                    Created At
+                  </TableHead>
+                  <TableHead className="w-32 text-white hover:bg-blue-600">
                     Actions
                   </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody className="bg-white text-black hover:bg-blue-50 ">
                 {filteredBookings.map((booking) => (
-  <TableRow
-  key={booking.id}
-  className={`border-2 border-black ${
-    booking.status === "cancelled"
-      ? "bg-red-200"
-      : booking.isUpdated === true
-      ? "bg-green-200"
-      : ""
-  }`}
->
+                  <TableRow
+                    key={booking.id}
+                    className={`border-2 border-black ${
+                      booking.status === "cancelled"
+                        ? "bg-red-200"
+                        : booking.isUpdated === true
+                        ? "bg-green-200"
+                        : ""
+                    }`}
+                  >
                     <TableCell className="font-medium">#{booking.id}</TableCell>
+                    <TableCell className="font-medium">#{booking.passengerName}</TableCell>
+                     
                     <TableCell className="whitespace-normal">
                       {formatDate(booking.date)}
-                      <br />
-                      <span className="text-sm text-gray-500">
-                        {booking.time}
-                      </span>
                     </TableCell>
                     <TableCell>{booking.roomNo}</TableCell>
-                    <TableCell className="whitespace-normal">
-                      <div className="font-medium">{booking.passengerName}</div>
-                      {booking.guest_phoneno && (
-                        <div className="text-sm text-gray-500">
-                          <Phone className="w-3 h-3 inline mr-1" />
-                          {booking.guest_phoneno}
-                        </div>
-                      )}
+                     <TableCell className="whitespace-normal">
+                      {booking.time || "N/A"}
                     </TableCell>
-                    <TableCell className="whitespace-normal">
-                      {booking.flightNumber}
-                    </TableCell>
-                    <TableCell className="whitespace-normal">
+                     <TableCell className="whitespace-normal">
                       {booking.pickupAdress}
                     </TableCell>
-                    <TableCell className="whitespace-normal">
+                     <TableCell className="whitespace-normal">
                       {booking.destination}
                     </TableCell>
-                    <TableCell className="whitespace-normal">
+
+                     <TableCell className="whitespace-normal">
                       {booking.bookingType || "N/A"}
                     </TableCell>
-                    <TableCell className="whitespace-normal">
+
+                     <TableCell className="whitespace-normal">
+                      {booking.flightNumber || "N/A"}
+                    </TableCell>
+
+                     <TableCell className="whitespace-normal">
                       <div className="space-y-1">
                         {booking.sClass > 0 && (
                           <div className="text-sm font-medium">
@@ -802,30 +964,67 @@ const BookingsPage = () => {
                           )}
                       </div>
                     </TableCell>
+
+                      <TableCell className="whitespace-normal">
+                      {booking.note || "N/A"}
+                    </TableCell>
+                    
+
+                      <TableCell className="whitespace-normal">
+                      {booking.driverName || "N/A"}
+                    </TableCell>
+
+                      <TableCell className="whitespace-normal">
+                      {booking.driverNumber || "N/A"}
+                    </TableCell>
+
+                      <TableCell className="whitespace-normal">
+                      {booking.fare || "0 AED"}
+                    </TableCell>
+                   
+
+
+
+
+
                     <TableCell className="whitespace-normal">
+                      {booking.extraCharge || "0 AED"}
+                    </TableCell>
+
+                    <TableCell className="whitespace-normal">
+                      {booking.comment || ".."}
+                    </TableCell>
+
+                   
+                   
+                    {/* <TableCell className="whitespace-normal">
                       {booking.driverName && <div>{booking.driverName}</div>}
                       {booking.driverNumber && (
                         <div className="text-sm text-gray-500">
                           {booking.driverNumber}
                         </div>
                       )}
-                    </TableCell>
-                    <TableCell className="whitespace-normal">
-                      {booking.note}
-                    </TableCell>
-                    <TableCell>{booking.bookBy}</TableCell>
-                    <TableCell>${booking.fare}</TableCell>
-                    <TableCell>${booking.extraCharge || 0}</TableCell>
+                    // </TableCell> */}
+                    {/* // <TableCell>${booking.fare}</TableCell>
+                    // <TableCell>${booking.extraCharge || 0}</TableCell>
+                    // <TableCell>{booking.comment}</TableCell> */}
                     <TableCell className="font-bold">
                       $
                       {(Number(booking.fare) || 0) +
                         (Number(booking.extraCharge) || 0)}
                     </TableCell>
-                    <TableCell >
+                    
+
+                    <TableCell>
                       <Badge className={getStatusColor(booking.status)}>
                         {booking.status}
                       </Badge>
                     </TableCell>
+                   
+                    <TableCell>{booking.bookBy}</TableCell>
+
+                    <TableCell>{booking.createdAt}</TableCell>
+                    
                     <TableCell>
                       <div className="flex flex-col gap-2">
                         <Button
@@ -1062,11 +1261,6 @@ const BookingsPage = () => {
             </div>
 
             {/* Fare Calculation Section */}
-          
-
-      
-
-      
 
             <div className="space-y-2">
               <Label

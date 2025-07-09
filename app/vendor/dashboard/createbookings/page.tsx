@@ -10,6 +10,7 @@ import { Car } from "lucide-react";
 import { BookingAPI } from "@/public/api/booking";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useRouter } from "next/navigation";
 
 const BookingsPage = () => {
   const [isFormLoading, setIsFormLoading] = useState(false);
@@ -57,6 +58,7 @@ const BookingsPage = () => {
   const [showSClass, setShowSClass] = useState(false);
   const [showVClass, setShowVClass] = useState(false);
   const [showOthers, setShowOthers] = useState(false);
+  const router = useRouter();
 
   const bookingTypes = useMemo(() => ["PICK&DROP", "HOURLY"], []);
 
@@ -171,6 +173,8 @@ const BookingsPage = () => {
       if (response.success) {
         toast.success("Booking created successfully!");
         setSuccessMessage("Booking created successfully!");
+        router.push("/vendor/dashboard/bookings"); // Redirect to bookings page
+        
         // Reset form
         setFormData({
           date: "",

@@ -95,7 +95,8 @@ export default function AdminBookingsPage() {
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
   const [showReasonInput, setShowReasonInput] = useState(false);
   const [extraChargeReason, setExtraChargeReason] = useState("");
-  
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   const handleExtraChargeClick = () => {
     setShowReasonInput(true);
@@ -180,7 +181,16 @@ export default function AdminBookingsPage() {
 
   useEffect(() => {
     filterBookings();
-  }, [bookings, searchId, searchName, searchDate, searchMonth, searchYear]); // Added searchMonth and searchYear
+  }, [
+    bookings,
+    searchId,
+    searchName,
+    searchDate,
+    searchMonth,
+    fromDate,
+    toDate,
+    searchYear,
+  ]); // Added searchMonth and searchYear
 
   const filterBookings = () => {
     let filtered = bookings;
@@ -201,6 +211,21 @@ export default function AdminBookingsPage() {
       filtered = filtered.filter((booking) =>
         booking.date?.includes(searchDate)
       );
+    }
+
+    if (fromDate && toDate) {
+      filtered = filtered.filter((booking) => {
+        if (!booking.date) return false;
+        const bookingDate = new Date(booking.date);
+        const from = new Date(fromDate);
+        const to = new Date(toDate);
+
+        bookingDate.setHours(0, 0, 0, 0);
+        from.setHours(0, 0, 0, 0);
+        to.setHours(0, 0, 0, 0);
+
+        return bookingDate >= from && bookingDate <= to;
+      });
     }
 
     if (searchMonth) {
@@ -781,14 +806,43 @@ export default function AdminBookingsPage() {
                     className="bg-white text-black border-gray-300 text-sm h-11 sm:h-10"
                   />
                 </div>
-                <div className="w-[200px]">
+                <div className="flex items-center gap-1">
+                  <Label
+                    htmlFor="fromDate"
+                    className="whitespace-nowrap text-black text-sm"
+                  >
+                    From:
+                  </Label>
+                  <Input
+                    id="fromDate"
+                    type="date"
+                    value={fromDate}
+                    onChange={(e) => setFromDate(e.target.value)}
+                    className="bg-white w-[160px] text-black border-gray-300"
+                  />
+                </div>
+
+                {/* Date Range Filter - To */}
+                <div className="flex items-center gap-1">
+                  <Label htmlFor="toDate" className="whitespace-nowrap text-black text-sm">
+                    To:
+                  </Label>
+                  <Input
+                    id="toDate"
+                    type="date"
+                    value={toDate}
+                    onChange={(e) => setToDate(e.target.value)}
+                    className="bg-white w-[160px] text-black border-gray-300"
+                  />
+                </div>
+                {/* <div className="w-[200px]">
                   <Input
                     type="date"
                     value={searchDate}
                     onChange={(e) => setSearchDate(e.target.value)}
                     className="bg-white text-black border-gray-300 text-sm h-11 sm:h-10"
                   />
-                </div>
+                </div> */}
                 <div className="w-[200px] ">
                   <Select
                     value={searchMonth || "all"}
@@ -897,6 +951,8 @@ export default function AdminBookingsPage() {
                     setSearchDate("");
                     setSearchMonth("");
                     setSearchYear("");
+                    setFromDate("");
+                    setToDate("");
                   }}
                   className="w-[150px] h-11 sm:h-[48px] font-medium bg-blue-700 text-white border-blue-700 hover:bg-blue-800"
                 >
@@ -977,21 +1033,7 @@ export default function AdminBookingsPage() {
                 <TableBody>
                   {filteredBookings.length > 0 ? (
                     filteredBookings.map((booking, index) => (
-                      <TableRow
-                        key={booking.id}
-                        className={`
-  ${
-    booking.status === "cancelled"
-      ? "bg-red-200"
-      : booking.isUpdated === true
-      ? "bg-green-300"
-      : index % 2 === 0
-      ? "bg-white"
-      : "bg-gray-25"
-  }
-  border-b border-2 border-black
-`}
-                      >
+                      <TableRow>
                         {/* ID */}
                         <TableCell className="py-4 text-center text-black">
                           <div className="flex flex-col items-center space-y-1">
@@ -1446,7 +1488,6 @@ export default function AdminBookingsPage() {
                     />
                   </div>
 
-                 
                   <div className="space-y-2">
                     <Label
                       htmlFor="edit-extra"
@@ -1484,10 +1525,12 @@ export default function AdminBookingsPage() {
                           id="reason"
                           type="text"
                           value={editFormData.comment}
-                          onChange={(e) => setEditFormData({
-                          ...editFormData,
-                          comment: (e.target.value) 
-                        })}
+                          onChange={(e) =>
+                            setEditFormData({
+                              ...editFormData,
+                              comment: e.target.value,
+                            })
+                          }
                           className="bg-white text-black border-gray-300 text-sm h-10"
                           placeholder="Enter reason"
                         />
