@@ -611,10 +611,7 @@ export default function AdminBookingsPage() {
     return (
       <div className="w-full">
         <div className="px-2 sm:px-4 md:px-6 pb-6">
-          <AdminHeader
-            title="Bookings Management"
-            
-          />
+          <AdminHeader title="Bookings Management" />
 
           <div className="flex items-center justify-center min-h-[400px]">
             <div className="text-center">
@@ -737,8 +734,13 @@ export default function AdminBookingsPage() {
                   <p className="text-sm text-green-600 font-medium">
                     Total Revenue
                   </p>
-                  <p className="text-2xl font-bold text-green-800">
-                    {hotelStats.totalRevenue.toFixed(2)}AED
+                  <p className="text-2xl font-bold text-green-800 flex items-center gap-1">
+                    {hotelStats.totalRevenue.toFixed(2)}
+                    <img
+                      src="https://upload.wikimedia.org/wikipedia/commons/e/ee/UAE_Dirham_Symbol.svg"
+                      alt="AED"
+                      className="w-5 h-5"
+                    />
                   </p>
                 </div>
                 <CreditCard className="w-8 h-8 text-green-500" />
@@ -824,7 +826,10 @@ export default function AdminBookingsPage() {
 
                 {/* Date Range Filter - To */}
                 <div className="flex items-center gap-1">
-                  <Label htmlFor="toDate" className="whitespace-nowrap text-black text-sm">
+                  <Label
+                    htmlFor="toDate"
+                    className="whitespace-nowrap text-black text-sm"
+                  >
                     To:
                   </Label>
                   <Input
@@ -1031,13 +1036,13 @@ export default function AdminBookingsPage() {
                     <TableHead className="font-semibold text-white py-4">
                       Status
                     </TableHead>
-                      <TableHead className="font-semibold text-white py-4">
+                    <TableHead className="font-semibold text-white py-4">
                       Request By
                     </TableHead>
-                      <TableHead className="font-semibold text-white py-4">
+                    <TableHead className="font-semibold text-white py-4">
                       Created At
                     </TableHead>
-                     <TableHead className="font-semibold text-white py-4">
+                    <TableHead className="font-semibold text-white py-4">
                       Actions
                     </TableHead>
                   </TableRow>
@@ -1057,9 +1062,9 @@ export default function AdminBookingsPage() {
                             </span>
                           </div>
                         </TableCell>
-                         <TableCell className="py-4 text-center text-black">
+                        <TableCell className="py-4 text-center text-black">
                           <div className="flex flex-col items-center space-y-1">
-                            {booking.passengerName || 'N/A'}
+                            {booking.passengerName || "N/A"}
                           </div>
                         </TableCell>
 
@@ -1068,7 +1073,7 @@ export default function AdminBookingsPage() {
                           <div className="space-y-1">
                             <div className="text-sm font-medium">
                               {formatDate(booking.date)}
-                            </div>  
+                            </div>
                           </div>
                         </TableCell>
 
@@ -1116,9 +1121,9 @@ export default function AdminBookingsPage() {
                           </div>
                         </TableCell>
 
-                         <TableCell className="py-4 text-black">
+                        <TableCell className="py-4 text-black">
                           <div className="text-sm break-words">
-                            {booking.flightNumber|| "N/A"}
+                            {booking.flightNumber || "N/A"}
                           </div>
                         </TableCell>
 
@@ -1172,7 +1177,7 @@ export default function AdminBookingsPage() {
                         {/* Note */}
                         <TableCell className="py-4 text-black">
                           <div className="text-sm break-words max-h-20 min-w-28">
-                            {booking.driverName|| "No notes"}
+                            {booking.driverName || "No notes"}
                           </div>
                         </TableCell>
 
@@ -1194,7 +1199,7 @@ export default function AdminBookingsPage() {
                             {Number(booking.extraCharge) || "0"}AED
                           </div>
                         </TableCell>
-                         <TableCell className="py-4 text-black">
+                        <TableCell className="py-4 text-black">
                           <div className="text-sm font-semibold text-black-600">
                             {booking.comment}
                           </div>
@@ -1220,16 +1225,14 @@ export default function AdminBookingsPage() {
                         <TableCell className="py-4 text-center">
                           <div className="text-sm font-medium text-gray-600">
                             {booking.bookBy || "N/A"}
-                          </div>    
-                          </TableCell>
+                          </div>
+                        </TableCell>
 
-                            <TableCell className="py-4 text-center">
+                        <TableCell className="py-4 text-center">
                           <div className="text-sm font-medium text-gray-600">
                             {booking.createdAt || "N/A"}
-                          </div>    
-                          </TableCell>
-
-
+                          </div>
+                        </TableCell>
 
                         {/* Actions */}
                         <TableCell className="py-4">

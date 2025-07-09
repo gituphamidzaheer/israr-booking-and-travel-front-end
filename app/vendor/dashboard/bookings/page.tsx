@@ -91,7 +91,6 @@ const BookingsPage = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
-
   // Track recently updated bookings with a timeout to clear the highlight
   const updateHighlight = (bookingId: number) => {
     const updatedBooking = bookings.find((b) => b.id === bookingId);
@@ -242,8 +241,8 @@ const BookingsPage = () => {
     searchName,
     searchDate,
     searchBookedBy,
-    fromDate,  
-    toDate,  
+    fromDate,
+    toDate,
     searchMonth,
     searchYear,
   ]);
@@ -363,20 +362,20 @@ const BookingsPage = () => {
       });
     }
     if (fromDate && toDate) {
-    filtered = filtered.filter((booking) => {
-      if (!booking.date) return false;
-      const bookingDate = new Date(booking.date);
-      const from = new Date(fromDate);
-      const to = new Date(toDate);
-      
-      // Set hours to 0 for proper date comparison
-      bookingDate.setHours(0, 0, 0, 0);
-      from.setHours(0, 0, 0, 0);
-      to.setHours(0, 0, 0, 0);
-      
-      return bookingDate >= from && bookingDate <= to;
-    });
-  }
+      filtered = filtered.filter((booking) => {
+        if (!booking.date) return false;
+        const bookingDate = new Date(booking.date);
+        const from = new Date(fromDate);
+        const to = new Date(toDate);
+
+        // Set hours to 0 for proper date comparison
+        bookingDate.setHours(0, 0, 0, 0);
+        from.setHours(0, 0, 0, 0);
+        to.setHours(0, 0, 0, 0);
+
+        return bookingDate >= from && bookingDate <= to;
+      });
+    }
     // Filter by Booked By
     if (searchBookedBy?.trim()) {
       filtered = filtered.filter((booking) =>
@@ -699,8 +698,7 @@ const BookingsPage = () => {
               <div className="text-blue-600 text-lg font-semibold">
                 Total Revenue
               </div>
-              <div className="text-2xl font-bold text-blue-700 mt-2">
-                $
+              <div className="text-2xl font-bold text-blue-700 mt-2 flex items-center gap-1">
                 {filteredBookings
                   .reduce(
                     (total, b) =>
@@ -710,6 +708,11 @@ const BookingsPage = () => {
                     0
                   )
                   .toFixed(2)}
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/e/ee/UAE_Dirham_Symbol.svg"
+                  alt="AED"
+                  className="w-5 h-5"
+                />
               </div>
             </CardContent>
           </Card>
@@ -739,27 +742,37 @@ const BookingsPage = () => {
               /> */}
 
               <div className="flex items-center gap-1">
-        <Label htmlFor="fromDate" className="whitespace-nowrap text-black text-sm">From:</Label>
-        <Input
-          id="fromDate"
-          type="date"
-          value={fromDate}
-          onChange={(e) => setFromDate(e.target.value)}
-          className="bg-white w-[160px] text-black border-gray-300"
-        />
-      </div>
-      
-      {/* Date Range Filter - To */}
-      <div className="flex items-center gap-1">
-        <Label htmlFor="toDate" className="whitespace-nowrap text-black text-sm">To:</Label>
-        <Input
-          id="toDate"
-          type="date"
-          value={toDate}
-          onChange={(e) => setToDate(e.target.value)}
-          className="bg-white w-[160px] text-black border-gray-300"
-        />
-      </div>
+                <Label
+                  htmlFor="fromDate"
+                  className="whitespace-nowrap text-black text-sm"
+                >
+                  From:
+                </Label>
+                <Input
+                  id="fromDate"
+                  type="date"
+                  value={fromDate}
+                  onChange={(e) => setFromDate(e.target.value)}
+                  className="bg-white w-[160px] text-black border-gray-300"
+                />
+              </div>
+
+              {/* Date Range Filter - To */}
+              <div className="flex items-center gap-1">
+                <Label
+                  htmlFor="toDate"
+                  className="whitespace-nowrap text-black text-sm"
+                >
+                  To:
+                </Label>
+                <Input
+                  id="toDate"
+                  type="date"
+                  value={toDate}
+                  onChange={(e) => setToDate(e.target.value)}
+                  className="bg-white w-[160px] text-black border-gray-300"
+                />
+              </div>
               <select
                 value={searchMonth || "all"}
                 onChange={(e) =>
@@ -904,31 +917,33 @@ const BookingsPage = () => {
                     }`}
                   >
                     <TableCell className="font-medium">#{booking.id}</TableCell>
-                    <TableCell className="font-medium">#{booking.passengerName}</TableCell>
-                     
+                    <TableCell className="font-medium">
+                      #{booking.passengerName}
+                    </TableCell>
+
                     <TableCell className="whitespace-normal">
                       {formatDate(booking.date)}
                     </TableCell>
                     <TableCell>{booking.roomNo}</TableCell>
-                     <TableCell className="whitespace-normal">
+                    <TableCell className="whitespace-normal">
                       {booking.time || "N/A"}
                     </TableCell>
-                     <TableCell className="whitespace-normal">
+                    <TableCell className="whitespace-normal">
                       {booking.pickupAdress}
                     </TableCell>
-                     <TableCell className="whitespace-normal">
+                    <TableCell className="whitespace-normal">
                       {booking.destination}
                     </TableCell>
 
-                     <TableCell className="whitespace-normal">
+                    <TableCell className="whitespace-normal">
                       {booking.bookingType || "N/A"}
                     </TableCell>
 
-                     <TableCell className="whitespace-normal">
+                    <TableCell className="whitespace-normal">
                       {booking.flightNumber || "N/A"}
                     </TableCell>
 
-                     <TableCell className="whitespace-normal">
+                    <TableCell className="whitespace-normal">
                       <div className="space-y-1">
                         {booking.sClass > 0 && (
                           <div className="text-sm font-medium">
@@ -965,27 +980,21 @@ const BookingsPage = () => {
                       </div>
                     </TableCell>
 
-                      <TableCell className="whitespace-normal">
+                    <TableCell className="whitespace-normal">
                       {booking.note || "N/A"}
                     </TableCell>
-                    
 
-                      <TableCell className="whitespace-normal">
+                    <TableCell className="whitespace-normal">
                       {booking.driverName || "N/A"}
                     </TableCell>
 
-                      <TableCell className="whitespace-normal">
+                    <TableCell className="whitespace-normal">
                       {booking.driverNumber || "N/A"}
                     </TableCell>
 
-                      <TableCell className="whitespace-normal">
+                    <TableCell className="whitespace-normal">
                       {booking.fare || "0 AED"}
                     </TableCell>
-                   
-
-
-
-
 
                     <TableCell className="whitespace-normal">
                       {booking.extraCharge || "0 AED"}
@@ -995,8 +1004,6 @@ const BookingsPage = () => {
                       {booking.comment || ".."}
                     </TableCell>
 
-                   
-                   
                     {/* <TableCell className="whitespace-normal">
                       {booking.driverName && <div>{booking.driverName}</div>}
                       {booking.driverNumber && (
@@ -1013,18 +1020,17 @@ const BookingsPage = () => {
                       {(Number(booking.fare) || 0) +
                         (Number(booking.extraCharge) || 0)}
                     </TableCell>
-                    
 
                     <TableCell>
                       <Badge className={getStatusColor(booking.status)}>
                         {booking.status}
                       </Badge>
                     </TableCell>
-                   
+
                     <TableCell>{booking.bookBy}</TableCell>
 
                     <TableCell>{booking.createdAt}</TableCell>
-                    
+
                     <TableCell>
                       <div className="flex flex-col gap-2">
                         <Button
@@ -1065,15 +1071,19 @@ const BookingsPage = () => {
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => handleEdit(booking)}
-              className="bg-blue-700 text-white border-blue-700 hover:bg-blue-800"
-            >
-              <Edit className="w-3 h-3 mr-1" />
-              Edit
-            </Button>
+            {bookings.map((booking) => (
+              <Button
+                key={booking.id}
+                variant="outline"
+                size="sm"
+                onClick={() => handleEdit(booking)}
+                className="bg-blue-700 text-white border-blue-700 hover:bg-blue-800"
+              >
+                <Edit className="w-3 h-3 mr-1" />
+                Edit
+              </Button>
+            ))}
+
             <Button
               variant="destructive"
               onClick={() => deleteId && deleteBooking(deleteId)}
