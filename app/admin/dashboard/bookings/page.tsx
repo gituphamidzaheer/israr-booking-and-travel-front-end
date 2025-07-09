@@ -95,6 +95,7 @@ export default function AdminBookingsPage() {
   const [isLoadingUsers, setIsLoadingUsers] = useState(true);
   const [showReasonInput, setShowReasonInput] = useState(false);
   const [extraChargeReason, setExtraChargeReason] = useState("");
+  
 
   const handleExtraChargeClick = () => {
     setShowReasonInput(true);

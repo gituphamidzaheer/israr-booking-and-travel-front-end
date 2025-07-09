@@ -130,7 +130,23 @@ export class BookingAPI {
       return { success: false, message: 'Network error occurred' }
     }
   }
+static async updateHotelBooking(id: number, bookingData: Partial<Booking>): Promise<BookingResponse> {
+    try {
+      const response = await fetch(`${this.baseUrl}/bookings/by/hotel/${id}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      })
 
+      const data = await response.json()
+      return { success: response.ok, data, message: data.message }
+    } catch (error) {
+      console.error('Update booking error:', error)
+      return { success: false, message: 'Network error occurred' }
+    }
+  }
   static async deleteBooking(id: number): Promise<BookingResponse> {
     try {
       const response = await fetch(`${this.baseUrl}/bookings/${id}`, {
