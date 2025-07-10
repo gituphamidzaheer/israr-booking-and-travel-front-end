@@ -130,6 +130,14 @@ const BookingsPage = () => {
     setError("");
     setSuccessMessage("");
 
+    // Add vehicle validation
+    if (!showSClass && !showVClass && !showOthers) {
+      setError("Please select at least one vehicle type");
+      toast.error("Please select at least one vehicle type");
+      setIsFormLoading(false);
+      return;
+    }
+
     try {
       const { bookingType, otherBookingType, ...rest } = formData;
       const types = [];
@@ -146,6 +154,7 @@ const BookingsPage = () => {
       // Ensure we have at least one booking type
       if (types.length === 0) {
         setError("Please select at least one booking type");
+        toast.error("Please select at least one booking type");
         setIsFormLoading(false);
         return;
       }
@@ -659,7 +668,7 @@ const BookingsPage = () => {
               <div className="bg-white p-3 sm:p-4 rounded-lg ">
                 <h3 className="text-base sm:text-lg font-semibold text-blue-800 mb-3 sm:mb-4 flex items-center">
                   <Car className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  Vehicle Information
+                  Vehicle Information *
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
                   {/* S-Class */}
