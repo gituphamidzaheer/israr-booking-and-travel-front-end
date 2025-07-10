@@ -361,19 +361,30 @@ const BookingsPage = () => {
         return bookingYear === searchYear.trim();
       });
     }
-    if (fromDate && toDate) {
+    
+    if (fromDate || toDate) {
       filtered = filtered.filter((booking) => {
         if (!booking.date) return false;
+
         const bookingDate = new Date(booking.date);
-        const from = new Date(fromDate);
-        const to = new Date(toDate);
+        bookingDate.setHours(0, 0, 0, 0); // remove time part
 
-        // Set hours to 0 for proper date comparison
-        bookingDate.setHours(0, 0, 0, 0);
-        from.setHours(0, 0, 0, 0);
-        to.setHours(0, 0, 0, 0);
+        // If only fromDate is selected
+        if (fromDate) {
+          const from = new Date(fromDate);
+          from.setHours(0, 0, 0, 0);
+          if (bookingDate < from) return false;
+        }
 
-        return bookingDate >= from && bookingDate <= to;
+        // If only toDate is selected
+        if (toDate) {
+          const to = new Date(toDate);
+          to.setHours(0, 0, 0, 0);
+          if (bookingDate > to) return false;
+        }
+
+        // Passed all checks
+        return true;
       });
     }
     // Filter by Booked By
@@ -559,7 +570,7 @@ const BookingsPage = () => {
         booking.time || "",
         booking.pickupAdress || "",
         booking.destination || "",
-        booking.type || "",
+        booking.bookingType || "",
         booking.flightNumber,
         booking.sClass || "",
         booking.vClass || "",
@@ -647,7 +658,21 @@ const BookingsPage = () => {
         )}
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+          <Card className="bg-blue-50 border-gray-200">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-gray-600 text-lg font-semibold">Total Bookings</div>
+                  <div className="text-2xl font-bold text-gray-700 mt-2">
+                    {filteredBookings.length}
+                  </div>
+                </div>
+                <Car className="w-8 h-8 text-gray-500" />
+              </div>
+            </CardContent>
+          </Card>
+
           <Card className="bg-yellow-50 border-yellow-200">
             <CardContent className="p-4">
               <div className="text-yellow-600 text-lg font-semibold">
@@ -693,12 +718,17 @@ const BookingsPage = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-blue-50 border-blue-200">
+          {/* <Card className="bg-blue-50 border-blue-200">
             <CardContent className="p-4">
               <div className="text-blue-600 text-lg font-semibold">
                 Total Revenue
               </div>
               <div className="text-2xl font-bold text-blue-700 mt-2 flex items-center gap-1">
+                 <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/e/ee/UAE_Dirham_Symbol.svg"
+                  alt="AED"
+                  className="w-5 h-5"
+                />
                 {filteredBookings
                   .reduce(
                     (total, b) =>
@@ -708,14 +738,10 @@ const BookingsPage = () => {
                     0
                   )
                   .toFixed(2)}
-                <img
-                  src="https://upload.wikimedia.org/wikipedia/commons/e/ee/UAE_Dirham_Symbol.svg"
-                  alt="AED"
-                  className="w-5 h-5"
-                />
+               
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
 
         {/* Search Filters */}
@@ -918,7 +944,7 @@ const BookingsPage = () => {
                   >
                     <TableCell className="font-medium">#{booking.id}</TableCell>
                     <TableCell className="font-medium">
-                      #{booking.passengerName}
+                      {booking.passengerName}
                     </TableCell>
 
                     <TableCell className="whitespace-normal">
@@ -1016,9 +1042,9 @@ const BookingsPage = () => {
                     // <TableCell>${booking.extraCharge || 0}</TableCell>
                     // <TableCell>{booking.comment}</TableCell> */}
                     <TableCell className="font-bold">
-                      $
+                      
                       {(Number(booking.fare) || 0) +
-                        (Number(booking.extraCharge) || 0)}
+                        (Number(booking.extraCharge) || 0)}AED
                     </TableCell>
 
                     <TableCell>

@@ -213,18 +213,29 @@ export default function AdminBookingsPage() {
       );
     }
 
-    if (fromDate && toDate) {
+    if (fromDate || toDate) {
       filtered = filtered.filter((booking) => {
         if (!booking.date) return false;
+
         const bookingDate = new Date(booking.date);
-        const from = new Date(fromDate);
-        const to = new Date(toDate);
+        bookingDate.setHours(0, 0, 0, 0); // remove time part
 
-        bookingDate.setHours(0, 0, 0, 0);
-        from.setHours(0, 0, 0, 0);
-        to.setHours(0, 0, 0, 0);
+        // If only fromDate is selected
+        if (fromDate) {
+          const from = new Date(fromDate);
+          from.setHours(0, 0, 0, 0);
+          if (bookingDate < from) return false;
+        }
 
-        return bookingDate >= from && bookingDate <= to;
+        // If only toDate is selected
+        if (toDate) {
+          const to = new Date(toDate);
+          to.setHours(0, 0, 0, 0);
+          if (bookingDate > to) return false;
+        }
+
+        // Passed all checks
+        return true;
       });
     }
 
@@ -457,7 +468,7 @@ export default function AdminBookingsPage() {
       booking.time || "",
       booking.pickupAdress || "",
       booking.destination || "",
-      booking.type || "",
+      booking.bookingType || "",
       booking.flightNumber,
       booking.sClass || "",
       booking.vClass || "",
@@ -530,7 +541,7 @@ export default function AdminBookingsPage() {
       booking.time || "",
       booking.pickupAdress || "",
       booking.destination || "",
-      booking.type || "",
+      booking.bookingType || "",
       booking.flightNumber,
       booking.sClass || "",
       booking.vClass || "",
@@ -1050,9 +1061,17 @@ export default function AdminBookingsPage() {
                 <TableBody className=" border-2 border-black">
                   {filteredBookings.length > 0 ? (
                     filteredBookings.map((booking, index) => (
-                      <TableRow className=" border-2 border-black">
+                      <TableRow
+                        className={`border-2 border-black ${
+                          booking.status === "cancelled"
+                            ? "bg-red-200"
+                            : booking.isUpdated === true
+                            ? "bg-white"
+                            : ""
+                        }`}
+                      >
                         {/* ID */}
-                        <TableCell className="py-4 text-center text-black">
+                        <TableCell>
                           <div className="flex flex-col items-center space-y-1">
                             <div className="w-8 h-8 bg-gradient-to-r from-blue-400 to-blue-500 rounded-full flex items-center justify-center">
                               <Car className="w-4 h-4 text-white" />
