@@ -29,6 +29,8 @@ const UsersPage = () => {
     phone: '',
     role: 'hotel' as 'admin' | 'hotel' 
   })
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
+  const [userToDelete, setUserToDelete] = useState<UserType | null>(null)
 
   useEffect(() => {
     fetchUsers()
@@ -91,8 +93,18 @@ const UsersPage = () => {
     const response = await UserAPI.deleteUser(id)
     if (response.success) {
       await fetchUsers()
+      toast.success("User deleted successfully!")
+    } else {
+      toast.error("Failed to delete user")
     }
     setDeletingId(null)
+    setIsDeleteDialogOpen(false)
+    setUserToDelete(null)
+  }
+
+  const initiateDelete = (user: UserType) => {
+    setUserToDelete(user)
+    setIsDeleteDialogOpen(true)
   }
 
   const resetForm = () => {
@@ -296,6 +308,46 @@ const UsersPage = () => {
           </Dialog>
         )}
 
+        {/* Delete Confirmation Dialog */}
+        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <DialogContent className="sm:max-w-md bg-blue-600">
+            <DialogHeader>
+              <DialogTitle className="text-lg font-semibold text-white">
+                Confirm Deletion
+              </DialogTitle>
+              <DialogDescription className="text-white">
+                Are you sure you want to delete {userToDelete?.name}? This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end space-x-2 mt-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsDeleteDialogOpen(false)}
+                className="border-gray-300 text-black bg-white"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => userToDelete?.id && handleDelete(userToDelete.id)}
+                disabled={deletingId === userToDelete?.id}
+                className="bg-white text-black hover:bg-white"
+              >
+                {deletingId === userToDelete?.id ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Deleting...</span>
+                  </div>
+                ) : (
+                  <>
+                    <Trash2 className="w-4 h-4 mr-2" />
+                    Delete
+                  </>
+                )}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* Users List - Only show when not loading */}
         {!isLoading && (
           <div className="space-y-4">
@@ -338,7 +390,7 @@ const UsersPage = () => {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleDelete(user.id!)}
+                        onClick={() => initiateDelete(user)}
                         disabled={deletingId === user.id}
                         className="text-white bg-blue-700 border-red-200 min-w-[80px]"
                       >
