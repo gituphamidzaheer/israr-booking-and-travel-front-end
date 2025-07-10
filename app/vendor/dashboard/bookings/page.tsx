@@ -361,32 +361,42 @@ const BookingsPage = () => {
         return bookingYear === searchYear.trim();
       });
     }
-    
+
+    // Modified date range filtering - handle specific dates
     if (fromDate || toDate) {
       filtered = filtered.filter((booking) => {
         if (!booking.date) return false;
 
         const bookingDate = new Date(booking.date);
-        bookingDate.setHours(0, 0, 0, 0); // remove time part
+        bookingDate.setHours(0, 0, 0, 0);
 
-        // If only fromDate is selected
-        if (fromDate) {
-          const from = new Date(fromDate);
-          from.setHours(0, 0, 0, 0);
-          if (bookingDate < from) return false;
+        if (fromDate && !toDate) {
+          // If only fromDate is selected, show only that specific date
+          const fromDateObj = new Date(fromDate);
+          fromDateObj.setHours(0, 0, 0, 0);
+          return bookingDate.getTime() === fromDateObj.getTime();
         }
 
-        // If only toDate is selected
-        if (toDate) {
-          const to = new Date(toDate);
-          to.setHours(0, 0, 0, 0);
-          if (bookingDate > to) return false;
+        if (!fromDate && toDate) {
+          // If only toDate is selected, show only that specific date
+          const toDateObj = new Date(toDate);
+          toDateObj.setHours(0, 0, 0, 0);
+          return bookingDate.getTime() === toDateObj.getTime();
         }
 
-        // Passed all checks
+        // If both dates are selected, show date range
+        if (fromDate && toDate) {
+          const fromDateObj = new Date(fromDate);
+          const toDateObj = new Date(toDate);
+          fromDateObj.setHours(0, 0, 0, 0);
+          toDateObj.setHours(0, 0, 0, 0);
+          return bookingDate >= fromDateObj && bookingDate <= toDateObj;
+        }
+
         return true;
       });
     }
+
     // Filter by Booked By
     if (searchBookedBy?.trim()) {
       filtered = filtered.filter((booking) =>
@@ -682,6 +692,22 @@ const BookingsPage = () => {
                 {
                   filteredBookings.filter(
                     (b) => b.status?.toLowerCase() === "pending"
+                  ).length
+                }
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Add In Progress Card */}
+          <Card className="bg-blue-50 border-blue-200">
+            <CardContent className="p-4">
+              <div className="text-blue-600 text-lg font-semibold">
+                In Progress
+              </div>
+              <div className="text-2xl font-bold text-blue-700 mt-2">
+                {
+                  filteredBookings.filter(
+                    (b) => b.status?.toLowerCase() === "inprogress"
                   ).length
                 }
               </div>
@@ -1342,18 +1368,14 @@ const BookingsPage = () => {
                   >
                     Pending
                   </SelectItem>
-                  <SelectItem
-                    value="inprogress"
+
+                   <SelectItem
+                    value="updated"
                     className="text-white hover:bg-blue-500 focus:bg-blue-500"
                   >
-                    In Progress
+                    Update
                   </SelectItem>
-                  <SelectItem
-                    value="completed"
-                    className="text-white hover:bg-blue-500 focus:bg-blue-500"
-                  >
-                    Completed
-                  </SelectItem>
+                 
                   <SelectItem
                     value="cancelled"
                     className="text-white hover:bg-blue-500 focus:bg-blue-500"

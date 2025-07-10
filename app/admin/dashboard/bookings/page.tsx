@@ -218,27 +218,35 @@ export default function AdminBookingsPage() {
         if (!booking.date) return false;
 
         const bookingDate = new Date(booking.date);
-        bookingDate.setHours(0, 0, 0, 0); // remove time part
+        bookingDate.setHours(0, 0, 0, 0);
 
-        // If only fromDate is selected
-        if (fromDate) {
-          const from = new Date(fromDate);
-          from.setHours(0, 0, 0, 0);
-          if (bookingDate < from) return false;
+        if (fromDate && !toDate) {
+          // If only fromDate is selected, show only that specific date
+          const fromDateObj = new Date(fromDate);
+          fromDateObj.setHours(0, 0, 0, 0);
+          return bookingDate.getTime() === fromDateObj.getTime();
         }
 
-        // If only toDate is selected
-        if (toDate) {
-          const to = new Date(toDate);
-          to.setHours(0, 0, 0, 0);
-          if (bookingDate > to) return false;
+        if (!fromDate && toDate) {
+          // If only toDate is selected, show only that specific date
+          const toDateObj = new Date(toDate);
+          toDateObj.setHours(0, 0, 0, 0);
+          return bookingDate.getTime() === toDateObj.getTime();
         }
 
-        // Passed all checks
+        // If both dates are selected, show date range
+        if (fromDate && toDate) {
+          const fromDateObj = new Date(fromDate);
+          const toDateObj = new Date(toDate);
+          fromDateObj.setHours(0, 0, 0, 0);
+          toDateObj.setHours(0, 0, 0, 0);
+          return bookingDate >= fromDateObj && bookingDate <= toDateObj;
+        }
+
         return true;
       });
     }
-
+    
     if (searchMonth) {
       filtered = filtered.filter((booking) => {
         if (!booking.date) return false;
@@ -1064,10 +1072,10 @@ export default function AdminBookingsPage() {
                       <TableRow
                         className={`border-2 border-black ${
                           booking.status === "cancelled"
-                            ? "bg-red-200"
-                            : booking.isUpdated === true
-                            ? "bg-white"
-                            : ""
+                        ? "bg-red-200"
+                        : booking.isUpdated === true
+                        ? "bg-green-200"
+                        : ""
                         }`}
                       >
                         {/* ID */}
