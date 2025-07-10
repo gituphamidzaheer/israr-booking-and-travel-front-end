@@ -1031,6 +1031,10 @@ export default function AdminBookingsPage() {
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Vehicle Type
                     </TableHead>
+
+                    <TableHead className="font-semibold text-white py-4 w-[10%]">
+                      No of Passengers
+                    </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[12%]">
                       Note
                     </TableHead>
@@ -1189,6 +1193,14 @@ export default function AdminBookingsPage() {
                                   <div className="text-xs">Qty: 0</div>
                                 </div>
                               )}
+                          </div>
+                        </TableCell>
+
+                        <TableCell className="py-4 text-black">
+                          <div className="space-y-1">
+                            <div className="text-sm font-medium">
+                              {booking.numberOfPassengers|| "Not Assigned"}
+                            </div>
                           </div>
                         </TableCell>
 

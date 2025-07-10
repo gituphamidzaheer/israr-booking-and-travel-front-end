@@ -918,6 +918,9 @@ const BookingsPage = () => {
                   <TableHead className="w-40 text-white hover:bg-blue-600">
                     Vehicle Type
                   </TableHead>
+                   <TableHead className="w-40 text-white hover:bg-blue-600">
+                    No of Passengers
+                  </TableHead>
                   <TableHead className="w-40 text-white hover:bg-blue-600">
                     Note
                   </TableHead>
@@ -991,6 +994,8 @@ const BookingsPage = () => {
                       {booking.bookingType || "N/A"}
                     </TableCell>
 
+                    
+
                     <TableCell className="whitespace-normal">
                       {booking.flightNumber || "N/A"}
                     </TableCell>
@@ -1030,6 +1035,10 @@ const BookingsPage = () => {
                             </div>
                           )}
                       </div>
+                    </TableCell>
+
+                     <TableCell className="whitespace-normal">
+                      {booking.numberOfPassengers || "N/A"}
                     </TableCell>
 
                     <TableCell className="whitespace-normal">

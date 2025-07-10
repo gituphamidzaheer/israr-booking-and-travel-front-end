@@ -33,6 +33,7 @@ export interface Booking {
   driverName?: string
   driverNumber?: string
   isUpdated?: boolean
+  numberOfPassengers:string
 }
 
 export interface BookingResponse {
