@@ -57,7 +57,7 @@ export default function HomePage() {
           <div className="flex flex-wrap justify-center gap-2 sm:gap-4 text-center">
             <p>© 2025 Copyrights by Asrar Travel UAE. All Rights Reserved</p>
             <span>|</span>
-            <p>Developed By: Hamid Zaheer | Phone: +92317579457</p>
+            <p>Developed By: Hamid Zaheer | Phone: +923175794597</p>
           </div>
         </div>
       </div>
