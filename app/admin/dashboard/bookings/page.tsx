@@ -246,7 +246,7 @@ export default function AdminBookingsPage() {
         return true;
       });
     }
-    
+
     if (searchMonth) {
       filtered = filtered.filter((booking) => {
         if (!booking.date) return false;
@@ -1076,10 +1076,10 @@ export default function AdminBookingsPage() {
                       <TableRow
                         className={`border-2 border-black ${
                           booking.status === "cancelled"
-                        ? "bg-red-200"
-                        : booking.isUpdated === true
-                        ? "bg-green-200"
-                        : ""
+                            ? "bg-red-200"
+                            : booking.isUpdated === true
+                            ? "bg-green-200"
+                            : ""
                         }`}
                       >
                         {/* ID */}
@@ -1199,16 +1199,16 @@ export default function AdminBookingsPage() {
                         <TableCell className="py-4 text-black">
                           <div className="space-y-1">
                             <div className="text-sm font-medium">
-                              {booking.numberOfPassengers|| "Not Assigned"}
+                              {booking.numberOfPassengers || "Not Assigned"}
                             </div>
                           </div>
                         </TableCell>
 
                         {/* Driver */}
-                        <TableCell className="py-4 text-black">
-                          <div className="space-y-1">
-                            <div className="text-sm font-medium">
-                              {booking.note || "Not Assigned"}
+                        <TableCell className="py-4 text-black ">
+                          <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                            <div className="whitespace-pre-wrap break-words">
+                              {booking.note || "N/A"}
                             </div>
                           </div>
                         </TableCell>

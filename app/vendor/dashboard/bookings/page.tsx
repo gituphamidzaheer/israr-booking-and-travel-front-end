@@ -673,7 +673,9 @@ const BookingsPage = () => {
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-gray-600 text-lg font-semibold">Total Bookings</div>
+                  <div className="text-gray-600 text-lg font-semibold">
+                    Total Bookings
+                  </div>
                   <div className="text-2xl font-bold text-gray-700 mt-2">
                     {filteredBookings.length}
                   </div>
@@ -918,7 +920,7 @@ const BookingsPage = () => {
                   <TableHead className="w-40 text-white hover:bg-blue-600">
                     Vehicle Type
                   </TableHead>
-                   <TableHead className="w-40 text-white hover:bg-blue-600">
+                  <TableHead className="w-40 text-white hover:bg-blue-600">
                     No of Passengers
                   </TableHead>
                   <TableHead className="w-40 text-white hover:bg-blue-600">
@@ -994,8 +996,6 @@ const BookingsPage = () => {
                       {booking.bookingType || "N/A"}
                     </TableCell>
 
-                    
-
                     <TableCell className="whitespace-normal">
                       {booking.flightNumber || "N/A"}
                     </TableCell>
@@ -1037,12 +1037,16 @@ const BookingsPage = () => {
                       </div>
                     </TableCell>
 
-                     <TableCell className="whitespace-normal">
+                    <TableCell className="whitespace-normal">
                       {booking.numberOfPassengers || "N/A"}
                     </TableCell>
 
-                    <TableCell className="whitespace-normal">
-                      {booking.note || "N/A"}
+                    <TableCell className="py-4 text-black ">
+                      <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                        <div className="whitespace-pre-wrap break-words">
+                          {booking.note || "N/A"}
+                        </div>
+                      </div>
                     </TableCell>
 
                     <TableCell className="whitespace-normal">
@@ -1077,9 +1081,9 @@ const BookingsPage = () => {
                     // <TableCell>${booking.extraCharge || 0}</TableCell>
                     // <TableCell>{booking.comment}</TableCell> */}
                     <TableCell className="font-bold">
-                      
                       {(Number(booking.fare) || 0) +
-                        (Number(booking.extraCharge) || 0)}AED
+                        (Number(booking.extraCharge) || 0)}
+                      AED
                     </TableCell>
 
                     <TableCell>
@@ -1378,13 +1382,13 @@ const BookingsPage = () => {
                     Pending
                   </SelectItem>
 
-                   <SelectItem
+                  <SelectItem
                     value="updated"
                     className="text-white hover:bg-blue-500 focus:bg-blue-500"
                   >
                     Update
                   </SelectItem>
-                 
+
                   <SelectItem
                     value="cancelled"
                     className="text-white hover:bg-blue-500 focus:bg-blue-500"
