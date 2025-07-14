@@ -1007,6 +1007,9 @@ export default function AdminBookingsPage() {
                     <TableHead className="font-semibold text-white py-4 w-[10%]">
                       Guest Name
                     </TableHead>
+                    <TableHead className="font-semibold text-white py-4 w-[10%]">
+                      Guest Phone Number
+                    </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Date
                     </TableHead>
@@ -1098,6 +1101,11 @@ export default function AdminBookingsPage() {
                             {booking.passengerName || "N/A"}
                           </div>
                         </TableCell>
+                        <TableCell className="py-4 text-center text-black">
+                          <div className="flex flex-col items-center space-y-1">
+                            {booking.guest_phoneno || " "}
+                          </div>
+                        </TableCell>
 
                         {/* Date & Time */}
                         <TableCell className="py-4 text-black">
@@ -1134,21 +1142,27 @@ export default function AdminBookingsPage() {
 
                         {/* Pickup Address */}
                         <TableCell className="py-4 text-black">
-                          <div className="text-sm break-words">
-                            {booking.pickupAdress}
+                          <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                            <div className="whitespace-pre-wrap break-words">
+                              {booking.pickupAdress || "N/A"}
+                            </div>
                           </div>
                         </TableCell>
 
                         {/* Destination */}
                         <TableCell className="py-4 text-black">
-                          <div className="text-sm break-words">
-                            {booking.destination}
+                          <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                            <div className="whitespace-pre-wrap break-words">
+                              {booking.destination || "N/A"}
+                            </div>
                           </div>
                         </TableCell>
 
                         <TableCell className="py-4 text-black">
-                          <div className="text-sm break-words">
-                            {booking.bookingType || "N/A"}
+                          <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                            <div className="whitespace-pre-wrap break-words">
+                              {booking.bookingType || "N/A"}
+                            </div>
                           </div>
                         </TableCell>
 
@@ -1205,7 +1219,7 @@ export default function AdminBookingsPage() {
                         </TableCell>
 
                         {/* Driver */}
-                        <TableCell className="py-4 text-black ">
+                        <TableCell className="py-4 text-black">
                           <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
                             <div className="whitespace-pre-wrap break-words">
                               {booking.note || "N/A"}
@@ -1239,8 +1253,10 @@ export default function AdminBookingsPage() {
                           </div>
                         </TableCell>
                         <TableCell className="py-4 text-black">
-                          <div className="text-sm font-semibold text-black-600">
-                            {booking.comment}
+                          <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                            <div className="whitespace-pre-wrap break-words">
+                              {booking.comment || " "}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell className="py-4 text-black">

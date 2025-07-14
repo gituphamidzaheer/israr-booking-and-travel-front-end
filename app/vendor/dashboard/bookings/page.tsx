@@ -894,6 +894,9 @@ const BookingsPage = () => {
                   <TableHead className="w-40 text-white hover:bg-blue-600">
                     Guest Name
                   </TableHead>
+                  <TableHead className="w-40 text-white hover:bg-blue-600">
+                    Guest Phone Number
+                  </TableHead>
                   <TableHead className="w-32 text-white hover:bg-blue-600">
                     Date
                   </TableHead>
@@ -975,7 +978,11 @@ const BookingsPage = () => {
                   >
                     <TableCell className="font-medium">#{booking.id}</TableCell>
                     <TableCell className="font-medium">
-                      {booking.passengerName}
+                      {booking.passengerName || ""}
+                    </TableCell>
+
+                    <TableCell className="font-medium">
+                      {booking.guest_phoneno}
                     </TableCell>
 
                     <TableCell className="whitespace-normal">
@@ -985,15 +992,27 @@ const BookingsPage = () => {
                     <TableCell className="whitespace-normal">
                       {booking.time || "N/A"}
                     </TableCell>
-                    <TableCell className="whitespace-normal">
-                      {booking.pickupAdress}
+                    <TableCell className="py-4 text-black">
+                      <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                        <div className="whitespace-pre-wrap break-words">
+                          {booking.pickupAdress || "N/A"}
+                        </div>
+                      </div>
                     </TableCell>
-                    <TableCell className="whitespace-normal">
-                      {booking.destination}
+                    <TableCell className="py-4 text-black">
+                      <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                        <div className="whitespace-pre-wrap break-words">
+                          {booking.destination || "N/A"}
+                        </div>
+                      </div>
                     </TableCell>
 
-                    <TableCell className="whitespace-normal">
-                      {booking.bookingType || "N/A"}
+                    <TableCell className="py-4 text-black">
+                      <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                        <div className="whitespace-pre-wrap break-words">
+                          {booking.bookingType || "N/A"}
+                        </div>
+                      </div>
                     </TableCell>
 
                     <TableCell className="whitespace-normal">
@@ -1065,8 +1084,12 @@ const BookingsPage = () => {
                       {booking.extraCharge || "0 AED"}
                     </TableCell>
 
-                    <TableCell className="whitespace-normal">
-                      {booking.comment || ".."}
+                    <TableCell className="py-4 text-black ">
+                      <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                        <div className="whitespace-pre-wrap break-words">
+                          {booking.comment || " "}
+                        </div>
+                      </div>
                     </TableCell>
 
                     {/* <TableCell className="whitespace-normal">
