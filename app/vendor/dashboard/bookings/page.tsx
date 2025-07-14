@@ -977,8 +977,12 @@ const BookingsPage = () => {
                     }`}
                   >
                     <TableCell className="font-medium">#{booking.id}</TableCell>
-                    <TableCell className="font-medium">
-                      {booking.passengerName || ""}
+                    <TableCell className="py-4 text-black">
+                      <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                        <div className="whitespace-pre-wrap break-words">
+                          {booking.passengerName || ""}
+                        </div>
+                      </div>
                     </TableCell>
 
                     <TableCell className="font-medium">

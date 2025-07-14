@@ -1096,11 +1096,13 @@ export default function AdminBookingsPage() {
                             </span>
                           </div>
                         </TableCell>
-                        <TableCell className="py-4 text-center text-black">
-                          <div className="flex flex-col items-center space-y-1">
-                            {booking.passengerName || "N/A"}
-                          </div>
-                        </TableCell>
+                       <TableCell className="py-4 text-black">
+                      <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                        <div className="whitespace-pre-wrap break-words">
+                          {booking.passengerName|| " "}
+                        </div>
+                      </div>
+                    </TableCell>
                         <TableCell className="py-4 text-center text-black">
                           <div className="flex flex-col items-center space-y-1">
                             {booking.guest_phoneno || " "}
