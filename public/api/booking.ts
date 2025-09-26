@@ -34,6 +34,7 @@ export interface Booking {
   driverNumber?: string
   isUpdated?: boolean
   numberOfPassengers:string
+  voucherNumber?:string
 }
 
 export interface BookingResponse {

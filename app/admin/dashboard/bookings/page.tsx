@@ -440,6 +440,7 @@ export default function AdminBookingsPage() {
     const headers = [
       "ID",
       "Passenger Name",
+      "Passenger phone no",
       "Date",
       "Room No",
       "Time",
@@ -471,6 +472,7 @@ export default function AdminBookingsPage() {
     const csvData = filteredBookings.map((booking) => [
       booking.id || "",
       booking.passengerName || "",
+      booking.guest_phoneno|| "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
       booking.roomNo || "",
       booking.time || "",
@@ -518,6 +520,7 @@ export default function AdminBookingsPage() {
     const headers = [
       "ID",
       "Passenger Name",
+      "Passenger phone no",
       "Date",
       "Room No",
       "Time",
@@ -544,6 +547,7 @@ export default function AdminBookingsPage() {
     const csvData = [
       booking.id || "",
       booking.passengerName || "",
+      booking.guest_phoneno|| "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
       booking.roomNo || "",
       booking.time || "",
@@ -1466,7 +1470,7 @@ export default function AdminBookingsPage() {
                 >
                   Destination *
                 </Label>
-                <Input
+                <Textarea
                   id="edit-destination"
                   value={editFormData.destination || ""}
                   onChange={(e) =>
@@ -1688,6 +1692,26 @@ export default function AdminBookingsPage() {
                     setEditFormData({
                       ...editFormData,
                       driverNumber: e.target.value,
+                    })
+                  }
+                  className="bg-white text-black border-gray-300 text-sm h-10"
+                />
+              </div>
+
+                <div className="space-y-2">
+                <Label
+                  htmlFor="edit-driver-number"
+                  className="text-gray-800 font-bold text-sm"
+                >
+                  Voucher Number
+                </Label>
+                <Input
+                  id="edit-driver-number"
+                  value={editFormData.voucherNumber || ""}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      voucherNumber: e.target.value,
                     })
                   }
                   className="bg-white text-black border-gray-300 text-sm h-10"
