@@ -439,6 +439,7 @@ export default function AdminBookingsPage() {
     // Define CSV headers
     const headers = [
       "ID",
+      "Voucher No",
       "Passenger Name",
       "Passenger phone no",
       "Date",
@@ -471,6 +472,7 @@ export default function AdminBookingsPage() {
     // Convert bookings data to CSV format (each booking as a row)
     const csvData = filteredBookings.map((booking) => [
       booking.id || "",
+      booking.voucherNumber || "",
       booking.passengerName || "",
       booking.guest_phoneno|| "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
@@ -519,6 +521,7 @@ export default function AdminBookingsPage() {
     // Define CSV headers
     const headers = [
       "ID",
+      "Voucher No",
       "Passenger Name",
       "Passenger phone no",
       "Date",
@@ -546,6 +549,7 @@ export default function AdminBookingsPage() {
     // Convert single booking data to CSV format
     const csvData = [
       booking.id || "",
+      booking.voucherNumber || "",
       booking.passengerName || "",
       booking.guest_phoneno|| "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
@@ -1048,6 +1052,9 @@ export default function AdminBookingsPage() {
                     <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Driver Name
                     </TableHead>
+                      <TableHead className="font-semibold text-white py-4 w-[6%]">
+                      Voucher No
+                    </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Driver Number
                     </TableHead>
@@ -1237,6 +1244,11 @@ export default function AdminBookingsPage() {
                         <TableCell className="py-4 text-black">
                           <div className="text-sm break-words max-h-20 min-w-28">
                             {booking.driverName || "No notes"}
+                          </div>
+                        </TableCell>
+                         <TableCell className="py-4 text-black">
+                          <div className="text-sm break-words max-h-20 min-w-28">
+                            {booking.voucherNumber || "no voucher no"}
                           </div>
                         </TableCell>
 
