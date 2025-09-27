@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { format } from "date-fns";
+
 import {
   Select,
   SelectContent,
@@ -1422,7 +1424,7 @@ export default function AdminBookingsPage() {
                 >
                   Passenger Name *
                 </Label>
-                <Input
+                <Textarea
                   id="edit-passenger"
                   value={editFormData.passengerName || ""}
                   onChange={(e) =>
@@ -1442,7 +1444,7 @@ export default function AdminBookingsPage() {
                 >
                   Phone Number
                 </Label>
-                <Input
+                <Textarea
                   id="edit-phone"
                   value={editFormData.guest_phoneno || ""}
                   onChange={(e) =>
@@ -1462,7 +1464,7 @@ export default function AdminBookingsPage() {
                 >
                   Pickup Address *
                 </Label>
-                <Input
+                <Textarea
                   id="edit-pickup"
                   value={editFormData.pickupAdress || ""}
                   onChange={(e) =>
@@ -1515,23 +1517,27 @@ export default function AdminBookingsPage() {
                 />
               </div>
 
-              <div className="space-y-2">
-                <Label
-                  htmlFor="edit-date"
-                  className="text-gray-800 font-bold text-sm"
-                >
-                  Date *
-                </Label>
-                <Input
-                  id="edit-date"
-                  type="date"
-                  value={editFormData.date || ""}
-                  onChange={(e) =>
-                    setEditFormData({ ...editFormData, date: e.target.value })
-                  }
-                  className="bg-white text-black border-gray-300 text-sm h-10"
-                />
-              </div>
+             <div className="space-y-2">
+  <Label
+    htmlFor="edit-date"
+    className="text-gray-800 font-bold text-sm"
+  >
+    Date *
+  </Label>
+  <Input
+    id="edit-date"
+    type="date"
+    value={
+      editFormData.date
+        ? format(new Date(editFormData.date), "yyyy-MM-dd")
+        : ""
+    }
+    onChange={(e) =>
+      setEditFormData({ ...editFormData, date: e.target.value })
+    }
+    className="bg-white text-black border-gray-300 text-sm h-10"
+  />
+</div>
 
               <div className="space-y-2">
                 <Label
