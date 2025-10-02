@@ -19,7 +19,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Hotel, Plus, Calendar, LogOut, User, BarChart3 } from "lucide-react"
+import { Hotel, Plus, Calendar, LogOut, User, BarChart3,Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 
@@ -34,6 +34,11 @@ const menuItems = [
     title: "My Bookings",
     url: "/vendor/dashboard/bookings",
     icon: Calendar,
+  },
+   {
+    title: "Stand By",
+    url: "/vendor/dashboard/standby",
+    icon: Clock,
   },
 ]
 

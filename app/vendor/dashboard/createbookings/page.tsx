@@ -451,7 +451,6 @@ const BookingsPage = () => {
                       value={formData.time}
                       onChange={handleInputChange("time")}
                       //placeholder="Enter time (24hours)"
-                      pattern="^([0]?[1-9]|1[0-2]):[0-5][0-9](\s?[AaPp][Mm])?$|^(?:[01]?[0-9]|2[0-3]):[0-5][0-9]$"
                       className="border-blue-300 focus:border-blue-500 bg-white text-gray-900 text-sm sm:text-base"
                       required
                       disabled={isFormLoading}

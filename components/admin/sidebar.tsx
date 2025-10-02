@@ -14,7 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-import { Shield, BarChart3, Calendar, Users, Settings, LogOut, User } from "lucide-react"
+import { Shield, BarChart3, Calendar, Users, Settings, LogOut, User, Clock, FileText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AuthAPI } from "@/public/api/auth"
 import { useRouter } from "next/navigation"
@@ -31,7 +31,16 @@ const menuItems = [
     url: "/admin/dashboard/bookings",
     icon: Calendar,
   },
-  
+  {
+    title: "Stand By",
+    url: "/admin/dashboard/standby",
+    icon: Clock,
+  },
+  {
+    title: "Invoice",
+    url: "/admin/dashboard/invoice",
+    icon: FileText,
+  }
 ]
 
 export function AdminSidebar() {
