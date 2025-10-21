@@ -64,7 +64,6 @@ const Page = () => {
       setDriverName("")
       setDriverPhone("")
       setVehicle("")
-      // Refresh list after adding
       const refreshed = await axios.get(`${baseUrl}/standby`)
       setStandbyDrivers(refreshed.data)
     } catch (err: any) {
@@ -73,7 +72,6 @@ const Page = () => {
     setLoading(false)
   }
 
-  // Open action modal and set selected driver
   const handleActionClick = (driver: any) => {
     setSelectedDriver(driver)
     setActionAvailable(driver.isAvailable)
