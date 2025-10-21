@@ -35,17 +35,21 @@ const Page = () => {
   const [actionDriverPhone, setActionDriverPhone] = useState("")
   const [actionVehicle, setActionVehicle] = useState("")
 
+  const [listLoading, setListLoading] = useState(false)
+
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
 
   // Fetch standby drivers
   useEffect(() => {
     const fetchDrivers = async () => {
+      setListLoading(true)
       try {
         const res = await axios.get(`${baseUrl}/standby`)
         setStandbyDrivers(res.data)
       } catch {
         // handle error if needed
       }
+      setListLoading(false)
     }
     fetchDrivers()
   }, [baseUrl])
@@ -64,8 +68,11 @@ const Page = () => {
       setDriverName("")
       setDriverPhone("")
       setVehicle("")
+      // Refresh list after adding
+      setListLoading(true)
       const refreshed = await axios.get(`${baseUrl}/standby`)
       setStandbyDrivers(refreshed.data)
+      setListLoading(false)
     } catch (err: any) {
       setError(err?.response?.data?.message || "Network error")
     }
@@ -96,8 +103,10 @@ const Page = () => {
       })
       setActionOpen(false)
       // Refresh list
+      setListLoading(true)
       const res = await axios.get(`${baseUrl}/standby`)
       setStandbyDrivers(res.data)
+      setListLoading(false)
     } catch (err: any) {
       setActionError(err?.response?.data?.message || "Network error")
     }
@@ -142,22 +151,29 @@ const Page = () => {
         </Dialog>
         {/* Standby drivers list */}
         <div className="mt-8 space-y-4">
-          {standbyDrivers.map(driver => (
-            <div
-              key={driver.id}
-              className={`flex items-center justify-between rounded-lg p-4 shadow
-                ${driver.isAvailable ? "bg-green-100" : "bg-red-100"}`}
-            >
-              <div>
-                <div className="font-bold text-lg text-black">{driver.driverName}</div>
-                <div className="text-gray-700">Phone: {driver.driverPhone}</div>
-                <div className="text-gray-700">Vehicle: {driver.vehicle}</div>
-              </div>
-              <Button variant="secondary" onClick={() => handleActionClick(driver)}>
-                Edit
-              </Button>
+          {listLoading ? (
+            <div className="flex justify-center items-center py-12">
+              <span className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-gray-900"></span>
+              <span className="ml-4 text-gray-700">Loading...</span>
             </div>
-          ))}
+          ) : (
+            standbyDrivers.map(driver => (
+              <div
+                key={driver.id}
+                className={`flex items-center justify-between rounded-lg p-4 shadow
+                  ${driver.isAvailable ? "bg-green-100" : "bg-red-100"}`}
+              >
+                <div>
+                  <div className="font-bold text-lg text-black">{driver.driverName}</div>
+                  <div className="text-gray-700">Phone: {driver.driverPhone}</div>
+                  <div className="text-gray-700">Vehicle: {driver.vehicle}</div>
+                </div>
+                <Button variant="secondary" onClick={() => handleActionClick(driver)}>
+                  Edit
+                </Button>
+              </div>
+            ))
+          )}
         </div>
         {/* Action Modal */}
         <Dialog open={actionOpen} onOpenChange={setActionOpen}>
