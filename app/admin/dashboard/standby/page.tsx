@@ -168,9 +168,34 @@ const Page = () => {
                   <div className="text-gray-700">Phone: {driver.driverPhone}</div>
                   <div className="text-gray-700">Vehicle: {driver.vehicle}</div>
                 </div>
-                <Button variant="secondary" onClick={() => handleActionClick(driver)}>
-                  Edit
-                </Button>
+                <div className="flex gap-2">
+                  {/* <Button variant="secondary" onClick={() => handleActionClick(driver)}>
+                    Edit
+                  </Button> */}
+                  <Button
+                    variant={driver.isAvailable ? "ghost" : "default"}
+                    className={
+                      driver.isAvailable
+                        ? "border border-red-400 text-red-500 bg-transparent hover:bg-red-500 hover:text-black"
+                        : ""
+                    }
+                    onClick={async () => {
+                      setListLoading(true)
+                      try {
+                        await axios.patch(`${baseUrl}/standby/${driver.id}`, {
+                          isAvailable: !driver.isAvailable
+                        })
+                        const refreshed = await axios.get(`${baseUrl}/standby`)
+                        setStandbyDrivers(refreshed.data)
+                      } catch {
+                        // handle error if needed
+                      }
+                      setListLoading(false)
+                    }}
+                  >
+                    {driver.isAvailable ? "Set Unavailable" : "Set Available"}
+                  </Button>
+                </div>
               </div>
             ))
           )}
