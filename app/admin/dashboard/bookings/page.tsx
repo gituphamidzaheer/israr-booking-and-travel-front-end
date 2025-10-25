@@ -1,5 +1,8 @@
 "use client";
 
+// Add socket.io import at the top
+import { io } from "socket.io-client";
+
 // Ensure these imports are at the top
 import { AdminHeader } from "@/components/admin/header";
 import { useState, useEffect } from "react";
@@ -65,6 +68,9 @@ import { BookingAPI, type Booking } from "@/public/api/booking";
 import { UserAPI } from "@/public/api/user";
 import { comment } from "postcss";
 
+// Initialize socket outside component to maintain connection
+const socket = io(process.env.NEXT_PUBLIC_BASE_URL || "");
+
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
@@ -99,6 +105,7 @@ export default function AdminBookingsPage() {
   const [extraChargeReason, setExtraChargeReason] = useState("");
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [socketConnected, setSocketConnected] = useState(false);
 
   const handleExtraChargeClick = () => {
     setShowReasonInput(true);
@@ -133,7 +140,15 @@ export default function AdminBookingsPage() {
 
   // Fetch bookings when hotel selection changes
   useEffect(() => {
-    fetchBookings();
+    if (selectedHotel) {
+      setIsLoading(true); // ensure we show loader while fetching for a selected hotel
+      fetchBookings();
+    } else {
+      // no hotel selected: stop loading and reset data
+      setIsLoading(false);
+      setBookings([]);
+      setFilteredBookings([]);
+    }
   }, [selectedHotel]);
 
   // Filter bookings when hotel selection changes
@@ -154,6 +169,20 @@ export default function AdminBookingsPage() {
     }
   }, [selectedHotel, statusFilter, bookings]);
 
+  // Handle socket subscriptions when hotel selection changes
+  // Handle socket subscriptions when hotel selection changes
+useEffect(() => {
+  if (selectedHotel && bookings.length > 0) {
+    console.log("📡 Subscribing to bookings for hotel:", selectedHotel);
+    // Subscribe to all current bookings when hotel is selected
+    bookings.forEach((booking) => {
+      socket.emit("subscribeToBooking", booking.id);
+    });
+  }
+  // When hotel selection changes, the fetchBookings will be called automatically
+  // due to the existing useEffect dependency on selectedHotel
+}, [selectedHotel, bookings]);
+
   const fetchBookings = async () => {
     setIsLoading(true);
     try {
@@ -170,6 +199,13 @@ export default function AdminBookingsPage() {
         );
         setBookings(validBookings);
         setFilteredBookings(validBookings);
+
+        // Only subscribe to updates if a hotel is selected
+        if (selectedHotel) {
+          validBookings.forEach((booking) => {
+            socket.emit("subscribeToBooking", booking.id);
+          });
+        }
       } else {
         setError(response.message || "Failed to fetch bookings");
       }
@@ -180,6 +216,55 @@ export default function AdminBookingsPage() {
       setIsLoading(false);
     }
   };
+
+  // Socket connection handling
+// Socket connection handling
+useEffect(() => {
+  // Socket connection status
+  socket.on("connect", () => {
+    console.log("Connected to booking server");
+    setSocketConnected(true);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("Disconnected from booking server");
+    setSocketConnected(false);
+  });
+
+  // Listen for new bookings - only add if hotel is selected and matches
+// Listen for new bookings - only add if hotel is selected and matches
+socket.on("newBooking", (booking: Booking) => {
+  console.log("New booking received:", booking);
+  console.log("Selected hotel:", selectedHotel);
+  console.log("Booking user ID:", booking.user?.id);
+
+  const bookingHotelId = booking.user?.id?.toString();
+
+  // Only add the booking if:
+  // 1. A hotel is selected AND the booking belongs to that hotel
+  // 2. Compare by hotel user ID
+  if (selectedHotel && bookingHotelId === selectedHotel) {
+    console.log("✅ Adding booking to selected hotel");
+    setBookings((prev) => [booking, ...prev]);
+    setFilteredBookings((prev) => [booking, ...prev]);
+    
+    // Stats will automatically recalculate because filteredBookings changed
+  } else {
+    console.log("❌ Skipping booking - hotel filter mismatch");
+  }
+});
+
+  socket.emit("ping");
+  socket.on("pong", (msg) => console.log("Server response:", msg));
+
+  // Cleanup on unmount
+  return () => {
+    socket.off("connect");
+    socket.off("disconnect");
+    socket.off("newBooking");
+    socket.off("pong");
+  };
+}, [selectedHotel]); // ✅ Add selectedHotel as dependency
 
   useEffect(() => {
     filterBookings();
@@ -196,6 +281,12 @@ export default function AdminBookingsPage() {
 
   const filterBookings = () => {
     let filtered = bookings;
+
+  //    if (selectedHotel) {
+  //   filtered = filtered.filter((booking) => 
+  //     booking.user?.id?.toString() === selectedHotel
+  //   );
+  // }
 
     if (searchId) {
       filtered = filtered.filter((booking) =>
@@ -291,57 +382,59 @@ export default function AdminBookingsPage() {
   };
 
   // Calculate statistics for selected hotel
-  const calculateHotelStats = () => {
-    if (!selectedHotel || filteredBookings.length === 0) {
-      return {
-        total: 0,
-        pending: 0,
-        completed: 0,
-        inprogress: 0,
-        cancelled: 0,
-        totalRevenue: 0,
-      };
-    }
+ const calculateHotelStats = () => {
+  // Use filteredBookings directly; API already filters by hotel
+  const hotelBookings = filteredBookings;
 
-    const stats = filteredBookings.reduce(
-      (acc, booking) => {
-        const fare = Number(booking.fare) || 0;
-        const extraCharge = Number(booking.extraCharge) || 0;
-        const total = fare + extraCharge;
+  if (hotelBookings.length === 0) {
+    return {
+      total: 0,
+      pending: 0,
+      completed: 0,
+      inprogress: 0,
+      cancelled: 0,
+      totalRevenue: 0,
+    };
+  }
 
-        acc.total += 1;
-        acc.totalRevenue += total;
+  const stats = hotelBookings.reduce(
+    (acc, booking) => {
+      const fare = Number(booking.fare) || 0;
+      const extraCharge = Number(booking.extraCharge) || 0;
+      const total = fare + extraCharge;
 
-        switch (booking.status?.toLowerCase()) {
-          case "pending":
-            acc.pending += 1;
-            break;
-          case "completed":
-            acc.completed += 1;
-            break;
-          case "inprogress":
-            acc.inprogress += 1;
-            break;
-          case "cancelled":
-            acc.cancelled += 1;
-            break;
-        }
+      acc.total += 1;
+      acc.totalRevenue += total;
 
-        return acc;
-      },
-      {
-        total: 0,
-        pending: 0,
-        completed: 0,
-        inprogress: 0,
-        cancelled: 0,
-        totalRevenue: 0,
+      switch (booking.status?.toLowerCase()) {
+        case "pending":
+          acc.pending += 1;
+          break;
+        case "completed":
+          acc.completed += 1;
+          break;
+        case "inprogress":
+          acc.inprogress += 1;
+          break;
+        case "cancelled":
+          acc.cancelled += 1;
+          break;
       }
-    );
 
-    return stats;
-  };
+      return acc;
+    },
+    {
+      total: 0,
+      pending: 0,
+      completed: 0,
+      inprogress: 0,
+      cancelled: 0,
+      totalRevenue: 0,
+    }
+  );
 
+  return stats;
+};
   const hotelStats = calculateHotelStats();
 
   const formatDate = (dateString?: string) => {
@@ -476,7 +569,7 @@ export default function AdminBookingsPage() {
       booking.id || "",
       booking.voucherNumber || "",
       booking.passengerName || "",
-      booking.guest_phoneno|| "",
+      booking.guest_phoneno || "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
       booking.roomNo || "",
       booking.time || "",
@@ -553,7 +646,7 @@ export default function AdminBookingsPage() {
       booking.id || "",
       booking.voucherNumber || "",
       booking.passengerName || "",
-      booking.guest_phoneno|| "",
+      booking.guest_phoneno || "",
       booking.date ? new Date(booking.date).toLocaleDateString() : "",
       booking.roomNo || "",
       booking.time || "",
@@ -794,16 +887,17 @@ export default function AdminBookingsPage() {
                     <SelectValue placeholder="Select hotel" />
                   </SelectTrigger>
                   <SelectContent className="bg-blue-700 rounded-lg">
-                    {users.map((user) => (
-                      <SelectItem
-                        key={user.id}
-                        value={user.id.toString()}
-                        className="text-white hover:bg-blue-500 focus:bg-blue-500"
-                      >
-                        {user.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
+  {/* Remove this comment line - it's causing JSX parsing error */}
+  {users.map((user) => (
+    <SelectItem
+      key={user.id}
+      value={user.id.toString()} // This converts number 46 to string "46"
+      className="text-white hover:bg-blue-500 focus:bg-blue-500"
+    >
+      {user.name}
+    </SelectItem>
+  ))}
+</SelectContent>
                 </Select>
               </div>
             </div>
@@ -1054,7 +1148,7 @@ export default function AdminBookingsPage() {
                     <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Driver Name
                     </TableHead>
-                      <TableHead className="font-semibold text-white py-4 w-[6%]">
+                    <TableHead className="font-semibold text-white py-4 w-[6%]">
                       Voucher No
                     </TableHead>
                     <TableHead className="font-semibold text-white py-4 w-[6%]">
@@ -1109,13 +1203,13 @@ export default function AdminBookingsPage() {
                             </span>
                           </div>
                         </TableCell>
-                       <TableCell className="py-4 text-black">
-                      <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
-                        <div className="whitespace-pre-wrap break-words">
-                          {booking.passengerName|| " "}
-                        </div>
-                      </div>
-                    </TableCell>
+                        <TableCell className="py-4 text-black">
+                          <div className="text-sm max-h-20 min-w-28 w-full overflow-auto rounded p-2">
+                            <div className="whitespace-pre-wrap break-words">
+                              {booking.passengerName || " "}
+                            </div>
+                          </div>
+                        </TableCell>
                         <TableCell className="py-4 text-center text-black">
                           <div className="flex flex-col items-center space-y-1">
                             {booking.guest_phoneno || " "}
@@ -1248,7 +1342,7 @@ export default function AdminBookingsPage() {
                             {booking.driverName || "No notes"}
                           </div>
                         </TableCell>
-                         <TableCell className="py-4 text-black">
+                        <TableCell className="py-4 text-black">
                           <div className="text-sm break-words max-h-20 min-w-28">
                             {booking.voucherNumber || "no voucher no"}
                           </div>
@@ -1517,27 +1611,27 @@ export default function AdminBookingsPage() {
                 />
               </div>
 
-             <div className="space-y-2">
-  <Label
-    htmlFor="edit-date"
-    className="text-gray-800 font-bold text-sm"
-  >
-    Date *
-  </Label>
-  <Input
-    id="edit-date"
-    type="date"
-    value={
-      editFormData.date
-        ? format(new Date(editFormData.date), "yyyy-MM-dd")
-        : ""
-    }
-    onChange={(e) =>
-      setEditFormData({ ...editFormData, date: e.target.value })
-    }
-    className="bg-white text-black border-gray-300 text-sm h-10"
-  />
-</div>
+              <div className="space-y-2">
+                <Label
+                  htmlFor="edit-date"
+                  className="text-gray-800 font-bold text-sm"
+                >
+                  Date *
+                </Label>
+                <Input
+                  id="edit-date"
+                  type="date"
+                  value={
+                    editFormData.date
+                      ? format(new Date(editFormData.date), "yyyy-MM-dd")
+                      : ""
+                  }
+                  onChange={(e) =>
+                    setEditFormData({ ...editFormData, date: e.target.value })
+                  }
+                  className="bg-white text-black border-gray-300 text-sm h-10"
+                />
+              </div>
 
               <div className="space-y-2">
                 <Label
@@ -1716,7 +1810,7 @@ export default function AdminBookingsPage() {
                 />
               </div>
 
-                <div className="space-y-2">
+              <div className="space-y-2">
                 <Label
                   htmlFor="edit-driver-number"
                   className="text-gray-800 font-bold text-sm"

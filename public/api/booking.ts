@@ -35,6 +35,11 @@ export interface Booking {
   isUpdated?: boolean
   numberOfPassengers:string
   voucherNumber?:string
+  user?: {
+    id: number;
+    name: string;
+    role: string;
+  };
 }
 
 export interface BookingResponse {
