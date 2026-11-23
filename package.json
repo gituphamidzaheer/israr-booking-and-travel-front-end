@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "build": "node init && next build",
-    "dev": "node init && next dev",
-    "dev:clean": "node init && rmdir /s .next 2>nul && npm run dev",
+    "build": "next build",
+    "dev": "next dev",
+    "dev:clean": "rmdir /s .next 2>nul && npm run dev",
     "lint": "next lint",
-    "start": "node init && next start",
+    "start": "next start",
     "clean": "rmdir /s .next 2>nul"
   },
   "dependencies": {
